@@ -1,5 +1,3 @@
-Xcode utility for reading and writing pbxproj file format.
-
 # xcp
 `xcp` is Xcode utility for reading and writing `project.pbxproj` file format.
 
@@ -11,7 +9,10 @@ let xcodeprojectFileUrl = URL(fileURLWithPath: pbxPath)
 // Read pbxproj when create XCProject instance
 let project = try XCProject(for: xcodeprojectFileUrl)
 
-// Append for PBX Object
+// Append for PBX Object with
+// project root direcotry path,
+// will append file path relative for project root directory path,
+// will append project target name.
 ...
 project.appendFilePath(
     with: projectRootPath,
@@ -31,3 +32,4 @@ try project.write()
 
 ## License
 `xcp` is available under the MIT license. See the LICENSE file for more info.
+
