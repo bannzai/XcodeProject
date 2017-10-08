@@ -38,8 +38,8 @@ open class AllPBX {
     fileprivate func clear(with group: PBX.Group) {
         fullFilePaths.removeAll()
         group.subGroups.forEach { clear(with: $0) }
-        group.fileRefs = nil
-        group.subGroups = nil
+        group.fileRefs = []
+        group.subGroups = []
     }
     
     fileprivate func createGroupPath(with group: PBX.Group, parentPath: String) {
