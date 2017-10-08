@@ -28,7 +28,7 @@ open class AllPBX {
         return object
     }
     
-    public func createFullFilePaths(with project: PBX.Project) {
+    public func resetFullFilePaths(with project: PBX.Project) {
         clear(with: project.mainGroup)
         createFileRefPath(with: project.mainGroup)
         createFileRefForSubGroupPath(with: project.mainGroup)

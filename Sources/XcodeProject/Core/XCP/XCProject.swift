@@ -92,7 +92,7 @@ open class XCProject {
         let objectsJson = json["objects"] as! [String: JSON]
         _ = generateObjects(with: objectsJson, allPBX: allPBX)
         project = generateProject(with: objectsJson, allPBX: allPBX)
-        allPBX.createFullFilePaths(with: project)
+        allPBX.resetFullFilePaths(with: project)
     }
     
     // MARK: - enviroment
@@ -187,7 +187,7 @@ extension XCProject {
         }
         
         do { // groups
-            allPBX.createFullFilePaths(with: project)
+            allPBX.resetFullFilePaths(with: project)
             
             let groupEachPaths = allPBX
                 .dictionary
