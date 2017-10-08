@@ -13,7 +13,6 @@ open class XcodeProject {
     public typealias PBXPair = [String: Any]
     
     open let projectName: String
-    open let fullPair: PBXPair
     open let allPBX = AllPBX()
     open let project: PBX.Project
     open let pbxUrl: URL
@@ -87,7 +86,6 @@ open class XcodeProject {
             fatalError("No Xcode project found, please specify one")
         }
         self.projectName = projectName
-        fullPair = pair
         let objectsPair = pair["objects"] as! [String: PBXPair]
         _ = generateObjects(with: objectsPair, allPBX: allPBX)
         project = generateProject(with: objectsPair, allPBX: allPBX)
