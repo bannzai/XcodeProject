@@ -46,7 +46,7 @@ public enum Environment: String {
     case SOURCE_ROOT
     case SRCROOT
     
-    public static func generate(from content: String) -> [String: String] {
+    public static func convert(from content: String) -> [String: String] {
         let environments = content.components(separatedBy: "\n")
         var dictionary: [String: String] = [:]
         environments.forEach { env in
