@@ -2,7 +2,7 @@ import XCTest
 @testable import XcodeProject
 
 class GeneratorTests: XCTestCase {
-    func testWrite() {
+    func testReadToWriteEqualToSameContent() {
         guard
             let testPath = ProcessInfo().environment["PBXProjectPath"],
             let url = URL(string: "file://" + testPath)
