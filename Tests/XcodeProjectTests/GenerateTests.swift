@@ -23,6 +23,6 @@ class GeneratorTests: XCTestCase {
     }
     
     static var allTests = [
-        ("testExample", testWrite),
+        ("testReadToWriteEqualToSameContent", testReadToWriteEqualToSameContent),
     ]
 }
