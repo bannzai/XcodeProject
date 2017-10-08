@@ -11,7 +11,6 @@ import Foundation
 
 open class XcodeProject {
     public typealias JSON = [String: Any]
-    public typealias KeyAndValue = [(key: String, value: Any)]
     
     open let projectName: String
     open let fullJson: JSON
