@@ -144,8 +144,6 @@ extension XcodeProject {
             appendGroupIfNeeded(with: fileRefId, groupPathNames: groupPathNames)
         }
         
-        
-        
         let buildFileId = generateHashId()
         func buildFile() -> PBX.BuildFile { // build file
             let isa = ObjectType.PBXBuildFile.rawValue
