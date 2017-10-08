@@ -19,8 +19,6 @@ open class XcodeProject {
     open let pbxUrl: URL
     open let fullPair: PBXPair
     
-    open fileprivate(set) var environments: [String: String] = [:]
-    
     public init(repository: XcodeProjectRepository) {
         projectName = repository.fetchProjectName()
         allPBX = repository.fetchAllPBX()
@@ -34,51 +32,6 @@ open class XcodeProject {
     public convenience init(for pbxUrl: URL) throws {
         let repository = try XcodeProjectRepositoryImpl(xcodeprojectUrl: pbxUrl)
         self.init(repository: repository)
-    }
-    
-    // MARK: - enviroment
-    open func append(with enviroment: [String: String]) {
-        environments += enviroment
-    }
-    
-    open func isExists(for environment: Environment) -> Bool {
-        return environments[environment.rawValue] != nil
-    }
-    
-    fileprivate func environment(for key: String) -> Environment {
-        guard
-            let value = environments[key],
-            let environment = Environment(rawValue: value)
-            else {
-                fatalError(
-                    assertionMessage(description:
-                        "unknown key: \(key)",
-                        "process environments: \(environments)"
-                    )
-                )
-        }
-        return environment 
-    }
-    
-    fileprivate func url(from environment: Environment) -> URL {
-        guard
-            let path = environments[environment.rawValue]
-            else {
-                fatalError(assertionMessage(description: "can not cast environment: \(environment)"))
-        }
-        
-        return URL(fileURLWithPath: path)
-    }
-    
-    open func path(from component: PathComponent) -> URL {
-        switch component {
-        case .simple(let fullPath):
-            return URL(fileURLWithPath: fullPath)
-        case .environmentPath(let environtment, let relativePath):
-            let _url = url(from: environtment)
-                .appendingPathComponent(relativePath)
-            return _url
-        }
     }
 }
 
