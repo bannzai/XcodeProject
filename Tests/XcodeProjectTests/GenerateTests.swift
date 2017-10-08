@@ -12,8 +12,8 @@ class GeneratorTests: XCTestCase {
         }
         
         let string = try! String(contentsOf: url, encoding: String.Encoding.utf8)
-        let project = try! XCProject(for: url)
-        let serialization = XCPSerialization(project: project)
+        let project = try! XcodeProject(for: url)
+        let serialization = XcodeSerialization(project: project)
         let generateString = try! serialization.generateWriteContent()
         
         if string != generateString {

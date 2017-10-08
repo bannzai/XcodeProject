@@ -10,7 +10,7 @@ import Foundation
 
 public struct PBXSourcesBuildPhaseTranslator: Translator {
     typealias Object = PBX.SourcesBuildPhase
-    typealias JsonType = XCProject.JSON
+    typealias JsonType = XcodeProject.JSON
     
     func fromJson(with jsonType: JsonType, allPBX: AllPBX) -> Object {
         // TODO:
@@ -18,7 +18,7 @@ public struct PBXSourcesBuildPhaseTranslator: Translator {
     }
     
     func toJson(for object: Object) -> JsonType {
-        let json: XCProject.JSON = [
+        let json: XcodeProject.JSON = [
             "isa": object.isa.rawValue,
             "buildActionMask": Int32.max,
             "files": object.files.map { $0.id },

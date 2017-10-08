@@ -10,7 +10,7 @@ import Foundation
 
 public struct PBXGroupTranslator: Translator {
     typealias Object = PBX.Group
-    typealias JsonType = XCProject.JSON
+    typealias JsonType = XcodeProject.JSON
     
     func fromJson(with jsonType: JsonType, allPBX: AllPBX) -> Object {
         // TODO:
@@ -18,7 +18,7 @@ public struct PBXGroupTranslator: Translator {
     }
     
     func toJson(for object: Object) -> JsonType {
-        var json: XCProject.JSON = [
+        var json: XcodeProject.JSON = [
             "isa": object.isa.rawValue,
             "children": object.children.map { $0.id },
             "sourceTree": object.sourceTree.value

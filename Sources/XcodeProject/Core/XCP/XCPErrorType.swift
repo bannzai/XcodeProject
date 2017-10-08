@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum XCProjectError: Error {
+enum XcodeProjectError: Error {
     case notExistsProjectFile
     case wrongFormatFile
 }

@@ -1,5 +1,5 @@
 //
-//  XCPSerialization.swift
+//  XcodeSerialization.swift
 //  xcp
 //
 //  Created by kingkong999yhirose on 2016/12/23.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-public class XCPSerialization {
+public class XcodeSerialization {
     fileprivate let indent = "\t"
     fileprivate let newLine = "\n"
     fileprivate let spaceForOneline = " "
@@ -54,14 +54,14 @@ public class XCPSerialization {
         return dictionary
     }()
     
-    let project: XCProject
+    let project: XcodeProject
     
-    init(project: XCProject) {
+    init(project: XcodeProject) {
         self.project = project
     }
     
 }
-extension XCPSerialization {
+extension XcodeSerialization {
     func escapeIfNeeded(with target: String) throws -> String {
         let regexes = [
             "\\\\": try! NSRegularExpression(pattern: "\\\\", options: []),
@@ -159,7 +159,7 @@ extension XCPSerialization {
             let content = objectIds.map { "\(indentClosure(isMultiline ? level + 1 : 0))\(try! escapeIfNeeded(with: $0))\(wrapComment(for: try! escapeIfNeeded(with: $0)))," }.joined(separator: (isMultiline ? newLine : spaceForOneline))
             let end = ");"
             return begin + content + (objectIds.isEmpty ? "" : (isMultiline ? newLine: spaceForOneline)) + indentClosure(isMultiline ? level : 0) + end + (isMultiline ? "" : spaceForOneline)
-        } else if let jsonList = jsonObject as? [XCProject.JSON] {
+        } else if let jsonList = jsonObject as? [XcodeProject.JSON] {
             let begin = "\(objectKey) = ("
             let content = jsonList.flatMap { json -> [String] in
                 let top = isMultiline ? indentClosure(isMultiline ? level + 2 : 0) : ""
@@ -174,7 +174,7 @@ extension XCPSerialization {
                 }.joined(separator: "")
             let end = ");"
             return begin + content + newLine + indentClosure(isMultiline ? level : 0) + end
-        } else if let json = jsonObject as? XCProject.JSON {
+        } else if let json = jsonObject as? XcodeProject.JSON {
             let begin = "\(objectKey) = {"
             let top = isMultiline ? indentClosure(isMultiline ? level + 1 : 0) : ""
             let content = json.sorted { $0.0 < $1.0 }.flatMap { key, value in

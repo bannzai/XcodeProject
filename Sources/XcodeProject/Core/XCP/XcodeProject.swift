@@ -1,6 +1,6 @@
 //
 //
-//  XCProject.swift
+//  XcodeProject.swift
 //  xcp
 //
 //  Created by kingkong999yhirose on 2016/09/20.
@@ -9,7 +9,7 @@
 
 import Foundation
 
-open class XCProject {
+open class XcodeProject {
     public typealias JSON = [String: Any]
     public typealias KeyAndValue = [(key: String, value: Any)]
     
@@ -24,7 +24,7 @@ open class XCProject {
         guard
             let propertyList = try? Data(contentsOf: pbxUrl)
             else {
-                throw XCProjectError.notExistsProjectFile
+                throw XcodeProjectError.notExistsProjectFile
         }
         var format: PropertyListSerialization.PropertyListFormat = PropertyListSerialization.PropertyListFormat.binary
         let properties = try PropertyListSerialization.propertyList(from: propertyList, options: PropertyListSerialization.MutabilityOptions(), format: &format)
@@ -32,7 +32,7 @@ open class XCProject {
         guard
             let json = properties as? JSON
             else {
-                throw XCProjectError.wrongFormatFile
+                throw XcodeProjectError.wrongFormatFile
         }
         
         func generateObjects(with objectsJson: [String: JSON], allPBX: AllPBX) -> [PBX.Object] {
@@ -141,7 +141,7 @@ open class XCProject {
     }
 }
 
-extension XCProject {
+extension XcodeProject {
     private func generateHashId() -> String {
         let all = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".characters.map { String($0) }
         var result: String = ""
@@ -168,7 +168,7 @@ extension XCProject {
         let fileRef: PBX.FileReference
         do { // file ref
             let isa = ObjectType.PBXFileReference.rawValue
-            let json: XCProject.JSON = [
+            let json: XcodeProject.JSON = [
                 "isa": isa,
                 "fileEncoding": 4,
                 "lastKnownFileType": LastKnownFileType(fileName: fileName).value,
@@ -225,7 +225,7 @@ extension XCProject {
                     }
                     
                     let isa = ObjectType.PBXGroup.rawValue
-                    let json: XCProject.JSON = [
+                    let json: XcodeProject.JSON = [
                         "isa": isa,
                         "children": [
                             childId
@@ -255,7 +255,7 @@ extension XCProject {
         let buildFileId = generateHashId()
         func buildFile() -> PBX.BuildFile { // build file
             let isa = ObjectType.PBXBuildFile.rawValue
-            let json: XCProject.JSON = [
+            let json: XcodeProject.JSON = [
                 "isa": isa,
                 "fileRef": fileRefId,
             ]
@@ -294,7 +294,7 @@ extension XCProject {
             }
             
             let isa = ObjectType.PBXSourcesBuildPhase.rawValue
-            let json: XCProject.JSON = [
+            let json: XcodeProject.JSON = [
                 "isa": isa,
                 "buildActionMask": Int32.max,
                 "files": [
@@ -315,9 +315,9 @@ extension XCProject {
     }
 }
 
-extension XCProject {
+extension XcodeProject {
     func write() throws {
-        let serialization = XCPSerialization(project: self)
+        let serialization = XcodeSerialization(project: self)
         let writeContent = try serialization.generateWriteContent()
         func w(with code: String, fileURL: URL) throws {
             try code.write(to: fileURL, atomically: true, encoding: String.Encoding.utf8)
