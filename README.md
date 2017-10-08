@@ -1,5 +1,5 @@
-# xcp
-`xcp` is Xcode utility for reading and writing `project.pbxproj` file format.
+# XcodeProject
+`XcodeProject` is Xcode utility for reading and writing `project.pbxproj` file format.
 
 ## Usage
 ```swift
@@ -31,6 +31,6 @@ try project.write()
 [Kuri](http://github.com/bannzai/Kuri) is code generate for iOS CleanArchitecture.
 
 ## License
-`xcp` is available under the MIT license. See the LICENSE file for more info.
+`XcodeProject` is available under the MIT license. See the LICENSE file for more info.
 
 # XcodeProject
