@@ -156,12 +156,15 @@ extension XcodeSerialization {
         let isMultiline: Bool = isMultiLineClosure(isa)
         if let objectIds = pairObject as? [String] {
             let begin = "\(objectKey) = (" + (isMultiline ? newLine : "")
-            let content = objectIds.map { "\(indentClosure(isMultiline ? level + 1 : 0))\(try! escapeIfNeeded(with: $0))\(wrapComment(for: try! escapeIfNeeded(with: $0)))," }.joined(separator: (isMultiline ? newLine : spaceForOneline))
+            let content = objectIds
+                .map { "\(indentClosure(isMultiline ? level + 1 : 0))\(try! escapeIfNeeded(with: $0))\(wrapComment(for: try! escapeIfNeeded(with: $0)))," }
+                .joined(separator: (isMultiline ? newLine : spaceForOneline))
             let end = ");"
             return begin + content + (objectIds.isEmpty ? "" : (isMultiline ? newLine: spaceForOneline)) + indentClosure(isMultiline ? level : 0) + end + (isMultiline ? "" : spaceForOneline)
         } else if let pairList = pairObject as? [PBXPair] {
             let begin = "\(objectKey) = ("
-            let content = pairList.flatMap { pair -> [String] in
+            let content = pairList
+                .flatMap { pair -> [String] in
                 let top = isMultiline ? indentClosure(isMultiline ? level + 2 : 0) : ""
                 let period = isMultiline ? "\(indentClosure(isMultiline ? level + 1 : 0))}," : "} "
                 let pairStrings = pair.sorted { $0.0 < $1.0 }.map { key, value in
@@ -171,15 +174,19 @@ extension XcodeSerialization {
                 let content = pairStrings.map { $0 + newLine }
                 let end = [period]
                 return begin + content + end
-                }.joined(separator: "")
+                }
+                .joined(separator: "")
             let end = ");"
             return begin + content + newLine + indentClosure(isMultiline ? level : 0) + end
         } else if let pair = pairObject as? PBXPair {
             let begin = "\(objectKey) = {"
             let top = isMultiline ? indentClosure(isMultiline ? level + 1 : 0) : ""
-            let content = pair.sorted { $0.0 < $1.0 }.flatMap { key, value in
-                return top + pairString(for: (key, value), with: isa, and: level + 1)
-                }.joined(separator: (isMultiline ? newLine: ""))
+            let content = pair
+                .sorted { $0.0 < $1.0 }
+                .flatMap { key, value in
+                    return top + pairString(for: (key, value), with: isa, and: level + 1)
+                }
+                .joined(separator: (isMultiline ? newLine: ""))
             let end = "};"
             return begin + (isMultiline ? newLine: "") + content + (isMultiline ? newLine : "") + indentClosure(isMultiline ? level : 0) + end + (isMultiline ? "" : spaceForOneline)
         } else {
@@ -231,7 +238,8 @@ extension XcodeSerialization {
                     + (isMultiline ? newLine : "")
                     + indentClosure(isMultiline ? 2 : 0)
                     + end
-            }.joined(separator: newLine)
+            }
+            .joined(separator: newLine)
         
         let endSection = "/* End \(isa.rawValue) section */"
         return beginSection + newLine + eachObjectPairContent + newLine + endSection + newLine
@@ -260,7 +268,8 @@ extension XcodeSerialization {
                             }
                             .map { isa, objects -> String in
                                 return try generateContentEachSection(for: (isa, objects))
-                            }.joined(separator: newLine)
+                            }
+                            .joined(separator: newLine)
                         
                         let endObjects = "};"
                         return lines +  beginObjects + newLine + objectsContent + indent + endObjects + newLine
