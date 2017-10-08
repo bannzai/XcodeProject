@@ -1,5 +1,5 @@
 //
-//  error.swift
+//  XcodeProjectError.swift
 //  xcp
 //
 //  Created by kingkong999yhirose on 2016/09/20.
