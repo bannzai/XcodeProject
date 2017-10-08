@@ -13,6 +13,7 @@ class ArrayExtensionTests: XCTestCase {
             let isa: String
             let testId: Int
         }
+        
         let array = [
             PBXTest(isa: "PBXObject", testId: 1),
             PBXTest(isa: "PBXObject", testId: 2),
@@ -20,8 +21,8 @@ class ArrayExtensionTests: XCTestCase {
             PBXTest(isa: "PBXObject", testId: 4),
             PBXTest(isa: "PBXBuildFile", testId: 1),
         ]
-        let groupedDictionary = array
-            .groupBy { (object) -> String in
+        
+        let groupedDictionary = array.groupBy { (object) -> String in
                 return object.isa
         }
         
