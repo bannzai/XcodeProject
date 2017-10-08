@@ -251,7 +251,7 @@ extension XcodeSerialization {
         return try beginWriteCotent
             + project.fullPair
                 .sorted { $0.0 < $1.0 }
-                .reduce("") { (lines, pair: (key: String, value: Any)) in
+                .reduce("") { (lines, pair: (key: String, _: Any)) in
                     let objectKey = pair.key
                     if objectKey == "objects" {
                         let beginObjects = indent + "objects = {" + newLine
