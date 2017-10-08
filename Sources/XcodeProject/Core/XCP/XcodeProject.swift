@@ -10,10 +10,10 @@
 import Foundation
 
 open class XcodeProject {
-    public typealias JSON = [String: Any]
+    public typealias PBXPair = [String: Any]
     
     open let projectName: String
-    open let fullJson: JSON
+    open let fullPair: PBXPair
     open let allPBX = AllPBX()
     open let project: PBX.Project
     open let pbxUrl: URL
@@ -29,13 +29,13 @@ open class XcodeProject {
         let properties = try PropertyListSerialization.propertyList(from: propertyList, options: PropertyListSerialization.MutabilityOptions(), format: &format)
         
         guard
-            let json = properties as? JSON
+            let pair = properties as? PBXPair
             else {
                 throw XcodeProjectError.wrongFormatFile
         }
         
-        func generateObjects(with objectsJson: [String: JSON], allPBX: AllPBX) -> [PBX.Object] {
-            return objectsJson
+        func generateObjects(with objectsPair: [String: PBXPair], allPBX: AllPBX) -> [PBX.Object] {
+            return objectsPair
                 .flatMap { (hashId, objectDictionary) in
                     guard
                         let isa = objectDictionary["isa"] as? String
@@ -62,21 +62,21 @@ open class XcodeProject {
                     return pbxObject
             }
         }
-        func generateProject(with objectsJson: [String: JSON], allPBX: AllPBX) -> PBX.Project {
+        func generateProject(with objectsPair: [String: PBXPair], allPBX: AllPBX) -> PBX.Project {
             guard
-                let id = json["rootObject"] as? String,
-                let projectJson = objectsJson[id]
+                let id = pair["rootObject"] as? String,
+                let projectPair = objectsPair[id]
                 else {
                     fatalError(
                         assertionMessage(description:
-                            "unexpected for json: \(json)",
-                            "and objectsJson: \(objectsJson)"
+                            "unexpected for pair: \(pair)",
+                            "and objectsPair: \(objectsPair)"
                         )
                     )
             }
             return PBX.Project(
                 id: id,
-                dictionary: projectJson,
+                dictionary: projectPair,
                 isa: ObjectType.PBXProject.rawValue,
                 allPBX: allPBX
             )
@@ -87,10 +87,10 @@ open class XcodeProject {
             fatalError("No Xcode project found, please specify one")
         }
         self.projectName = projectName
-        fullJson = json
-        let objectsJson = json["objects"] as! [String: JSON]
-        _ = generateObjects(with: objectsJson, allPBX: allPBX)
-        project = generateProject(with: objectsJson, allPBX: allPBX)
+        fullPair = pair
+        let objectsPair = pair["objects"] as! [String: PBXPair]
+        _ = generateObjects(with: objectsPair, allPBX: allPBX)
+        project = generateProject(with: objectsPair, allPBX: allPBX)
         allPBX.resetFullFilePaths(with: project)
     }
     
@@ -167,7 +167,7 @@ extension XcodeProject {
         let fileRef: PBX.FileReference
         do { // file ref
             let isa = ObjectType.PBXFileReference.rawValue
-            let json: XcodeProject.JSON = [
+            let pair: XcodeProject.PBXPair = [
                 "isa": isa,
                 "fileEncoding": 4,
                 "lastKnownFileType": LastKnownFileType(fileName: fileName).value,
@@ -177,7 +177,7 @@ extension XcodeProject {
             
             fileRef = PBX.FileReference(
                 id: fileRefId,
-                dictionary: json,
+                dictionary: pair,
                 isa: isa,
                 allPBX: allPBX
             )
@@ -224,7 +224,7 @@ extension XcodeProject {
                     }
                     
                     let isa = ObjectType.PBXGroup.rawValue
-                    let json: XcodeProject.JSON = [
+                    let pair: XcodeProject.PBXPair = [
                         "isa": isa,
                         "children": [
                             childId
@@ -236,7 +236,7 @@ extension XcodeProject {
                     let uuid = generateHashId()
                     let group = PBX.Group(
                         id: uuid,
-                        dictionary: json,
+                        dictionary: pair,
                         isa: isa,
                         allPBX: allPBX
                     )
@@ -254,14 +254,14 @@ extension XcodeProject {
         let buildFileId = generateHashId()
         func buildFile() -> PBX.BuildFile { // build file
             let isa = ObjectType.PBXBuildFile.rawValue
-            let json: XcodeProject.JSON = [
+            let pair: XcodeProject.PBXPair = [
                 "isa": isa,
                 "fileRef": fileRefId,
             ]
             
             let buildFile = PBX.BuildFile(
                 id: buildFileId,
-                dictionary: json,
+                dictionary: pair,
                 isa: isa,
                 allPBX: allPBX
             )
@@ -293,7 +293,7 @@ extension XcodeProject {
             }
             
             let isa = ObjectType.PBXSourcesBuildPhase.rawValue
-            let json: XcodeProject.JSON = [
+            let pair: XcodeProject.PBXPair = [
                 "isa": isa,
                 "buildActionMask": Int32.max,
                 "files": [
@@ -304,7 +304,7 @@ extension XcodeProject {
             
             allPBX.dictionary[sourceBuildPhaseId] = PBX.SourcesBuildPhase(
                 id: sourceBuildPhaseId,
-                dictionary: json,
+                dictionary: pair,
                 isa: isa,
                 allPBX: allPBX
             )

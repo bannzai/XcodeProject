@@ -144,9 +144,9 @@ extension XcodeSerialization {
         return " /* \(comment) */"
     }
     
-    func jsonString(for pair: (objectKey: String, jsonObject: Any), with isa: ObjectType, and level: Int) -> String {
+    func pairString(for pair: (objectKey: String, pairObject: Any), with isa: ObjectType, and level: Int) -> String {
         let objectKey = try! escapeIfNeeded(with: pair.objectKey)
-        let jsonObject = pair.jsonObject
+        let pairObject = pair.pairObject
         
         if objectKey == "isa" {
             // skip
@@ -154,36 +154,36 @@ extension XcodeSerialization {
         }
         
         let isMultiline: Bool = isMultiLineClosure(isa)
-        if let objectIds = jsonObject as? [String] {
+        if let objectIds = pairObject as? [String] {
             let begin = "\(objectKey) = (" + (isMultiline ? newLine : "")
             let content = objectIds.map { "\(indentClosure(isMultiline ? level + 1 : 0))\(try! escapeIfNeeded(with: $0))\(wrapComment(for: try! escapeIfNeeded(with: $0)))," }.joined(separator: (isMultiline ? newLine : spaceForOneline))
             let end = ");"
             return begin + content + (objectIds.isEmpty ? "" : (isMultiline ? newLine: spaceForOneline)) + indentClosure(isMultiline ? level : 0) + end + (isMultiline ? "" : spaceForOneline)
-        } else if let jsonList = jsonObject as? [XcodeProject.JSON] {
+        } else if let pairList = pairObject as? [XcodeProject.PBXPair] {
             let begin = "\(objectKey) = ("
-            let content = jsonList.flatMap { json -> [String] in
+            let content = pairList.flatMap { pair -> [String] in
                 let top = isMultiline ? indentClosure(isMultiline ? level + 2 : 0) : ""
                 let period = isMultiline ? "\(indentClosure(isMultiline ? level + 1 : 0))}," : "} "
-                let jsonStrings = json.sorted { $0.0 < $1.0 }.map { key, value in
-                    return top + jsonString(for: (key, value), with: isa, and: level + 1)
+                let pairStrings = pair.sorted { $0.0 < $1.0 }.map { key, value in
+                    return top + pairString(for: (key, value), with: isa, and: level + 1)
                 }
                 let begin = [newLine + indentClosure(isMultiline ? level + 1 : 0) + "{" + newLine]
-                let content = jsonStrings.map { $0 + newLine }
+                let content = pairStrings.map { $0 + newLine }
                 let end = [period]
                 return begin + content + end
                 }.joined(separator: "")
             let end = ");"
             return begin + content + newLine + indentClosure(isMultiline ? level : 0) + end
-        } else if let json = jsonObject as? XcodeProject.JSON {
+        } else if let pair = pairObject as? XcodeProject.PBXPair {
             let begin = "\(objectKey) = {"
             let top = isMultiline ? indentClosure(isMultiline ? level + 1 : 0) : ""
-            let content = json.sorted { $0.0 < $1.0 }.flatMap { key, value in
-                return top + jsonString(for: (key, value), with: isa, and: level + 1)
+            let content = pair.sorted { $0.0 < $1.0 }.flatMap { key, value in
+                return top + pairString(for: (key, value), with: isa, and: level + 1)
                 }.joined(separator: (isMultiline ? newLine: ""))
             let end = "};"
             return begin + (isMultiline ? newLine: "") + content + (isMultiline ? newLine : "") + indentClosure(isMultiline ? level : 0) + end + (isMultiline ? "" : spaceForOneline)
         } else {
-            let string = try! escapeIfNeeded(with: "\(jsonObject)")
+            let string = try! escapeIfNeeded(with: "\(pairObject)")
             let isNeedComment = !(objectKey == "remoteGlobalIDString" || objectKey == "TestTargetID")
             let comment = isNeedComment ? wrapComment(for: string) : ""
             let space = isMultiline ? "" : spaceForOneline
@@ -197,7 +197,7 @@ extension XcodeSerialization {
         let objects = pairFor.objects
         
         let beginSection = "/* Begin \(isa.rawValue) section */"
-        let eachObjectJsonContent = objects
+        let eachObjectPairContent = objects
             .sorted { $0.id < $1.id }
             .map { object -> String in
                 let comment = wrapComment(for: object.id)
@@ -206,7 +206,7 @@ extension XcodeSerialization {
                 let isMultiline = isMultiLineClosure(isa)
                 let isaSpace = isMultiline ? "" : spaceForOneline
                 let isaValue = "isa = \(isa.rawValue);" + isaSpace
-                let objectJson = object.objectDictionary
+                let objectPair = object.objectDictionary
                     .sorted { $0.0 < $1.0 }
                     .flatMap { (key: String, value: Any) -> String? in
                         if key == "isa" {
@@ -214,7 +214,7 @@ extension XcodeSerialization {
                             return nil
                         }
                         
-                        let content = jsonString(for: (key, value), with: isa, and: 3)
+                        let content = pairString(for: (key, value), with: isa, and: 3)
                         if content.isEmpty {
                             return nil
                         }
@@ -227,21 +227,21 @@ extension XcodeSerialization {
                     + indentClosure(isMultiline ? 3 : 0)
                     + isaValue
                     + (isMultiline ? newLine : "")
-                    + objectJson
+                    + objectPair
                     + (isMultiline ? newLine : "")
                     + indentClosure(isMultiline ? 2 : 0)
                     + end
             }.joined(separator: newLine)
         
         let endSection = "/* End \(isa.rawValue) section */"
-        return beginSection + newLine + eachObjectJsonContent + newLine + endSection + newLine
+        return beginSection + newLine + eachObjectPairContent + newLine + endSection + newLine
     }
     
     public func generateWriteContent() throws -> String {
         let beginWriteCotent = "// !$*UTF8*$!\(newLine){\(newLine)"
         let endWriteContent = "}\(newLine)"
         return try beginWriteCotent
-            + project.fullJson
+            + project.fullPair
                 .sorted { $0.0 < $1.0 }
                 .reduce("") { (lines, pair: (key: String, value: Any)) in
                     let objectKey = pair.key
@@ -266,7 +266,7 @@ extension XcodeSerialization {
                         return lines +  beginObjects + newLine + objectsContent + indent + endObjects + newLine
                     } else {
                         let comment = wrapComment(for: objectKey)
-                        let row = "\(objectKey) = \(project.fullJson[objectKey]!)\(comment);"
+                        let row = "\(objectKey) = \(project.fullPair[objectKey]!)\(comment);"
                         let content = row.components(separatedBy: newLine).map { r in
                             return indent + r
                             }.joined(separator: newLine)

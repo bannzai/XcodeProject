@@ -26,7 +26,7 @@ extension XcodeProjectTests {
             XCTAssert(project.allPBX.dictionary.count == 56)
             XCTAssert(project.allPBX.fullFilePaths.count == 0)
             XCTAssert(project.allPBX.grouped.count == 13)
-            XCTAssert(project.fullJson.count == 5)
+            XCTAssert(project.fullPair.count == 5)
         } catch {
             XCTFail(error.localizedDescription)
         }

@@ -10,25 +10,25 @@ import Foundation
 
 public struct PBXGroupTranslator: Translator {
     typealias Object = PBX.Group
-    typealias JsonType = XcodeProject.JSON
+    typealias PairType = XcodeProject.PBXPair
     
-    func fromJson(with jsonType: JsonType, allPBX: AllPBX) -> Object {
+    func fromPair(with pairType: PairType, allPBX: AllPBX) -> Object {
         // TODO:
         fatalError("undefined")
     }
     
-    func toJson(for object: Object) -> JsonType {
-        var json: XcodeProject.JSON = [
+    func toPair(for object: Object) -> PairType {
+        var pair: XcodeProject.PBXPair = [
             "isa": object.isa.rawValue,
             "children": object.children.map { $0.id },
             "sourceTree": object.sourceTree.value
         ]
         if let name = object.name  {
-            json["name"] = name
+            pair["name"] = name
         }
         if let path = object.path {
-            json["path"] = path
+            pair["path"] = path
         }
-        return json
+        return pair
     }
 }

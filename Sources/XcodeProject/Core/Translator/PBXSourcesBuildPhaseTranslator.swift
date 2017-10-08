@@ -10,21 +10,21 @@ import Foundation
 
 public struct PBXSourcesBuildPhaseTranslator: Translator {
     typealias Object = PBX.SourcesBuildPhase
-    typealias JsonType = XcodeProject.JSON
+    typealias PairType = XcodeProject.PBXPair
     
-    func fromJson(with jsonType: JsonType, allPBX: AllPBX) -> Object {
+    func fromPair(with pairType: PairType, allPBX: AllPBX) -> Object {
         // TODO:
         fatalError("undefined")
     }
     
-    func toJson(for object: Object) -> JsonType {
-        let json: XcodeProject.JSON = [
+    func toPair(for object: Object) -> PairType {
+        let pair: XcodeProject.PBXPair = [
             "isa": object.isa.rawValue,
             "buildActionMask": Int32.max,
             "files": object.files.map { $0.id },
             "runOnlyForDeploymentPostprocessing": 0
         ]
         
-        return json
+        return pair
     }
 }

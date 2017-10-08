@@ -12,18 +12,18 @@ open class /* prefix */ PBX {
     // MARK: - Abstract
     open class Object {
         open let id: String
-        open let dictionary: XcodeProject.JSON
+        open let dictionary: XcodeProject.PBXPair
         open let isa: ObjectType
         open let allPBX: AllPBX
         
         // FIXME:
-        open var objectDictionary: XcodeProject.JSON {
+        open var objectDictionary: XcodeProject.PBXPair {
             return dictionary
         }
         
         public required init(
             id: String,
-            dictionary: XcodeProject.JSON,
+            dictionary: XcodeProject.PBXPair,
             isa: String,
             allPBX: AllPBX
             ) {
@@ -75,8 +75,8 @@ open class /* prefix */ PBX {
             return objectKeys.map(allPBX.object)
         }
         
-        fileprivate func extractJson(for key: String) -> XcodeProject.JSON {
-            return dictionary[key] as! XcodeProject.JSON
+        fileprivate func extractPair(for key: String) -> XcodeProject.PBXPair {
+            return dictionary[key] as! XcodeProject.PBXPair
         }
     }
     
@@ -114,7 +114,7 @@ extension /* prefix */ PBX {
         open fileprivate(set) lazy var targets: [PBX.NativeTarget] = self.extractObjects(for: "targets")
         open fileprivate(set) lazy var mainGroup: PBX.Group = self.extractObject(for: "mainGroup")
         open fileprivate(set) lazy var buildConfigurationList: XC.ConfigurationList = self.extractObject(for: "buildConfigurationList")
-        open fileprivate(set) lazy var attributes: XcodeProject.JSON = self.extractJson(for: "attributes")
+        open fileprivate(set) lazy var attributes: XcodeProject.PBXPair = self.extractPair(for: "attributes")
     }
     
     open class ContainerItemProxy: ContainerItem {
@@ -147,8 +147,8 @@ extension /* prefix */ PBX {
     }
     
     open class SourcesBuildPhase: PBX.BuildPhase {
-        override open var objectDictionary: XcodeProject.JSON {
-            return PBXSourcesBuildPhaseTranslator().toJson(for: self)
+        override open var objectDictionary: XcodeProject.PBXPair {
+            return PBXSourcesBuildPhaseTranslator().toPair(for: self)
         }
     }
     
@@ -195,8 +195,8 @@ extension /* prefix */ PBX {
     }
     
     open class Group: Reference {
-        override open var objectDictionary: XcodeProject.JSON {
-            return PBXGroupTranslator().toJson(for: self)
+        override open var objectDictionary: XcodeProject.PBXPair {
+            return PBXGroupTranslator().toPair(for: self)
         }
         
         open lazy var children: [Reference] = self.extractObjects(for: "children")

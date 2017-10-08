@@ -10,8 +10,8 @@ import Foundation
 
 protocol Translator {
     associatedtype Object
-    associatedtype JsonType
+    associatedtype PairType
     
-    func fromJson(with jsonType: JsonType, allPBX: AllPBX) -> Object
-    func toJson(for object: Object) -> JsonType
+    func fromPair(with pairType: PairType, allPBX: AllPBX) -> Object
+    func toPair(for object: Object) -> PairType
 }
