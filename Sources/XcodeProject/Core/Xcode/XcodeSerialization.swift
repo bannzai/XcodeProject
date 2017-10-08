@@ -159,7 +159,7 @@ extension XcodeSerialization {
             let content = objectIds.map { "\(indentClosure(isMultiline ? level + 1 : 0))\(try! escapeIfNeeded(with: $0))\(wrapComment(for: try! escapeIfNeeded(with: $0)))," }.joined(separator: (isMultiline ? newLine : spaceForOneline))
             let end = ");"
             return begin + content + (objectIds.isEmpty ? "" : (isMultiline ? newLine: spaceForOneline)) + indentClosure(isMultiline ? level : 0) + end + (isMultiline ? "" : spaceForOneline)
-        } else if let pairList = pairObject as? [XcodeProject.PBXPair] {
+        } else if let pairList = pairObject as? [PBXPair] {
             let begin = "\(objectKey) = ("
             let content = pairList.flatMap { pair -> [String] in
                 let top = isMultiline ? indentClosure(isMultiline ? level + 2 : 0) : ""
@@ -174,7 +174,7 @@ extension XcodeSerialization {
                 }.joined(separator: "")
             let end = ");"
             return begin + content + newLine + indentClosure(isMultiline ? level : 0) + end
-        } else if let pair = pairObject as? XcodeProject.PBXPair {
+        } else if let pair = pairObject as? PBXPair {
             let begin = "\(objectKey) = {"
             let top = isMultiline ? indentClosure(isMultiline ? level + 1 : 0) : ""
             let content = pair.sorted { $0.0 < $1.0 }.flatMap { key, value in

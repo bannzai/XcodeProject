@@ -9,87 +9,31 @@
 
 import Foundation
 
+public typealias PBXPair = [String: Any]
+
 open class XcodeProject {
-    public typealias PBXPair = [String: Any]
     
     open let projectName: String
-    open let allPBX = AllPBX()
+    open let allPBX: AllPBX
     open let project: PBX.Project
     open let pbxUrl: URL
+    open let fullPair: PBXPair
+    
     open fileprivate(set) var environments: [String: String] = [:]
     
-    public init(for pbxUrl: URL) throws {
-        guard
-            let propertyList = try? Data(contentsOf: pbxUrl)
-            else {
-                throw XcodeProjectError.notExistsProjectFile
-        }
-        var format: PropertyListSerialization.PropertyListFormat = PropertyListSerialization.PropertyListFormat.binary
-        let properties = try PropertyListSerialization.propertyList(from: propertyList, options: PropertyListSerialization.MutabilityOptions(), format: &format)
+    public init(repository: XcodeProjectRepository) {
+        projectName = repository.fetchProjectName()
+        allPBX = repository.fetchAllPBX()
+        project = repository.fetchPBXProject()
+        pbxUrl = repository.fetchXcodeProjectURL()
+        fullPair = repository.fetchAllPair()
         
-        guard
-            let pair = properties as? PBXPair
-            else {
-                throw XcodeProjectError.wrongFormatFile
-        }
-        
-        func generateObjects(with objectsPair: [String: PBXPair], allPBX: AllPBX) -> [PBX.Object] {
-            return objectsPair
-                .flatMap { (hashId, objectDictionary) in
-                    guard
-                        let isa = objectDictionary["isa"] as? String
-                        else {
-                            fatalError(
-                                assertionMessage(description:
-                                    "not exists isa key: \(hashId), value: \(objectDictionary)",
-                                    "you should check for project.pbxproj that is correct."
-                                )
-                            )
-                    }
-                    
-                    let pbxType = ObjectType.type(with: isa)
-                    
-                    let pbxObject = pbxType.init(
-                        id: hashId,
-                        dictionary: objectDictionary,
-                        isa: isa,
-                        allPBX: allPBX
-                    )
-                    
-                    allPBX.dictionary[hashId] = pbxObject
-                    
-                    return pbxObject
-            }
-        }
-        func generateProject(with objectsPair: [String: PBXPair], allPBX: AllPBX) -> PBX.Project {
-            guard
-                let id = pair["rootObject"] as? String,
-                let projectPair = objectsPair[id]
-                else {
-                    fatalError(
-                        assertionMessage(description:
-                            "unexpected for pair: \(pair)",
-                            "and objectsPair: \(objectsPair)"
-                        )
-                    )
-            }
-            return PBX.Project(
-                id: id,
-                dictionary: projectPair,
-                isa: ObjectType.PBXProject.rawValue,
-                allPBX: allPBX
-            )
-        }
-        
-        self.pbxUrl = pbxUrl
-        guard let projectName = pbxUrl.pathComponents[pbxUrl.pathComponents.count - 2].components(separatedBy: ".").first else {
-            fatalError("No Xcode project found, please specify one")
-        }
-        self.projectName = projectName
-        let objectsPair = pair["objects"] as! [String: PBXPair]
-        _ = generateObjects(with: objectsPair, allPBX: allPBX)
-        project = generateProject(with: objectsPair, allPBX: allPBX)
         allPBX.resetFullFilePaths(with: project)
+    }
+    
+    public convenience init(for pbxUrl: URL) throws {
+        let repository = try XcodeProjectRepositoryImpl(xcodeprojectUrl: pbxUrl)
+        self.init(repository: repository)
     }
     
     // MARK: - enviroment
@@ -165,7 +109,7 @@ extension XcodeProject {
         let fileRef: PBX.FileReference
         do { // file ref
             let isa = ObjectType.PBXFileReference.rawValue
-            let pair: XcodeProject.PBXPair = [
+            let pair: PBXPair = [
                 "isa": isa,
                 "fileEncoding": 4,
                 "lastKnownFileType": LastKnownFileType(fileName: fileName).value,
@@ -222,7 +166,7 @@ extension XcodeProject {
                     }
                     
                     let isa = ObjectType.PBXGroup.rawValue
-                    let pair: XcodeProject.PBXPair = [
+                    let pair: PBXPair = [
                         "isa": isa,
                         "children": [
                             childId
@@ -252,7 +196,7 @@ extension XcodeProject {
         let buildFileId = generateHashId()
         func buildFile() -> PBX.BuildFile { // build file
             let isa = ObjectType.PBXBuildFile.rawValue
-            let pair: XcodeProject.PBXPair = [
+            let pair: PBXPair = [
                 "isa": isa,
                 "fileRef": fileRefId,
             ]
@@ -291,7 +235,7 @@ extension XcodeProject {
             }
             
             let isa = ObjectType.PBXSourcesBuildPhase.rawValue
-            let pair: XcodeProject.PBXPair = [
+            let pair: PBXPair = [
                 "isa": isa,
                 "buildActionMask": Int32.max,
                 "files": [
