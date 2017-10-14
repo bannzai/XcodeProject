@@ -18,7 +18,8 @@ public enum Environment: String {
     case SOURCE_ROOT
     case SRCROOT
     
-    fileprivate static var elements: [Environment] {
+    public static var elements: [Environment] {
+        // all elements
         return [
             PROJECT_FILE_PATH,
             TARGET_NAME,

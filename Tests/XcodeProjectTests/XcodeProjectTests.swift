@@ -24,7 +24,7 @@ extension XcodeProjectTests {
         do {
             let project = try XcodeProject(for: xcodeProjectUrl)
             XCTAssert(project.allPBX.dictionary.count == 56)
-            XCTAssert(project.allPBX.fullFilePaths.count == 0)
+            XCTAssert(project.allPBX.fullFilePaths.count == 13)
             XCTAssert(project.allPBX.grouped.count == 13)
             XCTAssert(project.fullPair.count == 5)
         } catch {

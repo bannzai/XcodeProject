@@ -29,17 +29,18 @@ open class AllPBX {
     }
     
     public func resetFullFilePaths(with project: PBX.Project) {
-        clear(with: project.mainGroup)
+        fullFilePaths.removeAll()
+        
+        project.mainGroup.remakeFileRefs()
+        project.mainGroup.remakeSubGroups()
+        project.mainGroup.subGroups.forEach {
+            $0.remakeFileRefs()
+            $0.remakeSubGroups()
+        }
+        
         createFileRefPath(with: project.mainGroup)
         createFileRefForSubGroupPath(with: project.mainGroup)
         createGroupPath(with: project.mainGroup, parentPath: "")
-    }
-    
-    fileprivate func clear(with group: PBX.Group) {
-        fullFilePaths.removeAll()
-        group.subGroups.forEach { clear(with: $0) }
-        group.fileRefs = []
-        group.subGroups = []
     }
     
     fileprivate func createGroupPath(with group: PBX.Group, parentPath: String) {

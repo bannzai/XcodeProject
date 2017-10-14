@@ -203,8 +203,24 @@ extension /* prefix */ PBX {
         open var fullPath: String = ""
         
         // convenience accessor
-        open lazy var subGroups: [Group] = self.children.ofType(PBX.Group.self)
-        open lazy var fileRefs: [PBX.FileReference] = self.children.ofType(PBX.FileReference.self)
+        open lazy var subGroups: [Group] = self.makeSubGroups()
+        open lazy var fileRefs: [PBX.FileReference] = self.makeFileRefs()
+        
+        func remakeSubGroups() {
+            subGroups = makeSubGroups()
+        }
+        
+        func remakeFileRefs() {
+            fileRefs = makeFileRefs()
+        }
+        
+        func makeSubGroups() -> [Group] {
+            return self.children.ofType(PBX.Group.self)
+        }
+        
+        func makeFileRefs() -> [PBX.FileReference] {
+            return self.children.ofType(PBX.FileReference.self)
+        }
     }
     
     open class VariantGroup: PBX.Group {
