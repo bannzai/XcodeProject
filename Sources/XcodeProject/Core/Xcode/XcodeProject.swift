@@ -208,7 +208,7 @@ extension XcodeProject {
 }
 
 extension XcodeProject {
-    func write() throws {
+    public func write() throws {
         let serialization = XcodeSerialization(project: self)
         let writeContent = try serialization.generateWriteContent()
         func w(with code: String, fileURL: URL) throws {
