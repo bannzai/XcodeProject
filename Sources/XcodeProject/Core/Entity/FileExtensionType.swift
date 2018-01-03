@@ -1,5 +1,5 @@
 //
-//  LastKnownFileType.swift
+//  FileExtensionType.swift
 //  xcp
 //
 //  Created by kingkong999yhirose on 2016/12/23.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum LastKnownFileType {
+enum FileExtensionType {
     case file(String)
     case sourceCode(String)
     
@@ -18,7 +18,7 @@ enum LastKnownFileType {
         }
         
         switch fileExtension {
-        case "xib", "storybaord":
+        case "xib", "storyboard":
             self = .file("file.\(fileExtension)")
         case "h", "m", "swift":
             self = .sourceCode("sourcecode.\(fileExtension)")
