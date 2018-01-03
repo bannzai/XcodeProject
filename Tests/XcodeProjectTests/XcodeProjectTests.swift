@@ -19,6 +19,15 @@ class XcodeProjectTests: XCTestCase {
     }
 }
 
+extension AllPBX {
+    var grouped: [String: [PBX.Object]] {
+        return self.dictionary
+            .values
+            .toArray()
+            .groupBy { $0.isa.rawValue }
+    }
+}
+
 extension XcodeProjectTests {
     func testRead() {
         do {

@@ -13,14 +13,6 @@ open class AllPBX {
     var dictionary: [String: PBX.Object] = [:]
     var fullFilePaths: PathType = [:]
     
-    lazy var grouped: [String: [PBX.Object]] = {
-        let values =  self.dictionary.values
-        return self.dictionary
-            .values
-            .toArray()
-            .groupBy { $0.isa.rawValue }
-    }()
-    
     func object<T: PBX.Object>(for key: String) -> T {
         guard let object = dictionary[key] as? T else {
             fatalError(assertionMessage(description: "wrong format is \(type(of: self)): \(key)"))
@@ -30,13 +22,6 @@ open class AllPBX {
     
     public func resetFullFilePaths(with project: PBX.Project) {
         fullFilePaths.removeAll()
-        
-        project.mainGroup.remakeFileRefs()
-        project.mainGroup.remakeSubGroups()
-        project.mainGroup.subGroups.forEach {
-            $0.remakeFileRefs()
-            $0.remakeSubGroups()
-        }
         
         createFileRefPath(with: project.mainGroup)
         createFileRefForSubGroupPath(with: project.mainGroup)
@@ -92,8 +77,8 @@ open class AllPBX {
                 default:
                     fatalError(
                         assertionMessage(description:
-                        "unexpected pattern",
-                            "reference.sourceTree: \(reference.sourceTree), id: \(reference.id)",
+                            "unexpected pattern",
+                                         "reference.sourceTree: \(reference.sourceTree), id: \(reference.id)",
                             "group.sourceTree: \(group.sourceTree), id: \(group.id)"
                         )
                     )
@@ -105,3 +90,4 @@ open class AllPBX {
         return prefix + "/" + path
     }
 }
+

@@ -87,7 +87,7 @@ open class /* prefix */ PBX {
     open class ContainerItem: Object {
         
     }
-   
+    
     open class ProjectItem: ContainerItem {
         
     }
@@ -97,10 +97,10 @@ open class /* prefix */ PBX {
     }
     
     open class Target: ProjectItem {
-        open fileprivate(set) lazy var buildConfigurationList: XC.ConfigurationList = self.extractObject(for: "buildConfigurationList")
-        open fileprivate(set) lazy var name: String = self.extractString(for: "name")
-        open fileprivate(set) lazy var productName: String = self.extractString(for:"productName")
-        open fileprivate(set) lazy var buildPhases: [BuildPhase] = self.extractObjects(for: "buildPhases")
+        open var buildConfigurationList: XC.ConfigurationList { return self.extractObject(for: "buildConfigurationList") }
+        open var name: String { return self.extractString(for: "name") }
+        open var productName: String { return self.extractString(for:"productName") }
+        open var buildPhases: [BuildPhase] { return self.extractObjects(for: "buildPhases") }
     }
     
     
@@ -108,13 +108,13 @@ open class /* prefix */ PBX {
 
 extension /* prefix */ PBX {
     open class Project: Object {
-        open fileprivate(set) lazy var developmentRegion: String = self.extractString(for: "developmentRegion")
-        open fileprivate(set) lazy var hasScannedForEncodings: Bool = self.extractBool(for: "hasScannedForEncodings")
-        open fileprivate(set) lazy var knownRegions: [String] = self.extractStrings(for: "knownRegions")
-        open fileprivate(set) lazy var targets: [PBX.NativeTarget] = self.extractObjects(for: "targets")
-        open fileprivate(set) lazy var mainGroup: PBX.Group = self.extractObject(for: "mainGroup")
-        open fileprivate(set) lazy var buildConfigurationList: XC.ConfigurationList = self.extractObject(for: "buildConfigurationList")
-        open fileprivate(set) lazy var attributes: PBXPair = self.extractPair(for: "attributes")
+        open var developmentRegion: String  { return self.extractString(for: "developmentRegion") }
+        open var hasScannedForEncodings: Bool { return self.extractBool(for: "hasScannedForEncodings") }
+        open var knownRegions: [String] { return self.extractStrings(for: "knownRegions") }
+        open var targets: [PBX.NativeTarget] { return self.extractObjects(for: "targets") }
+        open var mainGroup: PBX.Group { return self.extractObject(for: "mainGroup") }
+        open var buildConfigurationList: XC.ConfigurationList { return self.extractObject(for: "buildConfigurationList") }
+        open var attributes: PBXPair { return self.extractPair(for: "attributes") }
     }
     
     open class ContainerItemProxy: ContainerItem {
@@ -122,11 +122,11 @@ extension /* prefix */ PBX {
     }
     
     open class BuildFile: ProjectItem {
-        open lazy var fileRef: PBX.Reference = self.extractObject(for: "fileRef")
+        open var fileRef: PBX.Reference { return self.extractObject(for: "fileRef") }
     }
     
     open class CopyFilesBuildPhase: PBX.BuildPhase {
-        open fileprivate(set) lazy var name: String? = self.extractStringIfExists(for: "name")
+        open var name: String? { return self.extractStringIfExists(for: "name") }
     }
     
     open class FrameworksBuildPhase: PBX.BuildPhase {
@@ -142,8 +142,8 @@ extension /* prefix */ PBX {
     }
     
     open class ShellScriptBuildPhase: PBX.BuildPhase {
-        open fileprivate(set) lazy var name: String? = self.extractStringIfExists(for: "name")
-        open fileprivate(set) lazy var shellScript: String = self.extractString(for: "shellScript")
+        open var name: String? { return self.extractStringIfExists(for: "name") }
+        open var shellScript: String { return self.extractString(for: "shellScript") }
     }
     
     open class SourcesBuildPhase: PBX.BuildPhase {
@@ -169,19 +169,22 @@ extension /* prefix */ PBX {
     }
     
     open class Reference: ContainerItem {
-        open fileprivate(set) lazy var name: String? = self.extractStringIfExists(for: "name")
-        open fileprivate(set) lazy var path: String? = self.extractStringIfExists(for: "path")
-        open fileprivate(set) lazy var sourceTree: SourceTreeType = SourceTreeType(for: self.extractString(for: "sourceTree"))
+        open var name: String? { return self.extractStringIfExists(for: "name") }
+        open var path: String? { return self.extractStringIfExists(for: "path") }
+        open var sourceTree: SourceTreeType { return SourceTreeType(for: self.extractString(for: "sourceTree")) }
     }
     
     open class ReferenceProxy: Reference {
         // convenience accessor
-        open fileprivate(set) lazy var remoteRef: ContainerItemProxy = self.extractObject(for: "remoteRef")
+        open var remoteRef: ContainerItemProxy { return self.extractObject(for: "remoteRef") }
     }
     
     open class FileReference: Reference {
         // convenience accessor
-        open lazy var fullPath: PathComponent = self.generateFullPath()
+        open var fullPath: PathComponent {
+            return self.generateFullPath()
+        }
+        
         fileprivate func generateFullPath() -> PathComponent {
             guard let path = allPBX.fullFilePaths[self.id] else {
                 fatalError(assertionMessage(description:
@@ -203,16 +206,8 @@ extension /* prefix */ PBX {
         open var fullPath: String = ""
         
         // convenience accessor
-        open lazy var subGroups: [Group] = self.makeSubGroups()
-        open lazy var fileRefs: [PBX.FileReference] = self.makeFileRefs()
-        
-        func remakeSubGroups() {
-            subGroups = makeSubGroups()
-        }
-        
-        func remakeFileRefs() {
-            fileRefs = makeFileRefs()
-        }
+        open var subGroups: [Group] { return self.makeSubGroups() }
+        open var fileRefs: [PBX.FileReference] { return self.makeFileRefs() }
         
         func makeSubGroups() -> [Group] {
             return self.children.ofType(PBX.Group.self)
@@ -230,7 +225,7 @@ extension /* prefix */ PBX {
 }
 open class /* prefix */ XC {
     open class BuildConfiguration: PBX.BuildStyle {
-        open fileprivate(set) lazy var name: String = self.extractString(for: "name")
+        open var name: String { return self.extractString(for: "name") }
     }
     
     open class VersionGroup: PBX.Reference {
@@ -242,3 +237,4 @@ open class /* prefix */ XC {
     }
     
 }
+
