@@ -138,7 +138,9 @@ extension /* prefix */ PBX {
     }
     
     open class ResourcesBuildPhase: PBX.BuildPhase {
-        
+        override open var objectDictionary: PBXPair {
+            return PBXResourcesBuildPhaseTranslator().toPair(for: self)
+        }
     }
     
     open class ShellScriptBuildPhase: PBX.BuildPhase {
@@ -237,4 +239,5 @@ open class /* prefix */ XC {
     }
     
 }
+
 
