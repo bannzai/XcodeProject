@@ -65,7 +65,7 @@ extension XcodeProject {
             let pair: PBXPair = [
                 "isa": isa,
                 "fileEncoding": 4,
-                "lastKnownFileType": LastKnownFileType(fileName: fileName).value,
+                "lastKnownFileType": FileExtensionType(fileName: fileName).value,
                 "path": fileName,
                 "sourceTree": "<group>"
             ]
