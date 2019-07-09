@@ -10,6 +10,7 @@ import Foundation
 
 enum XcodeProjectError: Error {
     case notExistsProjectFile
-    case wrongFormatFile
+    case wrongFileFormat
+    case missingReadFile
 }
 

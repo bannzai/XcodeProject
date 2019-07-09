@@ -46,7 +46,7 @@ public enum ObjectType: String {
         return type(with: typeString)
     }
     
-    static func type(with type: ObjectType) -> PBX.Object.Type {
+    private static func type(with type: ObjectType) -> PBX.Object.Type {
         switch type {
         case PBXProject:
             return PBX.Project.self

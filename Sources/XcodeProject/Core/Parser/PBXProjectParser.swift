@@ -1,31 +1,16 @@
 //
-//  XcodeProjectRepository.swift
+//  PBXProjectParser.swift
 //  XcodeProject
 //
-//  Created by Yudai.Hirose on 2017/10/08.
+//  Created by Yudai Hirose on 2019/07/10.
 //
 
 import Foundation
 
-public protocol XcodeProjectRepository {
-    func fetchProjectName() -> String
-    func fetchXcodeProjectURL() -> URL
-    func fetchAllPBX() -> AllPBX
-    func fetchPBXProject() -> PBX.Project
-    
-    // temp:
-    func fetchAllPair() -> PBXPair
-}
-
-public struct XcodeProjectRepositoryImpl {
+public struct PBXProjectRawValue {
     let xcodeprojectUrl: URL
-    let allPBX = AllPBX()
     let allPair: PBXPair
-    var objectsPair: [String: PBXPair] {
-        let objectsPair = allPair["objects"] as! [String: PBXPair]
-        return objectsPair
-    }
-    
+
     init(xcodeprojectUrl: URL) throws {
         guard
             let propertyList = try? Data(contentsOf: xcodeprojectUrl)
@@ -44,37 +29,45 @@ public struct XcodeProjectRepositoryImpl {
         self.allPair = pair
         self.xcodeprojectUrl = xcodeprojectUrl
     }
-    
-
 }
 
-extension XcodeProjectRepositoryImpl: XcodeProjectRepository {
-    public func fetchProjectName() -> String {
-        guard let projectName = xcodeprojectUrl.pathComponents[xcodeprojectUrl.pathComponents.count - 2].components(separatedBy: ".").first else {
-            fatalError("No Xcode project found, please specify one")
+public protocol PBXProjectParser {
+    
+}
+
+public struct PBXProjectParserImpl: PBXProjectParser {
+    let raw: PBXProjectRawValue
+    var objects: [String: PBXPair] {
+        let objectsPair = raw.allPair["objects"] as! [String: PBXPair]
+        return objectsPair
+    }
+
+    func projectName() throws -> String {
+        guard let xcodeProjFile = raw
+                .xcodeprojectUrl
+                .pathComponents
+                .dropLast() // drop project.pbxproj
+                .last // get PROJECTNAME.xcodeproj
+            else {
+                throw XcodeProjectError.missingReadFile
         }
         
+        guard let projectName = xcodeProjFile.components(separatedBy: ".").first else {
+            throw XcodeProjectError.wrongFileFormat
+        }
+
         return projectName
     }
     
-    public func fetchXcodeProjectURL() -> URL {
-        return xcodeprojectUrl
-    }
-    
-    public func fetchAllPBX() -> AllPBX {
-        setupAllPBX()
-        return allPBX
-    }
-    
-    public func fetchPBXProject() -> PBX.Project {
+    func rootObject(with context: Context) -> PBX.Project {
         guard
-            let id = allPair["rootObject"] as? String,
-            let projectPair = objectsPair[id]
+            let id = raw.allPair["rootObject"] as? String,
+            let projectPair = objects[id]
             else {
                 fatalError(
                     assertionMessage(description:
-                        "unexpected for pair: \(allPair)",
-                        "and objectsPair: \(objectsPair)"
+                        "unexpected for pair: \(raw.allPair)",
+                        "and objectsPair: \(objects)"
                     )
                 )
         }
@@ -83,19 +76,13 @@ extension XcodeProjectRepositoryImpl: XcodeProjectRepository {
             id: id,
             dictionary: projectPair,
             isa: ObjectType.PBXProject.rawValue,
-            allPBX: allPBX
+            allPBX: context
         )
     }
     
-    // TODO: will delete function
-    public func fetchAllPair() -> PBXPair {
-        return allPair
-    }
-}
-
-private extension XcodeProjectRepositoryImpl {
-    func setupAllPBX() {
-        objectsPair
+    func context() -> Context {
+        let context = Context()
+        objects
             .forEach { (hashId, objectDictionary) in
                 guard
                     let isa = objectDictionary["isa"] as? String
@@ -109,16 +96,15 @@ private extension XcodeProjectRepositoryImpl {
                 }
                 
                 let pbxType = ObjectType.type(with: isa)
-                
                 let pbxObject = pbxType.init(
                     id: hashId,
                     dictionary: objectDictionary,
                     isa: isa,
-                    allPBX: allPBX
+                    allPBX: context
                 )
                 
-                allPBX.dictionary[hashId] = pbxObject
+                context.dictionary[hashId] = pbxObject
         }
+        return context
     }
-    
 }
