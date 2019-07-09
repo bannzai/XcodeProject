@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum Environment: String {
+public enum Environment: String, CaseIterable {
     case PROJECT_FILE_PATH
     case TARGET_NAME
     
@@ -17,17 +17,4 @@ public enum Environment: String {
     case SDKROOT
     case SOURCE_ROOT
     case SRCROOT
-    
-    public static var elements: [Environment] {
-        // all elements
-        return [
-            PROJECT_FILE_PATH,
-            TARGET_NAME,
-            BUILT_PRODUCTS_DIR,
-            DEVELOPER_DIR,
-            SDKROOT,
-            SOURCE_ROOT,
-            SRCROOT
-        ]
-    }
 }
