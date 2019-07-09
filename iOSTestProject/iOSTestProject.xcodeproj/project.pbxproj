@@ -35,6 +35,7 @@
 
 /* Begin PBXFileReference section */
 		33BD753222D4E09700092308 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
+		33BD753322D4E12600092308 /* Podfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; };
 		BA4268001F89EB7F001FA700 /* iOSTestProject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iOSTestProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BA4268031F89EB7F001FA700 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BA4268051F89EB7F001FA700 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -79,6 +80,7 @@
 			isa = PBXGroup;
 			children = (
 				33BD753222D4E09700092308 /* README.md */,
+				33BD753322D4E12600092308 /* Podfile */,
 				BA4268021F89EB7F001FA700 /* iOSTestProject */,
 				BA4268171F89EB7F001FA700 /* iOSTestProjectTests */,
 				BA4268221F89EB7F001FA700 /* iOSTestProjectUITests */,
