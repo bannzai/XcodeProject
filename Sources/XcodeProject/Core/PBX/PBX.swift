@@ -8,7 +8,7 @@
 
 import Foundation
 
-open class /* prefix */ PBX {
+public enum /* prefix */ PBX {
     // MARK: - Abstract
     open class Object {
         public let id: String
