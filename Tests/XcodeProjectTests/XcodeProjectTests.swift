@@ -56,8 +56,8 @@ extension XcodeProjectTests {
                 parser: try PBXProjectParser(xcodeprojectUrl: xcodeProjectUrl),
                 hashIDGenerator: PBXObjectHashIDGenerator()
             )
-            let serialization = XcodeSerialization(project: project)
-            let generateString = try serialization.generateWriteContent()
+            let serialization = XcodeProjectSerializer(project: project)
+            let generateString = try serialization.serialize()
             
             if originalContent != generateString {
                 XCTFail("unexception should same read and write content")
