@@ -9,8 +9,6 @@
 
 import Foundation
 
-public typealias PBXPair = [String: Any]
-
 open class XcodeProject {
     public let projectName: String
     public let pbxUrl: URL
