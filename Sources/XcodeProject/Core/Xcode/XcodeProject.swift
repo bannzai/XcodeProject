@@ -72,10 +72,10 @@ extension XcodeProject {
         return allPBX
             .dictionary
             .values
-            .flatMap {
+            .compactMap {
                 $0 as? PBX.Group
             }
-            .flatMap { group -> (PBX.Group, String) in
+            .compactMap { group -> (PBX.Group, String) in
                 let path = (projectRootPath + group.fullPath)
                     .components(separatedBy: "/")
                     .filter { !$0.isEmpty }
@@ -150,7 +150,7 @@ extension XcodeProject {
         guard let target = allPBX
             .dictionary
             .values
-            .flatMap ({ $0 as? PBX.NativeTarget })
+            .compactMap ({ $0 as? PBX.NativeTarget })
             .filter ({ $0.name == targetName })
             .first
             else {
@@ -167,7 +167,7 @@ extension XcodeProject {
     }
     
     private func appendSourceBuildPhase(with buildPhaseId: String, and buildFile: PBX.BuildFile, target: PBX.NativeTarget) {
-        let sourcesBuildPhase = target.buildPhases.flatMap { $0 as? PBX.SourcesBuildPhase }.first
+        let sourcesBuildPhase = target.buildPhases.compactMap { $0 as? PBX.SourcesBuildPhase }.first
         guard sourcesBuildPhase == nil else {
             // already exists
             sourcesBuildPhase?.files.append(buildFile)
@@ -193,7 +193,7 @@ extension XcodeProject {
     }
     
     private func appendResourceBuildPhase(with buildPhaseId: String, and buildFile: PBX.BuildFile, target: PBX.NativeTarget) {
-        let builPhase = target.buildPhases.flatMap { $0 as? PBX.ResourcesBuildPhase }.first
+        let builPhase = target.buildPhases.compactMap { $0 as? PBX.ResourcesBuildPhase }.first
         guard builPhase == nil else {
             // already exists
             builPhase?.files.append(buildFile)

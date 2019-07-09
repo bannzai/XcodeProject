@@ -9,7 +9,7 @@ import Foundation
 
 extension Array {
     func ofType<T>(_ type: T.Type) -> [T] {
-        return self.flatMap { $0 as? T }
+        return self.compactMap { $0 as? T }
     }
 }
 

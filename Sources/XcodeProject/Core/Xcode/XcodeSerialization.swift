@@ -32,7 +32,7 @@ public class XcodeSerialization {
     fileprivate lazy var buildPhaseByFileId: [String: PBX.BuildPhase] = {
         let buildPhases = self.project.allPBX.dictionary
             .values
-            .flatMap { $0 as? PBX.BuildPhase }
+            .compactMap { $0 as? PBX.BuildPhase }
         
         var dictionary: [String: PBX.BuildPhase] = [:]
         buildPhases.forEach { buildPhase in
@@ -79,7 +79,7 @@ extension XcodeSerialization {
         }
         
         let noEscapeRegex = try NSRegularExpression(pattern: "^[a-z0-9_\\.\\/]+$", options: NSRegularExpression.Options.caseInsensitive)
-        if noEscapeRegex.firstMatch(in: str, options: [], range: NSRange(location: 0, length: str.characters.count)) == nil {
+        if noEscapeRegex.firstMatch(in: str, options: [], range: NSRange(location: 0, length: str.count)) == nil {
             return "\"\(str)\""
         }
         return str
@@ -183,7 +183,7 @@ extension XcodeSerialization {
             let top = isMultiline ? indentClosure(isMultiline ? level + 1 : 0) : ""
             let content = pair
                 .sorted { $0.0 < $1.0 }
-                .flatMap { key, value in
+                .compactMap { key, value in
                     return top + pairString(for: (key, value), with: isa, and: level + 1)
                 }
                 .joined(separator: (isMultiline ? newLine: ""))
@@ -215,7 +215,7 @@ extension XcodeSerialization {
                 let isaValue = "isa = \(isa.rawValue);" + isaSpace
                 let objectPair = object.objectDictionary
                     .sorted { $0.0 < $1.0 }
-                    .flatMap { (key: String, value: Any) -> String? in
+                    .compactMap { (key: String, value: Any) -> String? in
                         if key == "isa" {
                             // skip
                             return nil
