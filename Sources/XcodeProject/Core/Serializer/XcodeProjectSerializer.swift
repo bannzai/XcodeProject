@@ -8,7 +8,7 @@
 import Foundation
 
 public protocol Serializer {
-    
+    func serialize() throws -> String
 }
 
 fileprivate let indent = "\t"
@@ -246,6 +246,10 @@ extension XcodeProjectSerializer {
         
         let endSection = "/* End \(isa.rawValue) section */"
         return beginSection + newLine + eachObjectPairContent + newLine + endSection + newLine
+    }
+    
+    public func serialize() throws -> String {
+        return try generateWriteContent()
     }
     
     public func generateWriteContent() throws -> String {

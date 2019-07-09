@@ -17,6 +17,8 @@ open class XcodeProject {
     public let fullPair: PBXPair
     
     private let hashIDGenerator: StringGenerator
+    private let serializer: XcodeProjectSerializer
+    private let fileWriter: FileWriter
 
     public init(
         projectName: String,
@@ -25,7 +27,9 @@ open class XcodeProject {
         project: PBX.Project,
         fullPair: PBXPair,
         
-        hashIDGenerator: StringGenerator
+        hashIDGenerator: StringGenerator,
+        serializer: XcodeProjectSerializer,
+        fileWriter: FileWriter
         ) {
         self.projectName = projectName
         self.pbxUrl = pbxUrl
@@ -34,6 +38,8 @@ open class XcodeProject {
         self.fullPair = fullPair
         
         self.hashIDGenerator = hashIDGenerator
+        self.serializer = serializer
+        self.fileWriter = fileWriter
     }
 }
 
@@ -242,14 +248,10 @@ extension XcodeProject {
 
 extension XcodeProject {
     public func write() throws {
-        let serialization = XcodeSerialization(project: self)
-        let writeContent = try serialization.generateWriteContent()
-        func w(with code: String, fileURL: URL) throws {
-            try code.write(to: fileURL, atomically: true, encoding: String.Encoding.utf8)
-        }
-        
-        let writeUrl = pbxUrl
-        try w(with: writeContent, fileURL: writeUrl)
+        try fileWriter.write(
+            content: try serializer.serialize(),
+            destinationURL: pbxUrl
+        )
     }
 }
 
