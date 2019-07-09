@@ -59,7 +59,7 @@ public struct XcodeProjectSerializer: Serializer {
     
     let project: XcodeProject
     
-    init(project: XcodeProject) {
+    public init(project: XcodeProject) {
         self.project = project
     }
     

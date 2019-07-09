@@ -12,6 +12,7 @@ public protocol StringGenerator {
 }
 
 public struct PBXObjectHashIDGenerator: StringGenerator {
+    public init() { }
     public func generate() -> String {
         let all = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".toArray().map { String($0) }
         var result: String = ""

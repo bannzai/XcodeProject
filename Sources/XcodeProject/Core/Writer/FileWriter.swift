@@ -12,6 +12,7 @@ public protocol Writer {
 }
 
 public struct FileWriter: Writer {
+    public init() { }
     public func write(content: String, destinationURL: URL) throws {
         try content.write(
             to: destinationURL,

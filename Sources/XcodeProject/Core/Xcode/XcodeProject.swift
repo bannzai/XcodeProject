@@ -18,19 +18,13 @@ open class XcodeProject {
     
     private let parser: Parser
     private let hashIDGenerator: StringGenerator
-    private let serializer: XcodeProjectSerializer
-    private let fileWriter: FileWriter
 
     public init(
         parser: Parser,
-        hashIDGenerator: StringGenerator,
-        serializer: XcodeProjectSerializer,
-        fileWriter: FileWriter
+        hashIDGenerator: StringGenerator
         ) {
         self.parser = parser
         self.hashIDGenerator = hashIDGenerator
-        self.serializer = serializer
-        self.fileWriter = fileWriter
     }
 }
 
@@ -236,14 +230,3 @@ extension XcodeProject {
         appendBuildPhase(with: buildPhaseId, and: buildFile, for: targetName, fileName: fileName)
     }
 }
-
-extension XcodeProject {
-    public func write() throws {
-        try fileWriter.write(
-            content: try serializer.serialize(),
-            destinationURL: pbxUrl
-        )
-    }
-}
-
-
