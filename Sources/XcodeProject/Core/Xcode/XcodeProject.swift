@@ -16,14 +16,12 @@ open class XcodeProject {
     public let projectName: String
     public let allPBX: AllPBX
     public let project: PBX.Project
-    public let pbxUrl: URL
     public let fullPair: PBXPair
     
     public init(repository: XcodeProjectRepository) {
         projectName = repository.fetchProjectName()
         allPBX = repository.fetchAllPBX()
         project = repository.fetchPBXProject()
-        pbxUrl = repository.fetchXcodeProjectURL()
         fullPair = repository.fetchAllPair()
         
         allPBX.resetFullFilePaths(with: project)

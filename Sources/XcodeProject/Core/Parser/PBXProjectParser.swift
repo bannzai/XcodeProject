@@ -7,10 +7,22 @@
 
 import Foundation
 
-public struct PBXProjectRawValue {
-    let xcodeprojectUrl: URL
-    let allPair: PBXPair
+protocol PBXProjectParser {
+    func pair() -> PBXPair
+    func projectURL() -> URL
+    func projectName() -> String
+    func rootObject(with context: Context) -> PBX.Project
+    func context() -> Context
+}
 
+struct PBXProjectParserImpl {
+    private let xcodeprojectUrl: URL
+    private let allPair: PBXPair
+    private var objects: [String: PBXPair] {
+        let objectsPair = allPair["objects"] as! [String: PBXPair]
+        return objectsPair
+    }
+    
     init(xcodeprojectUrl: URL) throws {
         guard
             let propertyList = try? Data(contentsOf: xcodeprojectUrl)
@@ -31,29 +43,25 @@ public struct PBXProjectRawValue {
     }
 }
 
-public protocol PBXProjectParser {
-    
-}
-
-public struct PBXProjectParserImpl: PBXProjectParser {
-    let raw: PBXProjectRawValue
-    var objects: [String: PBXPair] {
-        let objectsPair = raw.allPair["objects"] as! [String: PBXPair]
-        return objectsPair
+extension PBXProjectParserImpl: PBXProjectParser {
+    func pair() -> PBXPair {
+        return allPair
     }
-
-    func projectName() throws -> String {
-        guard let xcodeProjFile = raw
-                .xcodeprojectUrl
+    
+    func projectURL() -> URL {
+        return xcodeprojectUrl
+    }
+    func projectName() -> String {
+        guard let xcodeProjFile = xcodeprojectUrl
                 .pathComponents
                 .dropLast() // drop project.pbxproj
                 .last // get PROJECTNAME.xcodeproj
             else {
-                throw XcodeProjectError.missingReadFile
+                fatalError("No Xcode project found from \(xcodeprojectUrl.absoluteString), please specify one")
         }
         
         guard let projectName = xcodeProjFile.components(separatedBy: ".").first else {
-            throw XcodeProjectError.wrongFileFormat
+            fatalError("Can not get project name from \(xcodeProjFile)")
         }
 
         return projectName
@@ -61,12 +69,12 @@ public struct PBXProjectParserImpl: PBXProjectParser {
     
     func rootObject(with context: Context) -> PBX.Project {
         guard
-            let id = raw.allPair["rootObject"] as? String,
+            let id = allPair["rootObject"] as? String,
             let projectPair = objects[id]
             else {
                 fatalError(
                     assertionMessage(description:
-                        "unexpected for pair: \(raw.allPair)",
+                        "unexpected for pair: \(allPair)",
                         "and objectsPair: \(objects)"
                     )
                 )
