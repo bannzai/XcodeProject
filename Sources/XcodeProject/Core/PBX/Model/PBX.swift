@@ -8,33 +8,8 @@
 
 import Foundation
 
-public enum /* prefix */ PBX {
-
-    open class Container : Object {
-        
-    }
-    
-    open class ContainerItem: Object {
-        
-    }
-    
-    open class ProjectItem: ContainerItem {
-        
-    }
-    
-    open class BuildPhase: ProjectItem {
-        open lazy var files: [BuildFile] = self.extractObjects(for: "files")
-    }
-    
-    open class Target: ProjectItem {
-        open var buildConfigurationList: XC.ConfigurationList { return self.extractObject(for: "buildConfigurationList") }
-        open var name: String { return self.extractString(for: "name") }
-        open var productName: String { return self.extractString(for:"productName") }
-        open var buildPhases: [BuildPhase] { return self.extractObjects(for: "buildPhases") }
-    }
-    
-    
-}
+// MARK: - Name space
+public enum /* prefix */ PBX { }
 
 extension /* prefix */ PBX {
     open class Project: Object {
@@ -155,19 +130,3 @@ extension /* prefix */ PBX {
     }
     
 }
-open class /* prefix */ XC {
-    open class BuildConfiguration: PBX.BuildStyle {
-        open var name: String { return self.extractString(for: "name") }
-    }
-    
-    open class VersionGroup: PBX.Reference {
-        
-    }
-    
-    open class ConfigurationList: PBX.ProjectItem {
-        
-    }
-    
-}
-
-
