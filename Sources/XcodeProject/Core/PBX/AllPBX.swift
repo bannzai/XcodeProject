@@ -74,14 +74,6 @@ open class AllPBX {
                     fullFilePaths[reference.id] = .simple(path)
                 case (.folder(let environment), _):
                     fullFilePaths[reference.id] = .environmentPath(environment, generatePath(with: prefix, path: path))
-                default:
-                    fatalError(
-                        assertionMessage(description:
-                            "unexpected pattern",
-                                         "reference.sourceTree: \(reference.sourceTree), id: \(reference.id)",
-                            "group.sourceTree: \(group.sourceTree), id: \(group.id)"
-                        )
-                    )
                 }
         }
     }
