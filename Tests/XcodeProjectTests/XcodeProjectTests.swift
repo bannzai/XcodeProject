@@ -2,10 +2,6 @@ import XCTest
 @testable import XcodeProject
 
 class XcodeProjectTests: XCTestCase {
-    static var allTests = [
-        ("testReadToWriteEqualToSameContent", testReadToWriteEqualToSameContent),
-    ]
-    
     private var xcodeProjectUrl: URL {
         guard
             let testPath = ProcessInfo().environment["PBXProjectPath"],
@@ -29,22 +25,19 @@ extension Context {
 }
 
 extension XcodeProjectTests {
-    func testRead() {
+    func testParse() {
         do {
-            let project = XcodeProject(
-                parser: try PBXProjectParser(xcodeprojectUrl: xcodeProjectUrl),
-                hashIDGenerator: PBXObjectHashIDGenerator()
-            )
-            XCTAssert(project.allPBX.dictionary.count == 56)
-            XCTAssert(project.allPBX.fullFilePaths.count == 13)
-            XCTAssert(project.allPBX.grouped.count == 13)
-            XCTAssert(project.fullPair.count == 5)
+            let parser = try PBXProjectParser(xcodeprojectUrl: xcodeProjectUrl)
+            XCTAssert(parser.context().dictionary.count == 58)
+            XCTAssert(parser.context().fullFilePaths.count == 15)
+            XCTAssert(parser.context().grouped.count == 13)
+            XCTAssert(parser.pair().count == 5)
         } catch {
             XCTFail(error.localizedDescription)
         }
     }
     
-    func testReadToWriteEqualToSameContent() {
+    func testSerialize() {
         do {
             let originalContent = try String(contentsOf: xcodeProjectUrl, encoding: String.Encoding.utf8)
             

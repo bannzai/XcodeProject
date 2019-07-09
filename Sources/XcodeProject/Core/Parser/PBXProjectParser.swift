@@ -15,6 +15,7 @@ public protocol Parser {
     func context() -> Context
 }
 
+fileprivate var cachedContext: Context?
 public struct PBXProjectParser {
     private let xcodeprojectUrl: URL
     private let allPair: PBXPair
@@ -22,7 +23,7 @@ public struct PBXProjectParser {
         let objectsPair = allPair["objects"] as! [String: PBXPair]
         return objectsPair
     }
-    
+
     init(xcodeprojectUrl: URL) throws {
         guard
             let propertyList = try? Data(contentsOf: xcodeprojectUrl)
@@ -89,7 +90,14 @@ extension PBXProjectParser: Parser {
     }
     
     public func context() -> Context {
+        if let context = cachedContext {
+            return context
+        }
+        
         let context = Context()
+        defer {
+            cachedContext = context
+        }
         objects
             .forEach { (hashId, objectDictionary) in
                 guard
@@ -113,6 +121,7 @@ extension PBXProjectParser: Parser {
                 
                 context.dictionary[hashId] = pbxObject
         }
+        context.resetFullFilePaths(with: rootObject(with: context))
         return context
     }
 }
