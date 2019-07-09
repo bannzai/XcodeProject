@@ -12,24 +12,24 @@ import Foundation
 public typealias PBXPair = [String: Any]
 
 open class XcodeProject {
-    
     public let projectName: String
+    public let pbxUrl: URL
     public let allPBX: AllPBX
     public let project: PBX.Project
     public let fullPair: PBXPair
-    
-    public init(repository: XcodeProjectRepository) {
-        projectName = repository.fetchProjectName()
-        allPBX = repository.fetchAllPBX()
-        project = repository.fetchPBXProject()
-        fullPair = repository.fetchAllPair()
-        
-        allPBX.resetFullFilePaths(with: project)
-    }
-    
-    public convenience init(for pbxUrl: URL) throws {
-        let repository = try XcodeProjectRepositoryImpl(xcodeprojectUrl: pbxUrl)
-        self.init(repository: repository)
+
+    public init(
+        projectName: String,
+        pbxUrl: URL,
+        allPBX: AllPBX,
+        project: PBX.Project,
+        fullPair: PBXPair
+        ) {
+        self.projectName = projectName
+        self.pbxUrl = pbxUrl
+        self.allPBX = allPBX
+        self.project = project
+        self.fullPair = fullPair
     }
 }
 
