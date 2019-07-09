@@ -10,11 +10,11 @@
 import Foundation
 
 open class XcodeProject {
-    public private(set) lazy var  projectName: String = parser.projectName()
-    public private(set) lazy var  pbxUrl: URL = parser.projectURL()
-    public private(set) lazy var  allPBX: Context = parser.context()
-    public private(set) lazy var  project: PBX.Project = parser.rootObject(with: allPBX)
-    public private(set) lazy var  fullPair: PBXPair = parser.pair()
+    public private(set) lazy var projectName: String = parser.projectName()
+    public private(set) lazy var pbxUrl: URL = parser.projectURL()
+    public private(set) lazy var allPBX: Context = parser.context()
+    public private(set) lazy var project: PBX.Project = parser.rootObject(with: allPBX)
+    public private(set) lazy var fullPair: PBXPair = parser.pair()
     
     private let parser: Parser
     private let hashIDGenerator: StringGenerator
