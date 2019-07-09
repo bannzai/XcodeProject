@@ -9,7 +9,7 @@
 import Foundation
 
 enum LastKnownFileType {
-    case file(String)
+    case resourceFile(String)
     case sourceCode(String)
     
     init(fileName: String) {
@@ -19,7 +19,7 @@ enum LastKnownFileType {
         
         switch fileExtension {
         case "xib", "storyboard":
-            self = .file("file.\(fileExtension)")
+            self = .resourceFile("file.\(fileExtension)")
         case "h", "m", "swift":
             self = .sourceCode("sourcecode.\(fileExtension)")
         default:
@@ -29,7 +29,7 @@ enum LastKnownFileType {
     
     var value: String {
         switch self {
-        case .file(let string):
+        case .resourceFile(let string):
             return string
         case .sourceCode(let string):
             return string

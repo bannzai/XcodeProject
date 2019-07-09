@@ -159,7 +159,7 @@ extension XcodeProject {
         
         let lastKnownType = LastKnownFileType(fileName: fileName)
         switch lastKnownType {
-        case .file:
+        case .resourceFile:
             appendResourceBuildPhase(with: buildPhaseId, and: buildFile, target: target)
         case .sourceCode:
             appendSourceBuildPhase(with: buildPhaseId, and: buildFile, target: target)
