@@ -9,77 +9,7 @@
 import Foundation
 
 public enum /* prefix */ PBX {
-    // MARK: - Abstract
-    open class Object {
-        public let id: String
-        public let dictionary: PBXPair
-        public let isa: ObjectType
-        public let allPBX: Context
-        
-        // FIXME:
-        open var objectDictionary: PBXPair {
-            return dictionary
-        }
-        
-        public required init(
-            id: String,
-            dictionary: PBXPair,
-            isa: String,
-            allPBX: Context
-            ) {
-            self.id = id
-            self.dictionary = dictionary
-            self.isa = ObjectType(for: isa)
-            self.allPBX = allPBX
-        }
-        
-        fileprivate func extractStringIfExists(for key: String) -> String? {
-            return dictionary[key] as? String
-        }
-        
-        fileprivate func extractString(for key: String) -> String {
-            guard let value = extractStringIfExists(for: key) else {
-                fatalError(assertionMessage(description: "wrong format is type: \(type(of: self)), key: \(key), id: \(id)"))
-            }
-            return value
-        }
-        
-        fileprivate func extractStrings(for key: String) -> [String] {
-            guard let value = dictionary[key] as? [String] else {
-                fatalError(assertionMessage(description: "wrong format is type: \(type(of: self)), key: \(key), id: \(id)"))
-            }
-            return value
-        }
-        
-        fileprivate func extractBool(for key: String) -> Bool {
-            let boolString: String = extractString(for: key)
-            
-            switch boolString {
-            case "0":
-                return false
-            case "1":
-                return true
-            default:
-                fatalError(assertionMessage(description: "unknown bool string: \(boolString)"))
-                
-            }
-        }
-        
-        fileprivate func extractObject<T: PBX.Object>(for key: String) -> T {
-            let objectKey = extractString(for: key)
-            return allPBX.object(for: objectKey)
-        }
-        
-        fileprivate func extractObjects<T: PBX.Object>(for key: String) -> [T] {
-            let objectKeys = extractStrings(for: key)
-            return objectKeys.map(allPBX.object)
-        }
-        
-        fileprivate func extractPair(for key: String) -> PBXPair {
-            return dictionary[key] as! PBXPair
-        }
-    }
-    
+
     open class Container : Object {
         
     }
