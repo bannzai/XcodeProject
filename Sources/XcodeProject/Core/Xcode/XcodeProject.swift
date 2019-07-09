@@ -15,33 +15,30 @@ open class XcodeProject {
     public let allPBX: Context
     public let project: PBX.Project
     public let fullPair: PBXPair
+    
+    private let hashIDGenerator: StringGenerator
 
     public init(
         projectName: String,
         pbxUrl: URL,
         allPBX: Context,
         project: PBX.Project,
-        fullPair: PBXPair
+        fullPair: PBXPair,
+        
+        hashIDGenerator: StringGenerator
         ) {
         self.projectName = projectName
         self.pbxUrl = pbxUrl
         self.allPBX = allPBX
         self.project = project
         self.fullPair = fullPair
+        
+        self.hashIDGenerator = hashIDGenerator
     }
 }
 
 // MARK: - Append
 extension XcodeProject {
-    private func generateHashId() -> String {
-        let all = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".toArray().map { String($0) }
-        var result: String = ""
-        for _ in 0..<24 {
-            result += all[Int(arc4random_uniform(UInt32(all.count)))]
-        }
-        return result
-    }
-    
     fileprivate func appendFileRef(_ fileName: String, and fileRefId: String) {
         let fileRef: PBX.FileReference
         
@@ -111,7 +108,7 @@ extension XcodeProject {
                 "sourceTree": "<group>"
             ]
             
-            let uuid = generateHashId()
+            let uuid = hashIDGenerator.generate()
             let group = PBX.Group(
                 id: uuid,
                 dictionary: pair,
@@ -227,7 +224,7 @@ extension XcodeProject {
                 fatalError(assertionMessage(description: "unexpected get file name for append"))
         }
         
-        let fileRefId = generateHashId()
+        let fileRefId = hashIDGenerator.generate()
         appendFileRef(fileName, and: fileRefId)
         
         allPBX.resetFullFilePaths(with: project)
@@ -235,10 +232,10 @@ extension XcodeProject {
         let groupEachPaths = makeGroupEachPaths(for: projectRootPath)
         appendGroupIfNeeded(with: groupEachPaths, childId: fileRefId, groupPathNames: groupPathNames)
         
-        let buildFileId = generateHashId()
+        let buildFileId = hashIDGenerator.generate()
         let buildFile = makeBuildFile(for: buildFileId, and: fileRefId)
         
-        let buildPhaseId = generateHashId()
+        let buildPhaseId = hashIDGenerator.generate()
         appendBuildPhase(with: buildPhaseId, and: buildFile, for: targetName, fileName: fileName)
     }
 }
