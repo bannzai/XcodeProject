@@ -32,7 +32,7 @@ public struct XcodeProjectSerializer: Serializer {
         }
     }
     
-    fileprivate lazy var buildPhaseByFileId: [String: PBX.BuildPhase] = {
+    fileprivate func buildPhaseByFileId() -> [String: PBX.BuildPhase]  {
         let buildPhases = self.project.allPBX.dictionary
             .values
             .compactMap { $0 as? PBX.BuildPhase }
@@ -45,17 +45,17 @@ public struct XcodeProjectSerializer: Serializer {
         }
         
         return dictionary
-    }()
+    }
     
     
-    fileprivate lazy var targetsByConfigId: [String: PBX.NativeTarget] = {
+    fileprivate func targetsByConfigId() -> [String: PBX.NativeTarget] {
         var dictionary: [String: PBX.NativeTarget] = [:]
         for target in self.project.project.targets {
             dictionary[target.buildConfigurationList.id] = target
         }
         
         return dictionary
-    }()
+    }
     
     let project: XcodeProject
     
@@ -64,7 +64,7 @@ public struct XcodeProjectSerializer: Serializer {
     }
     
 }
-extension XcodeSerialization {
+extension XcodeProjectSerializer {
     func escapeIfNeeded(with target: String) throws -> String {
         let regexes = [
             "\\\\": try! NSRegularExpression(pattern: "\\\\", options: []),
@@ -124,13 +124,13 @@ extension XcodeSerialization {
             return "PBXContainerItemProxy"
         case is PBX.TargetDependency:
             return "PBXTargetDependency"
-        case let o as PBX.BuildFile where buildPhaseByFileId[hashId] != nil:
-            let buildPhase = buildPhaseByFileId[hashId]!
+        case let o as PBX.BuildFile where buildPhaseByFileId()[hashId] != nil:
+            let buildPhase = buildPhaseByFileId()[hashId]!
             let group = commentValue(for: buildPhase.id)
             let fileRef = commentValue(for: o.fileRef.id)
             return  "\(fileRef) in \(group)"
-        case is XC.ConfigurationList where targetsByConfigId[hashId] != nil:
-            let target = targetsByConfigId[hashId]!
+        case is XC.ConfigurationList where targetsByConfigId()[hashId] != nil:
+            let target = targetsByConfigId()[hashId]!
             return "Build configuration list for \(target.isa) \"\(target.name)\""
         case is XC.ConfigurationList:
             return "Build configuration list for PBXProject \"\(project.projectName)\""
