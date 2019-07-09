@@ -8,8 +8,7 @@
 
 import Foundation
 
-public typealias Context = AllPBX
-open class AllPBX {
+open class Context {
     typealias PathType = [String: PathComponent]
     var dictionary: [String: PBX.Object] = [:]
     var fullFilePaths: PathType = [:]

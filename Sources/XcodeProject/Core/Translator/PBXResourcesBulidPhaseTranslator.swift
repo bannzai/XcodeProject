@@ -11,7 +11,7 @@ public struct PBXResourcesBuildPhaseTranslator: Translator {
     typealias Object = PBX.ResourcesBuildPhase
     typealias PairType = PBXPair
     
-    func fromPair(with pairType: PairType, allPBX: AllPBX) -> Object {
+    func fromPair(with pairType: PairType, allPBX: Context) -> Object {
         // TODO:
         fatalError("undefined")
     }

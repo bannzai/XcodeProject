@@ -19,7 +19,7 @@ class XcodeProjectTests: XCTestCase {
     }
 }
 
-extension AllPBX {
+extension Context {
     var grouped: [String: [PBX.Object]] {
         return self.dictionary
             .values

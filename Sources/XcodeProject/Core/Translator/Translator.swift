@@ -12,6 +12,6 @@ protocol Translator {
     associatedtype Object
     associatedtype PairType
     
-    func fromPair(with pairType: PairType, allPBX: AllPBX) -> Object
+    func fromPair(with pairType: PairType, allPBX: Context) -> Object
     func toPair(for object: Object) -> PairType
 }

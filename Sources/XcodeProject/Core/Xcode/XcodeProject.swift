@@ -14,14 +14,14 @@ public typealias PBXPair = [String: Any]
 open class XcodeProject {
     public let projectName: String
     public let pbxUrl: URL
-    public let allPBX: AllPBX
+    public let allPBX: Context
     public let project: PBX.Project
     public let fullPair: PBXPair
 
     public init(
         projectName: String,
         pbxUrl: URL,
-        allPBX: AllPBX,
+        allPBX: Context,
         project: PBX.Project,
         fullPair: PBXPair
         ) {

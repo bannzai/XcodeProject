@@ -14,7 +14,7 @@ open class /* prefix */ PBX {
         public let id: String
         public let dictionary: PBXPair
         public let isa: ObjectType
-        public let allPBX: AllPBX
+        public let allPBX: Context
         
         // FIXME:
         open var objectDictionary: PBXPair {
@@ -25,7 +25,7 @@ open class /* prefix */ PBX {
             id: String,
             dictionary: PBXPair,
             isa: String,
-            allPBX: AllPBX
+            allPBX: Context
             ) {
             self.id = id
             self.dictionary = dictionary
