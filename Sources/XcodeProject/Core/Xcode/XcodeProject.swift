@@ -10,33 +10,24 @@
 import Foundation
 
 open class XcodeProject {
-    public let projectName: String
-    public let pbxUrl: URL
-    public let allPBX: Context
-    public let project: PBX.Project
-    public let fullPair: PBXPair
+    public private(set) lazy var  projectName: String = parser.projectName()
+    public private(set) lazy var  pbxUrl: URL = parser.projectURL()
+    public private(set) lazy var  allPBX: Context = parser.context()
+    public private(set) lazy var  project: PBX.Project = parser.rootObject(with: allPBX)
+    public private(set) lazy var  fullPair: PBXPair = parser.pair()
     
+    private let parser: Parser
     private let hashIDGenerator: StringGenerator
     private let serializer: XcodeProjectSerializer
     private let fileWriter: FileWriter
 
     public init(
-        projectName: String,
-        pbxUrl: URL,
-        allPBX: Context,
-        project: PBX.Project,
-        fullPair: PBXPair,
-        
+        parser: Parser,
         hashIDGenerator: StringGenerator,
         serializer: XcodeProjectSerializer,
         fileWriter: FileWriter
         ) {
-        self.projectName = projectName
-        self.pbxUrl = pbxUrl
-        self.allPBX = allPBX
-        self.project = project
-        self.fullPair = fullPair
-        
+        self.parser = parser
         self.hashIDGenerator = hashIDGenerator
         self.serializer = serializer
         self.fileWriter = fileWriter

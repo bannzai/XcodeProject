@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol PBXProjectParser {
+public protocol Parser {
     func pair() -> PBXPair
     func projectURL() -> URL
     func projectName() -> String
@@ -15,7 +15,7 @@ protocol PBXProjectParser {
     func context() -> Context
 }
 
-struct PBXProjectParserImpl {
+public struct PBXProjectParser {
     private let xcodeprojectUrl: URL
     private let allPair: PBXPair
     private var objects: [String: PBXPair] {
@@ -43,15 +43,15 @@ struct PBXProjectParserImpl {
     }
 }
 
-extension PBXProjectParserImpl: PBXProjectParser {
-    func pair() -> PBXPair {
+extension PBXProjectParser: Parser {
+    public func pair() -> PBXPair {
         return allPair
     }
     
-    func projectURL() -> URL {
+    public func projectURL() -> URL {
         return xcodeprojectUrl
     }
-    func projectName() -> String {
+    public func projectName() -> String {
         guard let xcodeProjFile = xcodeprojectUrl
                 .pathComponents
                 .dropLast() // drop project.pbxproj
@@ -67,7 +67,7 @@ extension PBXProjectParserImpl: PBXProjectParser {
         return projectName
     }
     
-    func rootObject(with context: Context) -> PBX.Project {
+    public func rootObject(with context: Context) -> PBX.Project {
         guard
             let id = allPair["rootObject"] as? String,
             let projectPair = objects[id]
@@ -88,7 +88,7 @@ extension PBXProjectParserImpl: PBXProjectParser {
         )
     }
     
-    func context() -> Context {
+    public func context() -> Context {
         let context = Context()
         objects
             .forEach { (hashId, objectDictionary) in
