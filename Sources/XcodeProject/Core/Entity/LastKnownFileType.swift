@@ -8,9 +8,9 @@
 
 import Foundation
 
-enum LastKnownFileType {
-    case resourceFile(String)
-    case sourceCode(String)
+struct LastKnownFile {
+    let type: LastKnownFileType
+    let value: String
     
     init(fileName: String) {
         guard let fileExtension = fileName.components(separatedBy: ".").last else {
@@ -19,21 +19,28 @@ enum LastKnownFileType {
         
         switch fileExtension {
         case "xib", "storyboard":
-            self = .resourceFile("file.\(fileExtension)")
-        case "h", "m", "swift":
-            self = .sourceCode("sourcecode.\(fileExtension)")
+            self.type = .resourceFile
+            self.value = "file.\(fileExtension)"
+        case "h", "m":
+            self.type = .sourceCode
+            self.value = "sourcecode.\(fileExtension).objc"
+        case "swift":
+            self.type = .sourceCode
+            self.value = "sourcecode.\(fileExtension)"
+        case "md":
+            self.type = .markdown
+            self.value = "net.daringfireball.markdown"
         default:
-            fatalError(assertionMessage(description: "unknown fileExtension type"))
+            self.type = .text
+            self.value = "text"
         }
     }
-    
-    var value: String {
-        switch self {
-        case .resourceFile(let string):
-            return string
-        case .sourceCode(let string):
-            return string
-        }
-    }
+}
+
+enum LastKnownFileType {
+    case resourceFile
+    case sourceCode
+    case markdown
+    case text
 }
     

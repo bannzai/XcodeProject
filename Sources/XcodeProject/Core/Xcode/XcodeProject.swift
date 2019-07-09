@@ -53,7 +53,7 @@ extension XcodeProject {
         let pair: PBXPair = [
             "isa": isa,
             "fileEncoding": 4,
-            "lastKnownFileType": LastKnownFileType(fileName: fileName).value,
+            "lastKnownFileType": LastKnownFile(fileName: fileName).value,
             "path": fileName,
             "sourceTree": "<group>"
         ]
@@ -157,9 +157,9 @@ extension XcodeProject {
                 fatalError(assertionMessage(description: "Unexpected target name \(targetName)"))
         }
         
-        let lastKnownType = LastKnownFileType(fileName: fileName)
-        switch lastKnownType {
-        case .resourceFile:
+        let lastKnownType = LastKnownFile(fileName: fileName)
+        switch lastKnownType.type {
+        case .resourceFile, .markdown, .text:
             appendResourceBuildPhase(with: buildPhaseId, and: buildFile, target: target)
         case .sourceCode:
             appendSourceBuildPhase(with: buildPhaseId, and: buildFile, target: target)
