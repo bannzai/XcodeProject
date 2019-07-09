@@ -13,11 +13,11 @@ public typealias PBXPair = [String: Any]
 
 open class XcodeProject {
     
-    open let projectName: String
-    open let allPBX: AllPBX
-    open let project: PBX.Project
-    open let pbxUrl: URL
-    open let fullPair: PBXPair
+    public let projectName: String
+    public let allPBX: AllPBX
+    public let project: PBX.Project
+    public let pbxUrl: URL
+    public let fullPair: PBXPair
     
     public init(repository: XcodeProjectRepository) {
         projectName = repository.fetchProjectName()

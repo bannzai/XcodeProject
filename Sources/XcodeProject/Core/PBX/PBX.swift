@@ -11,10 +11,10 @@ import Foundation
 open class /* prefix */ PBX {
     // MARK: - Abstract
     open class Object {
-        open let id: String
-        open let dictionary: PBXPair
-        open let isa: ObjectType
-        open let allPBX: AllPBX
+        public let id: String
+        public let dictionary: PBXPair
+        public let isa: ObjectType
+        public let allPBX: AllPBX
         
         // FIXME:
         open var objectDictionary: PBXPair {
