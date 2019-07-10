@@ -20,7 +20,7 @@ class PBXProjectParserTests: XCTestCase {
 
     func testParse() {
         do {
-            let parser = try PBXProjectParser(xcodeprojectUrl: xcodeProjectUrl)
+            let parser = try PBXProjectParser(xcodeprojectUrl: xcodeProjectUrl())
             XCTAssert(parser.context().dictionary.count == 58)
             XCTAssert(parser.context().fullFilePaths.count == 15)
             XCTAssert(parser.context().grouped.count == 13)

@@ -2,14 +2,10 @@ import XCTest
 @testable import XcodeProject
 
 class XcodeProjectTests: XCTestCase {
-    private var xcodeProjectUrl: URL = xcodeProjectUrl()
-}
-
-extension XcodeProjectTests {
 
     func testShouldCacheContext() {
         do {
-            let parser = try PBXProjectParser(xcodeprojectUrl: xcodeProjectUrl)
+            let parser = try PBXProjectParser(xcodeprojectUrl: xcodeProjectUrl())
             let context1 = parser.context()
             let context2 = parser.context()
             XCTAssert(context1 === context2)
@@ -20,10 +16,10 @@ extension XcodeProjectTests {
     
     func testSerialize() {
         do {
-            let originalContent = try String(contentsOf: xcodeProjectUrl, encoding: String.Encoding.utf8)
+            let originalContent = try String(contentsOf: xcodeProjectUrl(), encoding: String.Encoding.utf8)
             
             let project = XcodeProject(
-                parser: try PBXProjectParser(xcodeprojectUrl: xcodeProjectUrl),
+                parser: try PBXProjectParser(xcodeprojectUrl: xcodeProjectUrl()),
                 hashIDGenerator: PBXObjectHashIDGenerator()
             )
             let serialization = XcodeProjectSerializer(project: project)
