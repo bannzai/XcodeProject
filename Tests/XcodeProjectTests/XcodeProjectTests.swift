@@ -2,41 +2,11 @@ import XCTest
 @testable import XcodeProject
 
 class XcodeProjectTests: XCTestCase {
-    private var xcodeProjectUrl: URL {
-        guard
-            let testPath = ProcessInfo().environment["PBXProjectPath"],
-            let url = URL(string: "file://" + testPath)
-            else {
-                XCTFail("Should set environment PBXProjectPath.")
-                fatalError()
-        }
-        
-        return url
-    }
-}
-
-extension Context {
-    var grouped: [String: [PBX.Object]] {
-        return self.dictionary
-            .values
-            .toArray()
-            .groupBy { $0.isa.rawValue }
-    }
+    private var xcodeProjectUrl: URL = xcodeProjectUrl()
 }
 
 extension XcodeProjectTests {
-    func testParse() {
-        do {
-            let parser = try PBXProjectParser(xcodeprojectUrl: xcodeProjectUrl)
-            XCTAssert(parser.context().dictionary.count == 58)
-            XCTAssert(parser.context().fullFilePaths.count == 15)
-            XCTAssert(parser.context().grouped.count == 13)
-            XCTAssert(parser.pair().count == 5)
-        } catch {
-            XCTFail(error.localizedDescription)
-        }
-    }
-    
+
     func testShouldCacheContext() {
         do {
             let parser = try PBXProjectParser(xcodeprojectUrl: xcodeProjectUrl)
