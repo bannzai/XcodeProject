@@ -68,8 +68,10 @@ extension XcodeProjectSerializer: Serializer {
         return try generateWriteContent()
     }
 }
+
+// MARK: - Private
 private extension XcodeProjectSerializer {
-    private func escape(with target: String) throws -> String {
+    func escape(with target: String) throws -> String {
         let regexes = [
             "\\\\": try! NSRegularExpression(pattern: "\\\\", options: []),
             "\\\"": try! NSRegularExpression(pattern: "\"", options: []),
@@ -92,7 +94,7 @@ private extension XcodeProjectSerializer {
         return str
     }
     
-    private func commentValue(for hashId: String) -> String {
+    func commentValue(for hashId: String) -> String {
         if hashId == "rootObject" {
             return "Project object"
         }
@@ -143,7 +145,7 @@ private extension XcodeProjectSerializer {
         }
     }
     
-    private func wrapComment(for isa: String) -> String {
+    func wrapComment(for isa: String) -> String {
         let comment = commentValue(for: isa)
         if comment.isEmpty {
             return ""
@@ -151,7 +153,7 @@ private extension XcodeProjectSerializer {
         return " /* \(comment) */"
     }
     
-    private func pairString(for pair: (objectKey: String, pairObject: Any), with isa: ObjectType, and level: Int) -> String {
+    func pairString(for pair: (objectKey: String, pairObject: Any), with isa: ObjectType, and level: Int) -> String {
         let objectKey = try! escape(with: pair.objectKey)
         let pairObject = pair.pairObject
         
@@ -206,7 +208,7 @@ private extension XcodeProjectSerializer {
         }
     }
     
-    private func generateContentEachSection(for pairFor: (isa: ObjectType, objects: [PBX.Object])) throws -> String {
+    func generateContentEachSection(for pairFor: (isa: ObjectType, objects: [PBX.Object])) throws -> String {
         let isa = pairFor.isa
         let objects = pairFor.objects
         
@@ -253,7 +255,7 @@ private extension XcodeProjectSerializer {
     }
     
 
-    private func generateWriteContent() throws -> String {
+    func generateWriteContent() throws -> String {
         let beginWriteCotent = "// !$*UTF8*$!\(newLine){\(newLine)"
         let endWriteContent = "}\(newLine)"
         return try beginWriteCotent
