@@ -14,8 +14,8 @@ public protocol Serializer {
 fileprivate let indent = "\t"
 fileprivate let newLine = "\n"
 fileprivate let spaceForOneline = " "
-public struct XcodeProjectSerializer: Serializer {
-    fileprivate var indentClosure: ((Int) -> String) = { num in
+public struct XcodeProjectSerializer {
+    private var indentClosure: ((Int) -> String) = { num in
         var ret = ""
         for _ in 0..<num {
             ret += indent
@@ -23,7 +23,7 @@ public struct XcodeProjectSerializer: Serializer {
         return ret
     }
     
-    fileprivate let isMultiLineClosure: ((ObjectType) -> Bool) = { isa in
+    private let isMultiLineClosure: ((ObjectType) -> Bool) = { isa in
         switch isa {
         case .PBXBuildFile, .PBXFileReference:
             return false
@@ -32,7 +32,7 @@ public struct XcodeProjectSerializer: Serializer {
         }
     }
     
-    fileprivate func buildPhaseByFileId() -> [String: PBX.BuildPhase]  {
+    private func buildPhaseByFileId() -> [String: PBX.BuildPhase]  {
         let buildPhases = self.project.allPBX.dictionary
             .values
             .compactMap { $0 as? PBX.BuildPhase }
@@ -48,7 +48,7 @@ public struct XcodeProjectSerializer: Serializer {
     }
     
     
-    fileprivate func targetsByConfigId() -> [String: PBX.NativeTarget] {
+    private func targetsByConfigId() -> [String: PBX.NativeTarget] {
         var dictionary: [String: PBX.NativeTarget] = [:]
         for target in self.project.project.targets {
             dictionary[target.buildConfigurationList.id] = target
@@ -57,15 +57,19 @@ public struct XcodeProjectSerializer: Serializer {
         return dictionary
     }
     
-    let project: XcodeProject
-    
+    private let project: XcodeProject
     public init(project: XcodeProject) {
         self.project = project
     }
-    
 }
-extension XcodeProjectSerializer {
-    func escape(with target: String) throws -> String {
+
+extension XcodeProjectSerializer: Serializer {
+    public func serialize() throws -> String {
+        return try generateWriteContent()
+    }
+}
+private extension XcodeProjectSerializer {
+    private func escape(with target: String) throws -> String {
         let regexes = [
             "\\\\": try! NSRegularExpression(pattern: "\\\\", options: []),
             "\\\"": try! NSRegularExpression(pattern: "\"", options: []),
@@ -88,7 +92,7 @@ extension XcodeProjectSerializer {
         return str
     }
     
-    func commentValue(for hashId: String) -> String {
+    private func commentValue(for hashId: String) -> String {
         if hashId == "rootObject" {
             return "Project object"
         }
@@ -139,7 +143,7 @@ extension XcodeProjectSerializer {
         }
     }
     
-    func wrapComment(for isa: String) -> String {
+    private func wrapComment(for isa: String) -> String {
         let comment = commentValue(for: isa)
         if comment.isEmpty {
             return ""
@@ -147,7 +151,7 @@ extension XcodeProjectSerializer {
         return " /* \(comment) */"
     }
     
-    func pairString(for pair: (objectKey: String, pairObject: Any), with isa: ObjectType, and level: Int) -> String {
+    private func pairString(for pair: (objectKey: String, pairObject: Any), with isa: ObjectType, and level: Int) -> String {
         let objectKey = try! escape(with: pair.objectKey)
         let pairObject = pair.pairObject
         
@@ -202,7 +206,7 @@ extension XcodeProjectSerializer {
         }
     }
     
-    fileprivate func generateContentEachSection(for pairFor: (isa: ObjectType, objects: [PBX.Object])) throws -> String {
+    private func generateContentEachSection(for pairFor: (isa: ObjectType, objects: [PBX.Object])) throws -> String {
         let isa = pairFor.isa
         let objects = pairFor.objects
         
@@ -248,11 +252,8 @@ extension XcodeProjectSerializer {
         return beginSection + newLine + eachObjectPairContent + newLine + endSection + newLine
     }
     
-    public func serialize() throws -> String {
-        return try generateWriteContent()
-    }
-    
-    public func generateWriteContent() throws -> String {
+
+    private func generateWriteContent() throws -> String {
         let beginWriteCotent = "// !$*UTF8*$!\(newLine){\(newLine)"
         let endWriteContent = "}\(newLine)"
         return try beginWriteCotent
