@@ -14,22 +14,4 @@ class XcodeProjectTests: XCTestCase {
         }
     }
     
-    func testSerialize() {
-        do {
-            let originalContent = try String(contentsOf: xcodeProjectUrl(), encoding: String.Encoding.utf8)
-            
-            let project = XcodeProject(
-                parser: try PBXProjectParser(xcodeprojectUrl: xcodeProjectUrl()),
-                hashIDGenerator: PBXObjectHashIDGenerator()
-            )
-            let serialization = XcodeProjectSerializer(project: project)
-            let generateString = try serialization.serialize()
-            
-            if originalContent != generateString {
-                XCTFail("unexception should same read and write content")
-            }
-        } catch {
-            XCTFail(error.localizedDescription)
-        }
-    }
 }
