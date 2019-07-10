@@ -10,6 +10,7 @@ import Foundation
 fileprivate let indent = "\t"
 fileprivate let newLine = "\n"
 fileprivate let spaceForOneline = " "
+fileprivate let empty = ""
 
 public protocol Formatter {
     
@@ -156,12 +157,22 @@ private extension PBXProjectFormatter {
         
         let isMultiline: Bool = isMultiLineClosure(isa)
         if let objectIds = pairObject as? [String] {
-            let begin = "\(objectKey) = (" + (isMultiline ? newLine : "")
-            let content = objectIds
-                .map { "\(indentClosure(isMultiline ? level + 1 : 0))\(try! escape(with: $0))\(wrapComment(for: try! escape(with: $0)))," }
-                .joined(separator: (isMultiline ? newLine : spaceForOneline))
-            let end = ");"
-            return begin + content + (objectIds.isEmpty ? "" : (isMultiline ? newLine: spaceForOneline)) + indentClosure(isMultiline ? level : 0) + end + (isMultiline ? "" : spaceForOneline)
+            let _content: String
+            switch isMultiline {
+            case true:
+                let trailingIndent = objectIds.isEmpty ? empty : newLine + indentClosure(level)
+                _content = """
+                \(objectKey) =
+                \(objectIds
+                .map { "\(indentClosure(1))\(try! escape(with: $0))\(wrapComment(for: try! escape(with: $0)))," }
+                .joined(separator: newLine))\(trailingIndent));
+                """
+            case false:
+                _content = """
+                \(objectKey) = \(objectIds.map { "\(indentClosure(0))\(try! escape(with: $0))\(wrapComment(for: try! escape(with: $0)))," }.joined(separator: (spaceForOneline)))\(spaceForOneline)\(indentClosure(0)));\(spaceForOneline)
+                """
+            }
+            return _content
         } else if let pairList = pairObject as? [PBXPair] {
             let begin = "\(objectKey) = ("
             let content = pairList
