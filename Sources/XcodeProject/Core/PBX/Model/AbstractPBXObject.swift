@@ -16,6 +16,11 @@ extension PBX {
         public let isa: ObjectType
         public let allPBX: Context
         
+        // FIXME:
+        open var objectDictionary: PBXPair {
+            return dictionary
+        }
+        
         public required init(
             id: String,
             dictionary: PBXPair,
