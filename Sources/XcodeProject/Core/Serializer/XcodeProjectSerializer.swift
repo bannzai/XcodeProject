@@ -65,7 +65,7 @@ public struct XcodeProjectSerializer: Serializer {
     
 }
 extension XcodeProjectSerializer {
-    func escapeIfNeeded(with target: String) throws -> String {
+    func escape(with target: String) throws -> String {
         let regexes = [
             "\\\\": try! NSRegularExpression(pattern: "\\\\", options: []),
             "\\\"": try! NSRegularExpression(pattern: "\"", options: []),
@@ -148,7 +148,7 @@ extension XcodeProjectSerializer {
     }
     
     func pairString(for pair: (objectKey: String, pairObject: Any), with isa: ObjectType, and level: Int) -> String {
-        let objectKey = try! escapeIfNeeded(with: pair.objectKey)
+        let objectKey = try! escape(with: pair.objectKey)
         let pairObject = pair.pairObject
         
         if objectKey == "isa" {
@@ -160,7 +160,7 @@ extension XcodeProjectSerializer {
         if let objectIds = pairObject as? [String] {
             let begin = "\(objectKey) = (" + (isMultiline ? newLine : "")
             let content = objectIds
-                .map { "\(indentClosure(isMultiline ? level + 1 : 0))\(try! escapeIfNeeded(with: $0))\(wrapComment(for: try! escapeIfNeeded(with: $0)))," }
+                .map { "\(indentClosure(isMultiline ? level + 1 : 0))\(try! escape(with: $0))\(wrapComment(for: try! escape(with: $0)))," }
                 .joined(separator: (isMultiline ? newLine : spaceForOneline))
             let end = ");"
             return begin + content + (objectIds.isEmpty ? "" : (isMultiline ? newLine: spaceForOneline)) + indentClosure(isMultiline ? level : 0) + end + (isMultiline ? "" : spaceForOneline)
@@ -193,7 +193,7 @@ extension XcodeProjectSerializer {
             let end = "};"
             return begin + (isMultiline ? newLine: "") + content + (isMultiline ? newLine : "") + indentClosure(isMultiline ? level : 0) + end + (isMultiline ? "" : spaceForOneline)
         } else {
-            let string = try! escapeIfNeeded(with: "\(pairObject)")
+            let string = try! escape(with: "\(pairObject)")
             let isNeedComment = !(objectKey == "remoteGlobalIDString" || objectKey == "TestTargetID")
             let comment = isNeedComment ? wrapComment(for: string) : ""
             let space = isMultiline ? "" : spaceForOneline
