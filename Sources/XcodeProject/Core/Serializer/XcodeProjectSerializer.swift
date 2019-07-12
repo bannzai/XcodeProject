@@ -222,6 +222,11 @@ internal extension XcodeProjectSerializer {
                 let objectPair = object.objectDictionary
                     .sorted { $0.0 < $1.0 }
                     .compactMap { (key: String, value: Any) -> String? in
+                        if key == "isa" {
+                            // skip
+                            return nil
+                        }
+                        
                         let content = pairString(for: (key, value), with: isa, and: 3)
                         if content.isEmpty {
                             return nil
