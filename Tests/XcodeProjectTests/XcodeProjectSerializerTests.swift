@@ -18,7 +18,7 @@ class XcodeProjectSerializerTests: XCTestCase {
                 hashIDGenerator: PBXObjectHashIDGenerator()
             )
             let serialization = XcodeProjectSerializer(project: project)
-            let generateString = try serialization.serialize()
+            let generateString = serialization.serialize()
             
             XCTAssertEqual(originalContent, generateString)
         } catch {
