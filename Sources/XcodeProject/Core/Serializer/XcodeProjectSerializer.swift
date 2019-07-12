@@ -64,13 +64,13 @@ public struct XcodeProjectSerializer {
 }
 
 extension XcodeProjectSerializer: Serializer {
-    public func serialize() throws -> String {
-        return try generateWriteContent()
+    public func serialize() -> String {
+        return generateWriteContent()
     }
 }
 
-// MARK: - Private
-private extension XcodeProjectSerializer {
+// MARK: - Internal
+internal extension XcodeProjectSerializer {
     func escape(with target: String) throws -> String {
         let regexes = [
             "\\\\": try! NSRegularExpression(pattern: "\\\\", options: []),
@@ -208,10 +208,7 @@ private extension XcodeProjectSerializer {
         }
     }
     
-    func generateContentEachSection(for pairFor: (isa: ObjectType, objects: [PBX.Object])) throws -> String {
-        let isa = pairFor.isa
-        let objects = pairFor.objects
-        
+    func generateContentEachSection(isa: ObjectType, objects: [PBX.Object]) -> String {
         let beginSection = "/* Begin \(isa.rawValue) section */"
         let eachObjectPairContent = objects
             .sorted { $0.id < $1.id }
@@ -255,10 +252,10 @@ private extension XcodeProjectSerializer {
     }
     
 
-    func generateWriteContent() throws -> String {
+    func generateWriteContent() -> String {
         let beginWriteCotent = "// !$*UTF8*$!\(newLine){\(newLine)"
         let endWriteContent = "}\(newLine)"
-        return try beginWriteCotent
+        return beginWriteCotent
             + project.fullPair
                 .sorted { $0.0 < $1.0 }
                 .reduce("") { (lines, pair: (key: String, _: Any)) in
@@ -270,14 +267,14 @@ private extension XcodeProjectSerializer {
                             .toArray()
                             .groupBy { $0.isa.rawValue }
                         
-                        let objectsContent = try groupedObject
+                        let objectsContent = groupedObject
                             .keys
                             .sorted()
                             .map { isa in
                                 return (ObjectType(for: isa), groupedObject[isa]!)
                             }
                             .map { isa, objects -> String in
-                                return try generateContentEachSection(for: (isa, objects))
+                                return generateContentEachSection(isa: isa, objects: objects)
                             }
                             .joined(separator: newLine)
                         
