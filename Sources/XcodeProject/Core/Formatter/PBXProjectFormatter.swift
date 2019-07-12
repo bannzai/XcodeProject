@@ -7,10 +7,6 @@
 
 import Foundation
 
-fileprivate let indent = "\t"
-fileprivate let newLine = "\n"
-fileprivate let spaceForOneline = " "
-
 public protocol Formatter {
     
 }

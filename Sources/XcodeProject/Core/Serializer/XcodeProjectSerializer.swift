@@ -11,9 +11,9 @@ public protocol Serializer {
     func serialize() -> String
 }
 
-fileprivate let indent = "\t"
-fileprivate let newLine = "\n"
-fileprivate let spaceForOneline = " "
+internal let indent = "\t"
+internal let newLine = "\n"
+internal let spaceForOneline = " "
 public struct XcodeProjectSerializer {
     private var indentClosure: ((Int) -> String) = { num in
         var ret = ""
