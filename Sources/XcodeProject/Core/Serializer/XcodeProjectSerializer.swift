@@ -8,7 +8,7 @@
 import Foundation
 
 public protocol Serializer {
-    func serialize() throws -> String
+    func serialize() -> String
 }
 
 fileprivate let indent = "\t"
