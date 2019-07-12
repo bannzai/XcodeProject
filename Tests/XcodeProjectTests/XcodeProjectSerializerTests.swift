@@ -20,9 +20,7 @@ class XcodeProjectSerializerTests: XCTestCase {
             let serialization = XcodeProjectSerializer(project: project)
             let generateString = try serialization.serialize()
             
-            if originalContent != generateString {
-                XCTFail("unexception should same read and write content")
-            }
+            XCTAssertEqual(originalContent, generateString)
         } catch {
             XCTFail(error.localizedDescription)
         }
