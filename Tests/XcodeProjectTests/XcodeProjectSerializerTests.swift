@@ -99,7 +99,7 @@ class XcodeProjectSerializerTests: XCTestCase {
         }
     }
     
-    func testPairStringForPairWithISAAndLevel() {
+    func testGenerateForEachFieldForPairWithISAAndLevel() {
         XCTContext.runActivity(named: "When pairObject not [String], not [PBXPair], not PBXPair] (maybe String).") { _ in
             XCTContext.runActivity(named: "And It is single line", block: { _ in
                 
@@ -107,7 +107,7 @@ class XcodeProjectSerializerTests: XCTestCase {
             XCTContext.runActivity(named: "And It is multiple line isa", block: { _ in
                 XCTContext.runActivity(named: "And It is not needs comment", block: { _ in
                     let (_, serialization) = make()
-                    let got = serialization.pairString(
+                    let got = serialization.generateForEachField(
                         for: (objectKey: "remoteGlobalIDString", pairObject: "BA4267FF1F89EB7F001FA700"),
                         with: .PBXContainerItemProxy,
                         and: 0

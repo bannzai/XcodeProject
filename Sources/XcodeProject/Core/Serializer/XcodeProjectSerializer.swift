@@ -153,7 +153,7 @@ internal extension XcodeProjectSerializer {
         return " /* \(comment) */"
     }
     
-    func pairString(for pair: (objectKey: String, pairObject: Any), with isa: ObjectType, and level: Int) -> String {
+    func generateForEachField(for pair: (objectKey: String, pairObject: Any), with isa: ObjectType, and level: Int) -> String {
         let objectKey = try! escape(with: pair.objectKey)
         let pairObject = pair.pairObject
         
@@ -176,11 +176,11 @@ internal extension XcodeProjectSerializer {
                 .flatMap { pair -> [String] in
                     let top = isMultiline ? indentClosure(isMultiline ? level + 2 : 0) : ""
                     let period = isMultiline ? "\(indentClosure(isMultiline ? level + 1 : 0))}," : "} "
-                    let pairStrings = pair.sorted { $0.0 < $1.0 }.map { key, value in
-                        return top + pairString(for: (key, value), with: isa, and: level + 1)
+                    let generateForEachFields = pair.sorted { $0.0 < $1.0 }.map { key, value in
+                        return top + generateForEachField(for: (key, value), with: isa, and: level + 1)
                     }
                     let begin = [newLine + indentClosure(isMultiline ? level + 1 : 0) + "{" + newLine]
-                    let content = pairStrings.map { $0 + newLine }
+                    let content = generateForEachFields.map { $0 + newLine }
                     let end = [period]
                     return begin + content + end
                 }
@@ -193,7 +193,7 @@ internal extension XcodeProjectSerializer {
             let content = pair
                 .sorted { $0.0 < $1.0 }
                 .compactMap { key, value in
-                    return top + pairString(for: (key, value), with: isa, and: level + 1)
+                    return top + generateForEachField(for: (key, value), with: isa, and: level + 1)
                 }
                 .joined(separator: (isMultiline ? newLine: ""))
             let end = "};"
@@ -227,7 +227,7 @@ internal extension XcodeProjectSerializer {
                             return nil
                         }
                         
-                        let content = pairString(for: (key, value), with: isa, and: 3)
+                        let content = generateForEachField(for: (key, value), with: isa, and: 3)
                         if content.isEmpty {
                             return nil
                         }
