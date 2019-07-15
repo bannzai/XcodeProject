@@ -101,7 +101,7 @@ class XcodeProjectSerializerTests: XCTestCase {
     
     func testGenerateForEachFieldForPairWithISAAndLevel() {
         XCTContext.runActivity(named: "When pairObject not [String], not [PBXPair], not PBXPair] (maybe String).") { _ in
-            XCTContext.runActivity(named: "And It is single line", block: { _ in
+            XCTContext.runActivity(named: "And It is single line isa", block: { _ in
                 
             })
             XCTContext.runActivity(named: "And It is multiple line isa", block: { _ in
