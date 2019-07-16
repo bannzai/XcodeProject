@@ -28,6 +28,8 @@ class XcodeProjectSerializerTests: XCTestCase {
             let (_, serialization) = make()
             let generateString = serialization.serialize()
             
+            print(generateString)
+            print(originalContent)
             XCTAssertEqual(originalContent, generateString)
         } catch {
             XCTFail(error.localizedDescription)
