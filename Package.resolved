@@ -1,0 +1,16 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "Swdifft",
+        "repositoryURL": "https://github.com/bannzai/Swdifft.git",
+        "state": {
+          "branch": null,
+          "revision": "641eda95ff1ef3683232bbabb381874a0ac37307",
+          "version": "1.0.0"
+        }
+      }
+    ]
+  },
+  "version": 1
+}
