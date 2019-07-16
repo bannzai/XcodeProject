@@ -72,7 +72,7 @@ extension XcodeProjectSerializer: Serializer {
 // MARK: - Internal
 internal extension XcodeProjectSerializer {
     func escape(with target: String) throws -> String {
-        let regexes = [
+        let regexes: [String: NSRegularExpression] = [
             "\\\\": try! NSRegularExpression(pattern: "\\\\", options: []),
             "\\\"": try! NSRegularExpression(pattern: "\"", options: []),
             "\\n": try! NSRegularExpression(pattern: "\\n", options: []),
