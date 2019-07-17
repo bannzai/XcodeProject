@@ -72,12 +72,14 @@ extension XcodeProjectSerializer: Serializer {
 // MARK: - Internal
 internal extension XcodeProjectSerializer {
     func escape(with target: String) throws -> String {
+        if target.contains("echo") {
+            print(target)
+        }
         let regexes: [String: NSRegularExpression] = [
-            "\\\\": try! NSRegularExpression(pattern: "\\\\", options: []),
             "\\\"": try! NSRegularExpression(pattern: "\"", options: []),
-            "\\n": try! NSRegularExpression(pattern: "\\n", options: []),
-            "\\r": try! NSRegularExpression(pattern: "\\r", options: []),
-            "\\t": try! NSRegularExpression(pattern: "\\t", options: []),
+            "\\n": try! NSRegularExpression(pattern: "\n", options: []),
+            "\\r": try! NSRegularExpression(pattern: "\r", options: []),
+            "\\t": try! NSRegularExpression(pattern: "\t", options: []),
         ]
         
         var str = target
@@ -86,7 +88,7 @@ internal extension XcodeProjectSerializer {
             let template = NSRegularExpression.escapedTemplate(for: replacement)
             str = regex.stringByReplacingMatches(in: str, options: [], range: range, withTemplate: template)
         }
-        
+
         let noEscapeRegex = try NSRegularExpression(pattern: "^[a-z0-9_\\.\\/]+$", options: NSRegularExpression.Options.caseInsensitive)
         if noEscapeRegex.firstMatch(in: str, options: [], range: NSRange(location: 0, length: str.count)) == nil {
             return "\"\(str)\""
