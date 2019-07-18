@@ -56,30 +56,85 @@ class XcodeProjectSerializerTests: XCTestCase {
     
     func testGenerateContentEachSection() {
         XCTContext.runActivity(named: "Single line") { (activity) in
-            let (context, serialization) = make()
-            let got = serialization.generateContentEachSection(
-                isa: .PBXBuildFile,
-                objects: [
-                    PBX.BuildFile.init(
-                        id: "BA4268041F89EB7F001FA700",
-                        dictionary: [
-                            "isa": "PBXBuildFile",
-                            "fileRef": "BA4268031F89EB7F001FA700",
-                        ],
-                        isa: "PBXBuildFile",
-                        allPBX: context
-                    )
-                ]
-            )
-            XCTAssertEqual(
-                got,
-                """
-                /* Begin PBXBuildFile section */
-                \(indent)\(indent)BA4268041F89EB7F001FA700 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA4268031F89EB7F001FA700 /* AppDelegate.swift */; };
-                /* End PBXBuildFile section */
-                
-                """
-            )
+            XCTContext.runActivity(named: "When PBXShellScriptBuildPhase") { (_) in
+                let (context, serialization) = make()
+                let got = serialization.generateContentEachSection(
+                    isa: .PBXShellScriptBuildPhase,
+                    objects: [
+                        PBX.ShellScriptBuildPhase.init(
+                            id: "33D083C322DE32F300ED246F",
+                            dictionary: [
+                                "isa": "PBXShellScriptBuildPhase",
+                                "buildActionMask": 2147483647,
+                                "files": [Any](),
+                                "inputFileListPaths": [Any](),
+                                "inputPaths": [Any](),
+                                "name": "Single Line Script",
+                                "outputFileListPaths": [Any](),
+                                "outputPaths": [Any](),
+                                "runOnlyForDeploymentPostprocessing": 0,
+                                "shellPath": "/bin/sh",
+                                "shellScript": "# Type a script or drag a script file from your workspace to insert its path.\necho \"Script\"\n"
+                            ],
+                            isa: ObjectType.PBXShellScriptBuildPhase.rawValue,
+                            allPBX: context
+                        ),
+                    ]
+                )
+                XCTAssertEqual(
+                    got,
+                    """
+                    /* Begin PBXShellScriptBuildPhase section */
+                    \(indent)\(indent)33D083C322DE32F300ED246F /* Single Line Script */ = {
+                    \(indent)\(indent)\(indent)isa = PBXShellScriptBuildPhase;
+                    \(indent)\(indent)\(indent)buildActionMask = 2147483647;
+                    \(indent)\(indent)\(indent)files = (
+                    \(indent)\(indent)\(indent));
+                    \(indent)\(indent)\(indent)inputFileListPaths = (
+                    \(indent)\(indent)\(indent));
+                    \(indent)\(indent)\(indent)inputPaths = (
+                    \(indent)\(indent)\(indent));
+                    \(indent)\(indent)\(indent)name = "Single Line Script";
+                    \(indent)\(indent)\(indent)outputFileListPaths = (
+                    \(indent)\(indent)\(indent));
+                    \(indent)\(indent)\(indent)outputPaths = (
+                    \(indent)\(indent)\(indent));
+                    \(indent)\(indent)\(indent)runOnlyForDeploymentPostprocessing = 0;
+                    \(indent)\(indent)\(indent)shellPath = /bin/sh;
+                    \(indent)\(indent)\(indent)shellScript = "# Type a script or drag a script file from your workspace to insert its path.\\necho \\\"Script\\\"\\n";
+                    \(indent)\(indent)};
+                    /* End PBXShellScriptBuildPhase section */
+                    
+                    """
+                )
+            }
+            
+            XCTContext.runActivity(named: "When PBXBuildFile") { (_) in
+                let (context, serialization) = make()
+                let got = serialization.generateContentEachSection(
+                    isa: .PBXBuildFile,
+                    objects: [
+                        PBX.BuildFile.init(
+                            id: "BA4268041F89EB7F001FA700",
+                            dictionary: [
+                                "isa": "PBXBuildFile",
+                                "fileRef": "BA4268031F89EB7F001FA700",
+                            ],
+                            isa: "PBXBuildFile",
+                            allPBX: context
+                        )
+                    ]
+                )
+                XCTAssertEqual(
+                    got,
+                    """
+                    /* Begin PBXBuildFile section */
+                    \(indent)\(indent)BA4268041F89EB7F001FA700 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA4268031F89EB7F001FA700 /* AppDelegate.swift */; };
+                    /* End PBXBuildFile section */
+                    
+                    """
+                )
+            }
         }
         
         XCTContext.runActivity(named: "Multiple line") { (activity) in
