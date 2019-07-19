@@ -175,9 +175,20 @@ class XcodeProjectSerializerTests: XCTestCase {
     }
     
     func testGenerateForEachFieldForPairWithISAAndLevel() {
-        XCTContext.runActivity(named: "When pairObject not [String], not [PBXPair], not PBXPair] (maybe String).") { _ in
+        XCTContext.runActivity(named: "When pairObject is not [String], not [PBXPair], not PBXPair] (maybe String).") { _ in
             XCTContext.runActivity(named: "And It is single line isa", block: { _ in
-                
+                XCTContext.runActivity(named: "And It is needs comment", block: { _ in
+                    let (_, serialization) = make()
+                    let got = serialization.generateForEachField(
+                        for: (objectKey: "fileRef", pairObject: "BA4268031F89EB7F001FA700"),
+                        with: .PBXBuildFile,
+                        and: 0
+                    )
+                    XCTAssertEqual(
+                        got,
+                        "fileRef = BA4268031F89EB7F001FA700 /* AppDelegate.swift */;\(spaceForOneline)"
+                    )
+                })
             })
             XCTContext.runActivity(named: "And It is multiple line isa", block: { _ in
                 XCTContext.runActivity(named: "And It is not needs comment", block: { _ in
