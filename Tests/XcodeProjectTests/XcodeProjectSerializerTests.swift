@@ -247,8 +247,20 @@ class XcodeProjectSerializerTests: XCTestCase {
                         "fileRef = BA4268031F89EB7F001FA700 /* AppDelegate.swift */;\(spaceForOneline)"
                     )
                 })
-            })
             XCTContext.runActivity(named: "And It is multiple line isa", block: { _ in
+                XCTContext.runActivity(named: "And It is needs comment", block: { _ in
+                    let (_, serialization) = make()
+                    let got = serialization.generateForEachField(
+                        for: (objectKey: "ProductGroup", pairObject: "BAD04C0022E35F61008ADCAD"),
+                        with: .PBXProject,
+                        and: 0
+                    )
+                    XCTAssertEqual(
+                        got,
+                        "ProductGroup = BAD04C0022E35F61008ADCAD /* Products */;"
+                    )
+                })
+            })
                 XCTContext.runActivity(named: "And It is not needs comment", block: { _ in
                     let (_, serialization) = make()
                     let got = serialization.generateForEachField(
