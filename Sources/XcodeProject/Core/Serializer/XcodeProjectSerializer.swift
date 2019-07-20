@@ -176,19 +176,19 @@ internal extension XcodeProjectSerializer {
             let begin = "\(objectKey) = ("
             let content = pairList
                 .flatMap { pair -> [String] in
-                    let top = indentClosure(level + 2)
-                    let period = "\(indentClosure(level + 1))},"
+                    let top = isMultiline ? indentClosure(isMultiline ? level + 2 : 0) : ""
+                    let period = isMultiline ? "\(indentClosure(isMultiline ? level + 1 : 0))}," : "} "
                     let generateForEachFields = pair.sorted { $0.0 < $1.0 }.map { key, value in
                         return top + generateForEachField(for: (key, value), with: isa, and: level + 1)
                     }
-                    let begin = [newLine + indentClosure(level + 1) + "{" + newLine]
+                    let begin = [newLine + indentClosure(isMultiline ? level + 1 : 0) + "{" + newLine]
                     let content = generateForEachFields.map { $0 + newLine }
                     let end = [period]
                     return begin + content + end
                 }
                 .joined(separator: "")
             let end = ");"
-            return begin + content + newLine + indentClosure(level) + end
+            return begin + content + newLine + indentClosure(isMultiline ? level : 0) + end
         } else if let pair = pairObject as? PBXPair {
             let begin = "\(objectKey) = {"
             let top = isMultiline ? indentClosure(isMultiline ? level + 1 : 0) : ""
