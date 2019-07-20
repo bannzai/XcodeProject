@@ -233,6 +233,65 @@ class XcodeProjectSerializerTests: XCTestCase {
             })
         }
         
+        XCTContext.runActivity(named: "When pairObject is PBXPair.") { _ in
+            XCTContext.runActivity(named: "And It is multiple line isa", block: { _ in
+                let (_, serialization) = make()
+                let got = serialization.generateForEachField(
+                    for: (objectKey: "attributes", pairObject:
+                        [
+                            "LastSwiftUpdateCheck": "0900",
+                            "LastUpgradeCheck": "0900",
+                            "ORGANIZATIONNAME": "廣瀬雄大",
+                            "TargetAttributes": [
+                                "BA4267FF1F89EB7F001FA700": [
+                                    "CreatedOnToolsVersion": "9.0",
+                                    "ProvisioningStyle": "Automatic",
+                                ],
+                                "BA4268131F89EB7F001FA700": [
+                                    "CreatedOnToolsVersion": "9.0",
+                                    "ProvisioningStyle": "Automatic",
+                                    "TestTargetID": "BA4267FF1F89EB7F001FA700",
+                                ],
+                                "BA42681E1F89EB7F001FA700": [
+                                    "CreatedOnToolsVersion": "9.0",
+                                    "ProvisioningStyle": "Automatic",
+                                    "TestTargetID": "BA4267FF1F89EB7F001FA700",
+                                ],
+                            ]
+                        ]
+                    ),
+                    with: .PBXProject,
+                    and: 0
+                )
+                XCTAssertEqual(
+                    got,
+                    """
+                    attributes = {
+                    \(indent)LastSwiftUpdateCheck = 0900;
+                    \(indent)LastUpgradeCheck = 0900;
+                    \(indent)ORGANIZATIONNAME = "廣瀬雄大";
+                    \(indent)TargetAttributes = {
+                    \(indent)\(indent)BA4267FF1F89EB7F001FA700 = {
+                    \(indent)\(indent)\(indent)CreatedOnToolsVersion = 9.0;
+                    \(indent)\(indent)\(indent)ProvisioningStyle = Automatic;
+                    \(indent)\(indent)};
+                    \(indent)\(indent)BA4268131F89EB7F001FA700 = {
+                    \(indent)\(indent)\(indent)CreatedOnToolsVersion = 9.0;
+                    \(indent)\(indent)\(indent)ProvisioningStyle = Automatic;
+                    \(indent)\(indent)\(indent)TestTargetID = BA4267FF1F89EB7F001FA700;
+                    \(indent)\(indent)};
+                    \(indent)\(indent)BA42681E1F89EB7F001FA700 = {
+                    \(indent)\(indent)\(indent)CreatedOnToolsVersion = 9.0;
+                    \(indent)\(indent)\(indent)ProvisioningStyle = Automatic;
+                    \(indent)\(indent)\(indent)TestTargetID = BA4267FF1F89EB7F001FA700;
+                    \(indent)\(indent)};
+                    \(indent)};
+                    };
+                    """
+                )
+            })
+        }
+        
         XCTContext.runActivity(named: "When pairObject is not [String], not [PBXPair], not PBXPair] (maybe String).") { _ in
             XCTContext.runActivity(named: "And It is single line isa", block: { _ in
                 XCTContext.runActivity(named: "And It is needs comment", block: { _ in
