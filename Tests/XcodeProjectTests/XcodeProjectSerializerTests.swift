@@ -208,6 +208,43 @@ class XcodeProjectSerializerTests: XCTestCase {
             })
         }
         
+        XCTContext.runActivity(named: "When pairObject is [PBXPair].") { _ in
+            XCTContext.runActivity(named: "And It is single line isa", block: { _ in
+//                let (_, serialization) = make()
+//                let got = serialization.generateForEachField(
+//                    for: (objectKey: "ATTRIBUTES", pairObject: ["CodeSignOnCopy", "RemoveHeadersOnCopy"]),
+//                    with: .PBXBuildFile,
+//                    and: 0
+//                )
+//                XCTAssertEqual(
+//                    got,
+//                    "ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); "
+//                )
+            })
+            XCTContext.runActivity(named: "And It is multiple line isa", block: { _ in
+                let (_, serialization) = make()
+                let got = serialization.generateForEachField(
+                    for: (objectKey: "projectReferences", pairObject: [
+                        ["ProductGroup": "BAD04C0022E35F61008ADCAD", "ProjectRef": "BAD04BFF22E35F61008ADCAD"],
+                        ]
+                    ),
+                    with: .PBXProject,
+                    and: 0
+                )
+                XCTAssertEqual(
+                    got,
+                    """
+                    projectReferences = (
+                    \(indent){
+                    \(indent)\(indent)ProductGroup = BAD04C0022E35F61008ADCAD /* Products */;
+                    \(indent)\(indent)ProjectRef = BAD04BFF22E35F61008ADCAD /* ReferenceProject.xcodeproj */;
+                    \(indent)},
+                    );
+                    """
+                )
+            })
+        }
+        
         XCTContext.runActivity(named: "When pairObject is not [String], not [PBXPair], not PBXPair] (maybe String).") { _ in
             XCTContext.runActivity(named: "And It is single line isa", block: { _ in
                 XCTContext.runActivity(named: "And It is needs comment", block: { _ in
