@@ -285,42 +285,45 @@ internal extension XcodeProjectSerializer {
     
 
     func generateWriteContent() -> String {
-        let beginWriteCotent = "// !$*UTF8*$!\(newLine){\(newLine)"
-        let endWriteContent = "}\(newLine)"
-        return beginWriteCotent
-            + project.fullPair
-                .sorted { $0.0 < $1.0 }
-                .reduce("") { (lines, pair: (key: String, _: Any)) in
-                    let objectKey = pair.key
-                    if objectKey == "objects" {
-                        let beginObjects = indent + "objects = {" + newLine
-                        let groupedObject = project.allPBX.dictionary
-                            .values
-                            .toArray()
-                            .groupBy { $0.isa.rawValue }
-                        
-                        let objectsContent = groupedObject
-                            .keys
-                            .sorted()
-                            .map { isa in
-                                return (ObjectType(for: isa), groupedObject[isa]!)
-                            }
-                            .map { isa, objects -> String in
-                                return generateContentEachSection(isa: isa, objects: objects)
-                            }
-                            .joined(separator: newLine)
-                        
-                        let endObjects = "};"
-                        return lines +  beginObjects + newLine + objectsContent + indent + endObjects + newLine
-                    } else {
-                        let comment = wrapComment(for: objectKey)
-                        let row = "\(objectKey) = \(project.fullPair[objectKey]!)\(comment);"
-                        let content = row.components(separatedBy: newLine).map { r in
-                            return indent + r
-                            }.joined(separator: newLine)
-                        
-                        return lines + content + newLine
-                    }
-            } + endWriteContent
+        let content = project.fullPair
+            .sorted { $0.0 < $1.0 }
+            .reduce("") { (lines, pair: (key: String, _: Any)) in
+                let objectKey = pair.key
+                if objectKey == "objects" {
+                    let beginObjects = indent + "objects = {" + newLine
+                    let groupedObject = project.allPBX.dictionary
+                        .values
+                        .toArray()
+                        .groupBy { $0.isa.rawValue }
+                    
+                    let objectsContent = groupedObject
+                        .keys
+                        .sorted()
+                        .map { isa in
+                            return (ObjectType(for: isa), groupedObject[isa]!)
+                        }
+                        .map { isa, objects -> String in
+                            return generateContentEachSection(isa: isa, objects: objects)
+                        }
+                        .joined(separator: newLine)
+                    
+                    let endObjects = "};"
+                    return lines +  beginObjects + newLine + objectsContent + indent + endObjects + newLine
+                } else {
+                    let comment = wrapComment(for: objectKey)
+                    let row = "\(objectKey) = \(project.fullPair[objectKey]!)\(comment);"
+                    let content = row.components(separatedBy: newLine).map { r in
+                        return indent + r
+                        }.joined(separator: newLine)
+                    
+                    return lines + content + newLine
+                }
+            }
+        return """
+        // !$*UTF8*$!
+        {
+        \(content)}
+
+        """
     }
 }
