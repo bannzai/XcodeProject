@@ -315,9 +315,12 @@ internal extension XcodeProjectSerializer {
                 case _:
                     let comment = wrapComment(for: objectKey)
                     let row = "\(objectKey) = \(project.fullPair[objectKey]!)\(comment);"
-                    let content = row.components(separatedBy: newLine).map { r in
-                        return indent + r
-                        }.joined(separator: newLine)
+                    let content = row
+                        .components(separatedBy: newLine)
+                        .map { r in
+                            return indent + r
+                        }
+                        .joined(separator: newLine)
                     
                     return lines + content + newLine
                 }
