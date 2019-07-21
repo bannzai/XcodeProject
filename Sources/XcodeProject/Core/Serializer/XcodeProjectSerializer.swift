@@ -241,7 +241,6 @@ internal extension XcodeProjectSerializer {
     }
     
     func generateContentEachSection(isa: ObjectType, objects: [PBX.Object]) -> String {
-        let beginSection = "/* Begin \(isa.rawValue) section */"
         let eachObjectPairContent = objects
             .sorted { $0.id < $1.id }
             .map { object -> String in
@@ -279,8 +278,12 @@ internal extension XcodeProjectSerializer {
             }
             .joined(separator: newLine)
         
-        let endSection = "/* End \(isa.rawValue) section */"
-        return beginSection + newLine + eachObjectPairContent + newLine + endSection + newLine
+        return """
+        /* Begin \(isa.rawValue) section */
+        \(eachObjectPairContent)
+        /* End \(isa.rawValue) section */
+        
+        """
     }
     
 
