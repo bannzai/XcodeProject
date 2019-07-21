@@ -195,7 +195,7 @@ internal extension XcodeProjectSerializer {
             }
         } else if let pairList = pairObject as? [PBXPair] {
             let content = pairList
-                .flatMap { pair -> [String] in
+                .map { pair -> String in
                     let generateForEachFields = pair
                         .sorted { $0.0 < $1.0 }
                         .map { key, value in
@@ -204,12 +204,11 @@ internal extension XcodeProjectSerializer {
                             """
                     }
                     .joined(separator: newLine)
-                    let value = """
+                    return """
                         \(indentClosure(level + 1)){
                         \(generateForEachFields)
                         \(indentClosure(level + 1))},
                         """
-                    return [value]
                 }
                 .joined(separator: "")
             
