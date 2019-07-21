@@ -291,12 +291,10 @@ internal extension XcodeProjectSerializer {
                 let objectKey = pair.key
                 switch objectKey {
                 case "objects":
-                    let beginObjects = indent + "objects = {" + newLine
                     let groupedObject = project.allPBX.dictionary
                         .values
                         .toArray()
                         .groupBy { $0.isa.rawValue }
-                    
                     let objectsContent = groupedObject
                         .keys
                         .sorted()
@@ -307,9 +305,13 @@ internal extension XcodeProjectSerializer {
                             return generateContentEachSection(isa: isa, objects: objects)
                         }
                         .joined(separator: newLine)
+                    let row = """
+                    \(indent)objects = {
                     
-                    let endObjects = "};"
-                    return lines +  beginObjects + newLine + objectsContent + indent + endObjects + newLine
+                    \(objectsContent)\(indent)};
+                    
+                    """
+                    return lines + row
                 case _:
                     let comment = wrapComment(for: objectKey)
                     let row = "\(objectKey) = \(project.fullPair[objectKey]!)\(comment);"
