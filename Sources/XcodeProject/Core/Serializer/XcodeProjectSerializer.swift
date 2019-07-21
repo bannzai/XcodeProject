@@ -289,7 +289,8 @@ internal extension XcodeProjectSerializer {
             .sorted { $0.0 < $1.0 }
             .reduce("") { (lines, pair: (key: String, _: Any)) in
                 let objectKey = pair.key
-                if objectKey == "objects" {
+                switch objectKey {
+                case "objects":
                     let beginObjects = indent + "objects = {" + newLine
                     let groupedObject = project.allPBX.dictionary
                         .values
@@ -309,7 +310,7 @@ internal extension XcodeProjectSerializer {
                     
                     let endObjects = "};"
                     return lines +  beginObjects + newLine + objectsContent + indent + endObjects + newLine
-                } else {
+                case _:
                     let comment = wrapComment(for: objectKey)
                     let row = "\(objectKey) = \(project.fullPair[objectKey]!)\(comment);"
                     let content = row.components(separatedBy: newLine).map { r in
@@ -318,12 +319,12 @@ internal extension XcodeProjectSerializer {
                     
                     return lines + content + newLine
                 }
-            }
+        }
         return """
         // !$*UTF8*$!
         {
         \(content)}
-
+        
         """
     }
 }
