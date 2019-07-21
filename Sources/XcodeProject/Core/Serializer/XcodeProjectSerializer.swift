@@ -194,22 +194,30 @@ internal extension XcodeProjectSerializer {
                 """
             }
         } else if let pairList = pairObject as? [PBXPair] {
-            let begin = "\(objectKey) = ("
             let content = pairList
                 .flatMap { pair -> [String] in
-                    let top = indentClosure(level + 2)
-                    let period = "\(indentClosure(level + 1))},"
-                    let generateForEachFields = pair.sorted { $0.0 < $1.0 }.map { key, value in
-                        return top + generateForEachField(for: (key, value), with: isa, and: level + 1)
+                    let generateForEachFields = pair
+                        .sorted { $0.0 < $1.0 }
+                        .map { key, value in
+                            return """
+                            \(indentClosure(level + 2))\(generateForEachField(for: (key, value), with: isa, and: level + 1))
+                            """
                     }
-                    let begin = [newLine + indentClosure(level + 1) + "{" + newLine]
-                    let content = generateForEachFields.map { $0 + newLine }
-                    let end = [period]
-                    return begin + content + end
+                    .joined(separator: newLine)
+                    let value = """
+                        \(indentClosure(level + 1)){
+                        \(generateForEachFields)
+                        \(indentClosure(level + 1))},
+                        """
+                    return [value]
                 }
                 .joined(separator: "")
-            let end = ");"
-            return begin + content + newLine + indentClosure(level) + end
+            
+            return """
+            \(objectKey) = (
+            \(content)
+            \(indentClosure(level)));
+            """
         } else if let pair = pairObject as? PBXPair {
             let begin = "\(objectKey) = {"
             let top = indentClosure(level + 1)
