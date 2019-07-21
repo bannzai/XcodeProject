@@ -166,12 +166,33 @@ internal extension XcodeProjectSerializer {
         
         let isMultiline: Bool = isMultiLineClosure(isa)
         if let objectIds = pairObject as? [String] {
-            let begin = "\(objectKey) = (" + (isMultiline ? newLine : "")
-            let content = objectIds
-                .map { "\(indentClosure(isMultiline ? level + 1 : 0))\(try! escape(with: $0))\(wrapComment(for: try! escape(with: $0)))," }
-                .joined(separator: (isMultiline ? newLine : spaceForOneline))
-            let end = ");"
-            return begin + content + (objectIds.isEmpty ? "" : (isMultiline ? newLine: spaceForOneline)) + indentClosure(isMultiline ? level : 0) + end + (isMultiline ? "" : spaceForOneline)
+            switch (isMultiline, objectIds.isEmpty) {
+            case (true, true):
+                return """
+                \(objectKey) = (
+                \(indentClosure(level)));
+                """
+            case (true, false):
+                let content = objectIds
+                    .map { objectID in
+                        "\(indentClosure(level + 1))\(try! escape(with: objectID))\(wrapComment(for: try! escape(with: objectID))),"
+                    }
+                    .joined(separator: newLine)
+                return """
+                \(objectKey) = (
+                \(content)
+                \(indentClosure(level)));
+                """
+            case (false, _):
+                let content = objectIds
+                    .map { objectID in
+                        "\(try! escape(with: objectID))\(wrapComment(for: try! escape(with: objectID))),"
+                    }
+                    .joined(separator: spaceForOneline)
+                return """
+                \(objectKey) = (\(content)\(spaceForOneline));\(spaceForOneline)
+                """
+            }
         } else if let pairList = pairObject as? [PBXPair] {
             let begin = "\(objectKey) = ("
             let content = pairList
