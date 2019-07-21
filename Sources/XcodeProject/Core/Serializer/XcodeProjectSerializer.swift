@@ -244,12 +244,9 @@ internal extension XcodeProjectSerializer {
         let eachObjectPairContent = objects
             .sorted { $0.id < $1.id }
             .map { object -> String in
-                let comment = wrapComment(for: object.id)
-                let begin = "\(object.id)\(comment) = {"
-                let end = "};"
                 let isMultiline = isMultiLineClosure(isa)
-                let isaSpace = isMultiline ? "" : spaceForOneline
-                let isaValue = "isa = \(isa.rawValue);" + isaSpace
+                let comment = wrapComment(for: object.id)
+                let isaValue = "isa = \(isa.rawValue);"
                 let objectPair = object.objectDictionary
                     .sorted { $0.0 < $1.0 }
                     .compactMap { (key: String, value: Any) -> String? in
@@ -264,17 +261,19 @@ internal extension XcodeProjectSerializer {
                         }
                         return indentClosure(isMultiline ? 3 : 0) + content
                     }.joined(separator: isMultiline ? newLine : "")
-                
-                return indentClosure(2)
-                    + begin
-                    + (isMultiline ? newLine : "")
-                    + indentClosure(isMultiline ? 3 : 0)
-                    + isaValue
-                    + (isMultiline ? newLine : "")
-                    + objectPair
-                    + (isMultiline ? newLine : "")
-                    + indentClosure(isMultiline ? 2 : 0)
-                    + end
+                switch isMultiline {
+                case true:
+                    return """
+                    \(indentClosure(2))\(object.id)\(comment) = {
+                    \(indentClosure(3))\(isaValue)
+                    \(objectPair)
+                    \(indentClosure(2))};
+                    """
+                case false:
+                    return """
+                    \(indentClosure(2))\(object.id)\(comment) = {\(isaValue)\(spaceForOneline)\(objectPair)};
+                    """
+                }
             }
             .joined(separator: newLine)
         
