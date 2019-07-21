@@ -88,7 +88,7 @@ internal extension XcodeProjectSerializer {
             let template = NSRegularExpression.escapedTemplate(for: replacement)
             str = regex.stringByReplacingMatches(in: str, options: [], range: range, withTemplate: template)
         }
-
+        
         let noEscapeRegex = try NSRegularExpression(pattern: "^[a-z0-9_\\.\\/]+$", options: NSRegularExpression.Options.caseInsensitive)
         if noEscapeRegex.firstMatch(in: str, options: [], range: NSRange(location: 0, length: str.count)) == nil {
             return "\"\(str)\""
@@ -285,7 +285,7 @@ internal extension XcodeProjectSerializer {
         """
     }
     
-
+    
     func generateWriteContent() -> String {
         let content = project.fullPair
             .sorted { $0.0 < $1.0 }
