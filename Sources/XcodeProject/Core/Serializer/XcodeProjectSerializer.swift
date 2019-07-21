@@ -202,13 +202,13 @@ internal extension XcodeProjectSerializer {
                             return """
                             \(indentClosure(level + 2))\(generateForEachField(for: (key, value), with: isa, and: level + 1))
                             """
-                    }
-                    .joined(separator: newLine)
+                        }
+                        .joined(separator: newLine)
                     return """
-                        \(indentClosure(level + 1)){
-                        \(generateForEachFields)
-                        \(indentClosure(level + 1))},
-                        """
+                    \(indentClosure(level + 1)){
+                    \(generateForEachFields)
+                    \(indentClosure(level + 1))},
+                    """
                 }
                 .joined(separator: "")
             
