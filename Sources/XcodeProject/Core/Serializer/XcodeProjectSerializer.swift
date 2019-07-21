@@ -191,15 +191,15 @@ internal extension XcodeProjectSerializer {
             return begin + content + newLine + indentClosure(level) + end
         } else if let pair = pairObject as? PBXPair {
             let begin = "\(objectKey) = {"
-            let top = isMultiline ? indentClosure(isMultiline ? level + 1 : 0) : ""
+            let top = indentClosure(level + 1)
             let content = pair
                 .sorted { $0.0 < $1.0 }
                 .compactMap { key, value in
                     return top + generateForEachField(for: (key, value), with: isa, and: level + 1)
                 }
-                .joined(separator: (isMultiline ? newLine: ""))
+                .joined(separator: newLine)
             let end = "};"
-            return begin + (isMultiline ? newLine: "") + content + (isMultiline ? newLine : "") + indentClosure(isMultiline ? level : 0) + end + (isMultiline ? "" : spaceForOneline)
+            return begin + newLine + content + newLine + indentClosure(level) + end
         } else {
             let string = try! escape(with: "\(pairObject)")
             let isNeedComment = !(objectKey == "remoteGlobalIDString" || objectKey == "TestTargetID")
