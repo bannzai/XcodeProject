@@ -20,6 +20,25 @@ func xcodeProjectUrl() -> URL {
     
     return url
 }
+
+func makeContextAndXcodeProject() -> (Context, XcodeProject) {
+    do {
+        let parser = try PBXProjectParser(xcodeprojectUrl: xcodeProjectUrl())
+        let project = XcodeProject(
+            parser: parser,
+            hashIDGenerator: PBXObjectHashIDGenerator()
+        )
+        return (parser.context(), project)
+    } catch {
+        XCTFail(error.localizedDescription)
+        fatalError()
+    }
+}
+
+func makeXcodeProject() -> XcodeProject {
+    let (_, proejct) = makeContextAndXcodeProject()
+    return proejct
+}
 extension Context {
     var grouped: [String: [PBX.Object]] {
         return self.dictionary

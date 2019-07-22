@@ -11,17 +11,8 @@ import Swdifft
 
 class XcodeProjectSerializerTests: XCTestCase {
     func make() -> (Context, XcodeProjectSerializer) {
-        do {
-            let parser = try PBXProjectParser(xcodeprojectUrl: xcodeProjectUrl())
-            let project = XcodeProject(
-                parser: parser,
-                hashIDGenerator: PBXObjectHashIDGenerator()
-            )
-            return (parser.context(), XcodeProjectSerializer(project: project))
-        } catch {
-            XCTFail(error.localizedDescription)
-            fatalError()
-        }
+        let (context, project) = makeContextAndXcodeProject()
+        return (context, XcodeProjectSerializer(project: project))
     }
     
     func testSerialize() {
@@ -189,22 +180,39 @@ class XcodeProjectSerializerTests: XCTestCase {
                 )
             })
             XCTContext.runActivity(named: "And It is multiple line isa", block: { _ in
-                let (_, serialization) = make()
-                let got = serialization.generateForEachField(
-                    for: (objectKey: "files", pairObject: ["BA42680E1F89EB7F001FA700", "BA42680B1F89EB7F001FA700", "BA4268091F89EB7F001FA700"]),
-                    with: .PBXResourcesBuildPhase,
-                    and: 0
-                )
-                XCTAssertEqual(
-                    got,
-                    """
-                    files = (
-                    \(indent)BA42680E1F89EB7F001FA700 /* LaunchScreen.storyboard in Resources */,
-                    \(indent)BA42680B1F89EB7F001FA700 /* Assets.xcassets in Resources */,
-                    \(indent)BA4268091F89EB7F001FA700 /* Main.storyboard in Resources */,
-                    );
-                    """
-                )
+                XCTContext.runActivity(named: "And it passed is empty object ids", block: { _ in
+                    let (_, serialization) = make()
+                    let got = serialization.generateForEachField(
+                        for: (objectKey: "files", pairObject: []),
+                        with: .PBXResourcesBuildPhase,
+                        and: 0
+                    )
+                    XCTAssertEqual(
+                        got,
+                        """
+                        files = (
+                        );
+                        """
+                    )
+                })
+                XCTContext.runActivity(named: "And it passed is not empty object ids", block: { _ in
+                    let (_, serialization) = make()
+                    let got = serialization.generateForEachField(
+                        for: (objectKey: "files", pairObject: ["BA42680E1F89EB7F001FA700", "BA42680B1F89EB7F001FA700", "BA4268091F89EB7F001FA700"]),
+                        with: .PBXResourcesBuildPhase,
+                        and: 0
+                    )
+                    XCTAssertEqual(
+                        got,
+                        """
+                        files = (
+                        \(indent)BA42680E1F89EB7F001FA700 /* LaunchScreen.storyboard in Resources */,
+                        \(indent)BA42680B1F89EB7F001FA700 /* Assets.xcassets in Resources */,
+                        \(indent)BA4268091F89EB7F001FA700 /* Main.storyboard in Resources */,
+                        );
+                        """
+                    )
+                })
             })
         }
         
