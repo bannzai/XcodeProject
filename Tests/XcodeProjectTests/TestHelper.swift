@@ -39,6 +39,28 @@ func makeXcodeProject() -> XcodeProject {
     let (_, proejct) = makeContextAndXcodeProject()
     return proejct
 }
+
+func makeContextAndSerializer() -> (Context, XcodeProjectSerializer) {
+    let (context, project) = makeContextAndXcodeProject()
+    let serializer = XcodeProjectSerializer(
+        project: project,
+        fieldFormatter: FieldListFormatterImpl(
+            project: project,
+            atomicValueFormatter: PBXAtomicValueFormatterImpl(project: project),
+            valueListFormatter: PBXAtomicValueListFieldFormatterImpl(
+                project: project,
+                singlelineFormatter: SinglelinePBXAtomicValueListFieldFormatter(project: project),
+                multilineFormatter: MultiplelinePBXAtomicValueListFieldFormatter(project: project)
+            ),
+            mapFormatter: PBXRawMapFormatterImpl(project: project),
+            mapListFormatter: PBXRawMapListFormatterImpl(
+                project: project
+            )
+        )
+    )
+    return (context, serializer)
+}
+
 extension Context {
     var grouped: [String: [PBX.Object]] {
         return self.dictionary
