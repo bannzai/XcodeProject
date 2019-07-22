@@ -16,13 +16,13 @@ public struct FieldListFormatterImpl: FieldFormatter {
 
     public let project: XcodeProject
     private let atomicValueFormatter: PBXAtomicValueFormatter
-    private let valueListFormatter: AtomicValueListFieldFormatter
+    private let valueListFormatter: PBXAtomicValueListFieldFormatter
     private let mapFormatter: PBXRawMapFormatter
     private let mapListFormatter: PBXRawMapListFormatter
     public init(
         project: XcodeProject,
         atomicValueFormatter: PBXAtomicValueFormatter,
-        valueListFormatter: AtomicValueListFieldFormatter,
+        valueListFormatter: PBXAtomicValueListFieldFormatter,
         mapFormatter: PBXRawMapFormatter,
         mapListFormatter: PBXRawMapListFormatter
         ) {

@@ -1,5 +1,5 @@
 //
-//  MultiplelineAtomicValueListFieldFormatter.swift
+//  MultiplelinePBXAtomicValueListFieldFormatter.swift
 //  XcodeProject
 //
 //  Created by Yudai Hirose on 2019/07/22.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct MultiplelineAtomicValueListFieldFormatter: AtomicValueListFieldFormatterComponent {
+public struct MultiplelinePBXAtomicValueListFieldFormatter: PBXAtomicValueListFieldFormatterComponent {
     public let project: XcodeProject
     public init(project: XcodeProject) {
         self.project = project

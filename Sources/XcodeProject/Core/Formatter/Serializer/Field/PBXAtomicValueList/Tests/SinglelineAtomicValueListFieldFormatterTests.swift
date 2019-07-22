@@ -1,5 +1,5 @@
 //
-//  SinglelineAtomicValueListFieldFormatterTests.swift
+//  SinglelinePBXAtomicValueListFieldFormatterTests.swift
 //  XcodeProjectTests
 //
 //  Created by Yudai Hirose on 2019/07/22.
@@ -8,10 +8,10 @@
 import XCTest
 @testable import XcodeProject
 
-class SinglelineAtomicValueListFieldFormatterTests: XCTestCase {
+class SinglelinePBXAtomicValueListFieldFormatterTests: XCTestCase {
 
-    func make() -> SinglelineAtomicValueListFieldFormatter {
-        return SinglelineAtomicValueListFieldFormatter(
+    func make() -> SinglelinePBXAtomicValueListFieldFormatter {
+        return SinglelinePBXAtomicValueListFieldFormatter(
                 project: makeXcodeProject()
         )
     }

@@ -1,5 +1,5 @@
 //
-//  MultilineAtomicValueListFieldFormatterTests.swift
+//  MultilinePBXAtomicValueListFieldFormatterTests.swift
 //  XcodeProjectTests
 //
 //  Created by Yudai Hirose on 2019/07/22.
@@ -8,9 +8,9 @@
 import XCTest
 @testable import XcodeProject
 
-class MultilineAtomicValueListFieldFormatterTests: XCTestCase {
-    func make() -> MultiplelineAtomicValueListFieldFormatter {
-        return MultiplelineAtomicValueListFieldFormatter(
+class MultilinePBXAtomicValueListFieldFormatterTests: XCTestCase {
+    func make() -> MultiplelinePBXAtomicValueListFieldFormatter {
+        return MultiplelinePBXAtomicValueListFieldFormatter(
             project: makeXcodeProject()
         )
     }
