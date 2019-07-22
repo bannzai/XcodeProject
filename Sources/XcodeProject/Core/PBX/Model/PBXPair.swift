@@ -7,4 +7,28 @@
 
 import Foundation
 
-public typealias PBXPair = [String: Any]
+public protocol PBXInterface { }
+
+public typealias PBXRawKey = String
+public typealias PBXAtomicRawValue = String
+public typealias PBXPair = [String: PBXInterface]
+
+extension PBXPair: PBXInterface {
+    
+}
+
+extension Array: PBXInterface where Element == PBXInterface {
+    
+}
+
+extension PBXAtomicRawValue: PBXInterface {
+    
+}
+
+extension Int32: PBXInterface {
+    
+}
+
+extension Int: PBXInterface {
+    
+}
