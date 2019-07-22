@@ -9,11 +9,32 @@ import Foundation
 
 public struct AtomicValueListFieldFormatter: FieldFormatter {
     public let project: XcodeProject
-    public init(project: XcodeProject) {
+    private let singlelineFormatter: AtomicValueListFieldFormatterComponent
+    private let multilineFormatter: AtomicValueListFieldFormatterComponent
+    public init(
+        project: XcodeProject,
+        singlelineFormatter: AtomicValueListFieldFormatterComponent,
+        multilineFormatter: AtomicValueListFieldFormatterComponent
+        ) {
         self.project = project
+        self.singlelineFormatter = singlelineFormatter
+        self.multilineFormatter = multilineFormatter
     }
     public func format(of info: FieldFormatterInfomation, for level: Int) -> String {
-        fatalError()
+        let key = try! escape(with: info.key)
+
+        if key == "isa" {
+            // skip
+            fatalError("unexcepct isa: \(info.isa)")
+        }
+        
+        let objectIds = info.value
+        switch isMultiLine(info.isa) {
+        case false:
+            return singlelineFormatter.format(of: (key: key, objectIds: objectIds), level: level)
+        case true:
+            return multilineFormatter.format(of: (key: key, objectIds: objectIds), level: level)
+        }
     }
 }
 
