@@ -8,16 +8,19 @@
 import Foundation
 
 public protocol Writer {
-    func write(content: String, destinationURL: URL) throws
+    func write(xcodeProject: XcodeProject) throws
 }
 
 public struct FileWriter: Writer {
-    public init() { }
-    public func write(content: String, destinationURL: URL) throws {
-        try content.write(
-            to: destinationURL,
+    private let serializer: XcodeProjectSerializer
+    public init(serializer: XcodeProjectSerializer) {
+        self.serializer = serializer
+    }
+    public func write(xcodeProject: XcodeProject) throws {
+        try serializer.serialize().write(
+            to: xcodeProject.context.xcodeprojectUrl,
             atomically: true,
-            encoding: String.Encoding.utf8
+            encoding: .utf8
         )
     }
 }
