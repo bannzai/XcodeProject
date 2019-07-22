@@ -10,7 +10,7 @@ import Foundation
 
 public struct PBXSourcesBuildPhaseTranslator: Translator {
     typealias Object = PBX.SourcesBuildPhase
-    typealias PairType = PBXRawType
+    typealias PairType = PBXRawMapType
     
     func fromPair(with pairType: PairType, allPBX: Context) -> Object {
         // TODO:
@@ -18,7 +18,7 @@ public struct PBXSourcesBuildPhaseTranslator: Translator {
     }
     
     func toPair(for object: Object) -> PairType {
-        let pair: PBXRawType = [
+        let pair: PBXRawMapType = [
             "isa": object.isa.rawValue,
             "buildActionMask": Int32.max,
             "files": object.files.map { $0.id },

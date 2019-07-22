@@ -171,7 +171,7 @@ internal extension XcodeProjectSerializer {
         let isMultiline: Bool = isMultiLineClosure(isa)
         if let _ = pairObject as? [String] {
             return fieldFormatter.format(of: (key: objectKey, value: pairObject, isa: isa), for: level)
-        } else if let pairList = pairObject as? [PBXRawType] {
+        } else if let pairList = pairObject as? [PBXRawMapType] {
             let content = pairList
                 .map { pair -> String in
                     let generateForEachFields = pair
@@ -195,7 +195,7 @@ internal extension XcodeProjectSerializer {
             \(content)
             \(indentClosure(level)));
             """
-        } else if let pair = pairObject as? PBXRawType {
+        } else if let pair = pairObject as? PBXRawMapType {
             let top = indentClosure(level + 1)
             let content = pair
                 .sorted { $0.0 < $1.0 }

@@ -14,7 +14,7 @@ open class XcodeProject {
     public private(set) lazy var pbxUrl: URL = parser.projectURL()
     public private(set) lazy var allPBX: Context = parser.context()
     public private(set) lazy var project: PBX.Project = parser.rootObject(with: allPBX)
-    public private(set) lazy var fullPair: PBXRawType = parser.pair()
+    public private(set) lazy var fullPair: PBXRawMapType = parser.pair()
     
     private let parser: Parser
     private let hashIDGenerator: StringGenerator
@@ -34,7 +34,7 @@ extension XcodeProject {
         let fileRef: PBX.FileReference
         
         let isa = ObjectType.PBXFileReference.rawValue
-        let pair: PBXRawType = [
+        let pair: PBXRawMapType = [
             "isa": isa,
             "fileEncoding": 4,
             "lastKnownFileType": LastKnownFile(fileName: fileName).value,
@@ -90,7 +90,7 @@ extension XcodeProject {
             }
             
             let isa = ObjectType.PBXGroup.rawValue
-            let pair: PBXRawType = [
+            let pair: PBXRawMapType = [
                 "isa": isa,
                 "children": [
                     childId
@@ -114,7 +114,7 @@ extension XcodeProject {
     
     private func makeBuildFile(for buildFileId: String, and fileRefId: String) -> PBX.BuildFile { // build file
         let isa = ObjectType.PBXBuildFile.rawValue
-        let pair: PBXRawType = [
+        let pair: PBXRawMapType = [
             "isa": isa,
             "fileRef": fileRefId,
             ]
@@ -159,7 +159,7 @@ extension XcodeProject {
         }
         
         let isa = ObjectType.PBXSourcesBuildPhase.rawValue
-        let pair: PBXRawType = [
+        let pair: PBXRawMapType = [
             "isa": isa,
             "buildActionMask": Int32.max,
             "files": [
@@ -185,7 +185,7 @@ extension XcodeProject {
         }
         
         let isa = ObjectType.PBXResourcesBuildPhase.rawValue
-        let pair: PBXRawType = [
+        let pair: PBXRawMapType = [
             "isa": isa,
             "buildActionMask": Int32.max,
             "files": [
