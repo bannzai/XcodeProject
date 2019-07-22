@@ -16,11 +16,13 @@ class XcodeProjectSerializerTests: XCTestCase {
             project: project,
             fieldFormatter: FieldListFormatterImpl(
                 project: project,
+                atomicValueFormatter: PBXAtomicValueFormatterImpl(project: project),
                 valueListFormatter: PBXAtomicValueListFieldFormatterImpl(
                     project: project,
                     singlelineFormatter: SinglelinePBXAtomicValueListFieldFormatter(project: project),
                     multilineFormatter: MultiplelinePBXAtomicValueListFieldFormatter(project: project)
                 ),
+                mapFormatter: PBXRawMapFormatterImpl(project: project),
                 mapListFormatter: PBXRawMapListFormatterImpl(
                     project: project
                 )
