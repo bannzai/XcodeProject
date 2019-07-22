@@ -60,7 +60,12 @@ extension /* prefix */ PBX {
     
     open class SourcesBuildPhase: PBX.BuildPhase {
         override open var objectDictionary: PBXRawMapType {
-            return PBXSourcesBuildPhaseTranslator().toPair(for: self)
+             return [
+                "isa": isa.rawValue,
+                "buildActionMask": Int32.max,
+                "files": files.map { $0.id },
+                "runOnlyForDeploymentPostprocessing": 0
+            ]
         }
     }
     
