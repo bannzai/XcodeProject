@@ -8,6 +8,9 @@ import UIKit
 import AppKit
 #endif
 
+{% if not argument.testableImport == nil %}@testable import {{ argument.testableImport }}{% endif %}
+
+
 {% macro swiftifyMethodName name %}{{ name | replace:"(","_" | replace:")","" | replace:":","_" | replace:"`","" | snakeToCamelCase | lowerFirstWord }}{% endmacro %}
 
 {% macro methodThrowableErrorDeclaration method %}
