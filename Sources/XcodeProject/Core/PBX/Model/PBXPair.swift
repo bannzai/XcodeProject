@@ -8,5 +8,8 @@
 import Foundation
 
 public typealias PBXRawKeyType = String
-public typealias PBXRawAtomicType = Any
-public typealias PBXRawType = [PBXRawKeyType: PBXRawAtomicType]
+public typealias PBXRawAnyValueType = Any
+public typealias PBXRawType = [PBXRawKeyType: PBXRawAnyValueType]
+
+// FIXME: For parsed pbx propertylist values, after all string raw value.
+public typealias PBXRawAtomicValueType = String
