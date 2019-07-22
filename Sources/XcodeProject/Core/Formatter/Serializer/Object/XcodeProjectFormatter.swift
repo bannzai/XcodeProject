@@ -23,7 +23,7 @@ public struct XcodeProjectFormatterImpl: XcodeProjectFormatter {
     }
     
     public func format(with project: XcodeProject) -> String {
-        let content = project.fullPair
+        let content = project.context.allPBX
             .sorted { $0.0 < $1.0 }
             .reduce("") { (lines, pair: (key: String, _: Any)) in
                 switch pair.key {

@@ -19,7 +19,7 @@ public struct TopRowFormatterImpl: SerializeFormatter, TopRowFormatter {
     
     public func format(key: PBXRawKeyType) -> String {
         let comment = wrapComment(for: key)
-        let row = "\(key) = \(project.fullPair[key]!)\(comment);"
+        let row = "\(key) = \(project.context.allPBX[key]!)\(comment);"
         let content = row
             .components(separatedBy: newLine)
             .map { r in

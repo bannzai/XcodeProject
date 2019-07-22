@@ -17,10 +17,7 @@ open class XcodeProject {
        return context.xcodeprojectUrl
     }
     public let context: Context
-    public var fullPair: PBXRawMapType {
-        return context.allPBX
-    }
-    
+
     public var rootID: String {
         return context.allPBX["rootObject"] as! String
     }
