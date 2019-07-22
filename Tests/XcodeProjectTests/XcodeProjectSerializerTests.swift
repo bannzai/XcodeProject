@@ -12,7 +12,17 @@ import Swdifft
 class XcodeProjectSerializerTests: XCTestCase {
     func make() -> (Context, XcodeProjectSerializer) {
         let (context, project) = makeContextAndXcodeProject()
-        return (context, XcodeProjectSerializer(project: project))
+        let serializer = XcodeProjectSerializer(
+            project: project,
+            fieldFormatter: FieldListFormatterImpl(
+                project: project,
+                valueListFormatter: AtomicValueListFieldFormatter(
+                    project: project,
+                    singlelineFormatter: SinglelineAtomicValueListFieldFormatter(project: project),
+                    multilineFormatter: MultiplelineAtomicValueListFieldFormatter(project: project))
+            )
+        )
+        return (context, serializer)
     }
     
     func testSerialize() {
