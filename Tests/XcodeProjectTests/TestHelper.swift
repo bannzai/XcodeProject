@@ -23,7 +23,7 @@ func xcodeProjectUrl() -> URL {
 
 func makeXcodeProject() -> XcodeProject {
     do {
-        let parser = try PBXProjectParser(xcodeprojectUrl: xcodeProjectUrl())
+        let parser = try PBXProjectContextParser(xcodeprojectUrl: xcodeProjectUrl())
         let project = XcodeProject(
             parser: parser,
             hashIDGenerator: PBXObjectHashIDGenerator()
@@ -37,7 +37,7 @@ func makeXcodeProject() -> XcodeProject {
 
 func makeFieldFormatter() -> FieldListFormatterImpl {
     do {
-        let parser = try PBXProjectParser(xcodeprojectUrl: xcodeProjectUrl())
+        let parser = try PBXProjectContextParser(xcodeprojectUrl: xcodeProjectUrl())
         let project = XcodeProject(
             parser: parser,
             hashIDGenerator: PBXObjectHashIDGenerator()
@@ -62,9 +62,9 @@ func makeFieldFormatter() -> FieldListFormatterImpl {
 
 }
 
-func makeParserAndSerializer() -> (PBXProjectParser, XcodeProjectSerializer) {
+func makeContextParserAndSerializer() -> (PBXProjectContextParser, XcodeProjectSerializer) {
     do {
-        let parser = try PBXProjectParser(xcodeprojectUrl: xcodeProjectUrl())
+        let parser = try PBXProjectContextParser(xcodeprojectUrl: xcodeProjectUrl())
         let project = XcodeProject(
             parser: parser,
             hashIDGenerator: PBXObjectHashIDGenerator()

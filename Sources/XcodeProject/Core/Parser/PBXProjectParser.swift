@@ -1,5 +1,5 @@
 //
-//  PBXProjectParser.swift
+//  PBXProjectContextParser.swift
 //  XcodeProject
 //
 //  Created by Yudai Hirose on 2019/07/10.
@@ -7,11 +7,11 @@
 
 import Foundation
 
-public protocol Parser {
+public protocol ContextParser {
     func context() -> Context
 }
 
-public class PBXProjectParser {
+public class PBXProjectContextParser {
     private let cachedContext: Context
     
     init(xcodeprojectUrl: URL) throws {
@@ -34,7 +34,7 @@ public class PBXProjectParser {
     }
 }
 
-extension PBXProjectParser: Parser {
+extension PBXProjectContextParser: ContextParser {
     public func context() -> Context {
         return cachedContext
     }

@@ -11,7 +11,7 @@ import Swdifft
 
 class XcodeProjectSerializerTests: XCTestCase {
     func make() -> (Context, XcodeProjectSerializer) {
-        let r = makeParserAndSerializer()
+        let r = makeContextParserAndSerializer()
         return (r.0.context(), r.1)
     }
     

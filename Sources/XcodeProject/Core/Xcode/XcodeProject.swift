@@ -25,11 +25,11 @@ open class XcodeProject {
         return context.allPBX["rootObject"] as! String
     }
     
-    private let parser: Parser
+    private let parser: ContextParser
     private let hashIDGenerator: StringGenerator
 
     public init(
-        parser: Parser,
+        parser: ContextParser,
         hashIDGenerator: StringGenerator
         ) {
         self.parser = parser
