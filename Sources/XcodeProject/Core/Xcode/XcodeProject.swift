@@ -9,8 +9,8 @@
 
 import Foundation
 
-open class XcodeProject {
-    public let context: Context
+public class XcodeProject {
+    let context: Context
 
     public var rootID: String {
         return context.allPBX["rootObject"] as! String
