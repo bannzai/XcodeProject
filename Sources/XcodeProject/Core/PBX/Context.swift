@@ -110,7 +110,10 @@ private extension InternalContext {
         }
         reset()
     }
-    
+}
+
+// TODO: Move to PBX.Project
+private extension InternalContext {
     func createGroupPath(with group: PBX.Group, parentPath: String) {
         let path = group.path ?? group.name ?? ""
         group.fullPath = ""
