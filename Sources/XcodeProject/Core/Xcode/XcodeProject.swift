@@ -12,8 +12,12 @@ import Foundation
 open class XcodeProject {
     public private(set) lazy var projectName: String = parser.projectName()
     public private(set) lazy var pbxUrl: URL = parser.projectURL()
-    public private(set) lazy var project: PBX.Project = parser.rootObject(with: context)
+    public private(set) lazy var context: Context = parser.context()
     public private(set) lazy var fullPair: PBXRawMapType = parser.pair()
+    
+    public var rootID: String {
+        return context.allPBX["rootObject"] as! String
+    }
     
     private let parser: Parser
     private let hashIDGenerator: StringGenerator
@@ -24,7 +28,7 @@ open class XcodeProject {
         ) {
         self.parser = parser
         self.hashIDGenerator = hashIDGenerator
-        parser.context().inject(contexualXcodeProject: self)
+        self.context.inject(contexualXcodeProject: self)
     }
 }
 
@@ -49,12 +53,12 @@ extension XcodeProject {
             context: context
         )
         
-        context.dictionary[fileRefId] = fileRef
+        context.objects[fileRefId] = fileRef
     }
     
     private func makeGroupEachPaths(for projectRootPath: String) -> [(PBX.Group, String)] {
         return context
-            .dictionary
+            .objects
             .values
             .compactMap {
                 $0 as? PBX.Group
@@ -81,7 +85,7 @@ extension XcodeProject {
             .first
         
         if let group = alreadyExistsGroup?.0 {
-            let reference: PBX.Reference = context.dictionary[childId] as! PBX.Reference
+            let reference: PBX.Reference = context.objects[childId] as! PBX.Reference
             group.children.append(reference)
             return
         } else {
@@ -107,7 +111,7 @@ extension XcodeProject {
                 context: context
             )
             
-            context.dictionary[uuid] = group
+            context.objects[uuid] = group
             appendGroupIfNeeded(with: groupEachPaths, childId: uuid, groupPathNames: Array(groupPathNames.dropLast()))
         }
     }
@@ -125,14 +129,14 @@ extension XcodeProject {
             isa: isa,
             context: context
         )
-        context.dictionary[buildFileId] = buildFile
+        context.objects[buildFileId] = buildFile
         
         return buildFile
     }
     
     private func appendBuildPhase(with buildPhaseId: String, and buildFile: PBX.BuildFile, for targetName: String, fileName: String) {
         guard let target = context
-            .dictionary
+            .objects
             .values
             .compactMap ({ $0 as? PBX.NativeTarget })
             .filter ({ $0.name == targetName })
@@ -168,7 +172,7 @@ extension XcodeProject {
             "runOnlyForDeploymentPostprocessing": 0
         ]
         
-        context.dictionary[buildPhaseId] = PBX.SourcesBuildPhase(
+        context.objects[buildPhaseId] = PBX.SourcesBuildPhase(
             id: buildPhaseId,
             dictionary: pair,
             isa: isa,
@@ -194,7 +198,7 @@ extension XcodeProject {
             "runOnlyForDeploymentPostprocessing": 0
         ]
         
-        context.dictionary[buildPhaseId] = PBX.ResourcesBuildPhase(
+        context.objects[buildPhaseId] = PBX.ResourcesBuildPhase(
             id: buildPhaseId,
             dictionary: pair,
             isa: isa,
@@ -218,7 +222,7 @@ extension XcodeProject {
         let fileRefId = hashIDGenerator.generate()
         appendFileRef(fileName, and: fileRefId)
         
-        context.resetFullFilePaths(with: project)
+        context.resetFullFilePaths()
         
         let groupEachPaths = makeGroupEachPaths(for: projectRootPath)
         appendGroupIfNeeded(with: groupEachPaths, childId: fileRefId, groupPathNames: groupPathNames)

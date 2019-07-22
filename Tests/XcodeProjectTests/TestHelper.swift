@@ -106,7 +106,7 @@ func makeParserAndSerializer() -> (PBXProjectParser, XcodeProjectSerializer) {
 
 extension Context {
     var grouped: [String: [PBX.Object]] {
-        return self.dictionary
+        return self.objects
             .values
             .toArray()
             .groupBy { $0.isa.rawValue }

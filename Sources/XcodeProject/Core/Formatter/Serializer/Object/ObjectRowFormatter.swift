@@ -19,7 +19,7 @@ public struct ObjectRowFormatterImpl: ObjectRowFormatter {
     }
     
     public func format(context: Context) -> String {
-        let groupedObject = context.dictionary
+        let groupedObject = context.objects
             .values
             .toArray()
             .groupBy { $0.isa.rawValue }

@@ -10,34 +10,51 @@ import Foundation
 
 public typealias PathType = [String: PathComponent]
 public protocol Context: class {
-    var dictionary: [String: PBX.Object] { get set }
+    var objects: [String: PBX.Object] { get set }
     var fullFilePaths: PathType { get }
     var xcodeProject: XcodeProject! { get }
-    func inject(contexualXcodeProject: XcodeProject) 
+    var allPBX: PBXRawMapType { get }
+    
+    func inject(contexualXcodeProject: XcodeProject)
+    func extractPBXProject() -> PBX.Project
+    func resetFullFilePaths()
 
     func object<T: PBX.Object>(for key: String) -> T
-    func resetFullFilePaths(with project: PBX.Project)
 }
 
 class InternalContext: Context {
-    var dictionary: [String: PBX.Object] = [:]
+    var objects: [String: PBX.Object] = [:]
     var fullFilePaths: PathType = [:]
     weak var xcodeProject: XcodeProject!
-    
-    init() { }
+    var allPBX: PBXRawMapType
+
+    init(allPBX: PBXRawMapType) {
+        self.allPBX = allPBX
+        setup()
+    }
     
     func inject(contexualXcodeProject: XcodeProject) {
         self.xcodeProject = contexualXcodeProject
     }
-    
+
+    func extractPBXProject() -> PBX.Project {
+        for value in objects.values {
+            if let v = value as? PBX.Project {
+                return v
+            }
+        }
+        fatalError()
+    }
+
     func object<T: PBX.Object>(for key: String) -> T {
-        guard let object = dictionary[key] as? T else {
+        guard let object = objects[key] as? T else {
             fatalError(assertionMessage(description: "wrong format is \(type(of: self)): \(key)"))
         }
         return object
     }
     
-    func resetFullFilePaths(with project: PBX.Project) {
+    func resetFullFilePaths() {
+        let project = extractPBXProject()
         fullFilePaths.removeAll()
         
         createFileRefPath(with: project.mainGroup)
@@ -45,8 +62,38 @@ class InternalContext: Context {
         createGroupPath(with: project.mainGroup, parentPath: "")
     }
 }
-    
+
+
+// MARK: Create
 private extension InternalContext {
+    func setup() {
+        let objects = allPBX["objects"] as! [String: PBXRawMapType]
+        objects
+            .forEach { (hashId, objectDictionary) in
+                guard
+                    let isa = objectDictionary["isa"] as? String
+                    else {
+                        fatalError(
+                            assertionMessage(description:
+                                "not exists isa key: \(hashId), value: \(objectDictionary)",
+                                "you should check for project.pbxproj that is correct."
+                            )
+                        )
+                }
+                
+                let pbxType = ObjectType.type(with: isa)
+                let pbxObject = pbxType.init(
+                    id: hashId,
+                    dictionary: objectDictionary,
+                    isa: isa,
+                    context: self
+                )
+                
+                self.objects[hashId] = pbxObject
+        }
+        resetFullFilePaths()
+    }
+    
     func createGroupPath(with group: PBX.Group, parentPath: String) {
         let path = group.path ?? group.name ?? ""
         group.fullPath = ""

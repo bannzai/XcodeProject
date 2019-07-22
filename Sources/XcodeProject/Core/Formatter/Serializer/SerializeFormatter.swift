@@ -71,11 +71,11 @@ extension SerializeFormatter {
             return "Project object"
         }
         
-        if project.project.id == hashId {
+        if project.rootID == hashId {
             return "Project object"
         }
         
-        guard let object = project.context.dictionary[hashId] else {
+        guard let object = project.context.objects[hashId] else {
             return ""
         }
         
@@ -126,7 +126,7 @@ extension SerializeFormatter {
     }
     
     func buildPhaseByFileId() -> [String: PBX.BuildPhase]  {
-        let buildPhases = self.project.context.dictionary
+        let buildPhases = self.project.context.objects
             .values
             .compactMap { $0 as? PBX.BuildPhase }
         
@@ -143,7 +143,7 @@ extension SerializeFormatter {
     
     func targetsByConfigId() -> [String: PBX.NativeTarget] {
         var dictionary: [String: PBX.NativeTarget] = [:]
-        for target in self.project.project.targets {
+        for target in project.context.extractPBXProject().targets {
             dictionary[target.buildConfigurationList.id] = target
         }
         
