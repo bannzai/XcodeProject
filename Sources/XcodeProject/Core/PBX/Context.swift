@@ -18,7 +18,7 @@ public protocol Context: class {
     
     func extractPBXProject() -> PBX.Project
     func extractProjectName() -> String
-    func resetFullFilePaths()
+    func reset()
 
     func object<T: PBX.Object>(for key: String) -> T
 }
@@ -70,7 +70,7 @@ class InternalContext: Context {
         return object
     }
     
-    func resetFullFilePaths() {
+    func reset() {
         let project = extractPBXProject()
         fullFilePaths.removeAll()
         
@@ -108,7 +108,7 @@ private extension InternalContext {
                 
                 self.objects[hashId] = pbxObject
         }
-        resetFullFilePaths()
+        reset()
     }
     
     func createGroupPath(with group: PBX.Group, parentPath: String) {

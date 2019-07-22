@@ -220,7 +220,7 @@ extension XcodeProject {
         let fileRefId = hashIDGenerator.generate()
         appendFileRef(fileName, and: fileRefId)
         
-        context.resetFullFilePaths()
+        context.reset()
         
         let groupEachPaths = makeGroupEachPaths(for: projectRootPath)
         appendGroupIfNeeded(with: groupEachPaths, childId: fileRefId, groupPathNames: groupPathNames)
