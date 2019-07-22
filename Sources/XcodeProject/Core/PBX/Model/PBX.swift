@@ -19,7 +19,7 @@ extension /* prefix */ PBX {
         open var targets: [PBX.NativeTarget] { return self.extractObjects(for: "targets") }
         open var mainGroup: PBX.Group { return self.extractObject(for: "mainGroup") }
         open var buildConfigurationList: XC.ConfigurationList { return self.extractObject(for: "buildConfigurationList") }
-        open var attributes: PBXPair { return self.extractPair(for: "attributes") }
+        open var attributes: PBXRawType { return self.extractPair(for: "attributes") }
     }
     
     open class ContainerItemProxy: ContainerItem {
@@ -43,7 +43,7 @@ extension /* prefix */ PBX {
     }
     
     open class ResourcesBuildPhase: PBX.BuildPhase {
-        override open var objectDictionary: PBXPair {
+        override open var objectDictionary: PBXRawType {
             return PBXResourcesBuildPhaseTranslator().toPair(for: self)
         }
     }
@@ -54,7 +54,7 @@ extension /* prefix */ PBX {
     }
     
     open class SourcesBuildPhase: PBX.BuildPhase {
-        override open var objectDictionary: PBXPair {
+        override open var objectDictionary: PBXRawType {
             return PBXSourcesBuildPhaseTranslator().toPair(for: self)
         }
     }
@@ -105,7 +105,7 @@ extension /* prefix */ PBX {
     }
     
     open class Group: Reference {
-        override open var objectDictionary: PBXPair {
+        override open var objectDictionary: PBXRawType {
             return PBXGroupTranslator().toPair(for: self)
         }
         

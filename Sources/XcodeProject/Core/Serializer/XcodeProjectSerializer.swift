@@ -193,7 +193,7 @@ internal extension XcodeProjectSerializer {
                 \(objectKey) = (\(content)\(spaceForOneline));\(spaceForOneline)
                 """
             }
-        } else if let pairList = pairObject as? [PBXPair] {
+        } else if let pairList = pairObject as? [PBXRawType] {
             let content = pairList
                 .map { pair -> String in
                     let generateForEachFields = pair
@@ -217,7 +217,7 @@ internal extension XcodeProjectSerializer {
             \(content)
             \(indentClosure(level)));
             """
-        } else if let pair = pairObject as? PBXPair {
+        } else if let pair = pairObject as? PBXRawType {
             let top = indentClosure(level + 1)
             let content = pair
                 .sorted { $0.0 < $1.0 }

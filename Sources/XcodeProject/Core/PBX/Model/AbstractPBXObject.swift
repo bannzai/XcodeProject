@@ -12,18 +12,18 @@ extension PBX {
     
     open class AbstractObject {
         public let id: String
-        public let dictionary: PBXPair
+        public let dictionary: PBXRawType
         public let isa: ObjectType
         public let allPBX: Context
         
         // FIXME:
-        open var objectDictionary: PBXPair {
+        open var objectDictionary: PBXRawType {
             return dictionary
         }
         
         public required init(
             id: String,
-            dictionary: PBXPair,
+            dictionary: PBXRawType,
             isa: String,
             allPBX: Context
             ) {
@@ -75,8 +75,8 @@ extension PBX {
             return objectKeys.map(allPBX.object)
         }
         
-        final func extractPair(for key: String) -> PBXPair {
-            return dictionary[key] as! PBXPair
+        final func extractPair(for key: String) -> PBXRawType {
+            return dictionary[key] as! PBXRawType
         }
     }
 }

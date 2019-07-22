@@ -208,7 +208,7 @@ class XcodeProjectSerializerTests: XCTestCase {
             })
         }
         
-        XCTContext.runActivity(named: "When pairObject is [PBXPair].") { _ in
+        XCTContext.runActivity(named: "When pairObject is [PBXRawType].") { _ in
             XCTContext.runActivity(named: "And It is multiple line isa", block: { _ in
                 let (_, serialization) = make()
                 let got = serialization.generateForEachField(
@@ -233,7 +233,7 @@ class XcodeProjectSerializerTests: XCTestCase {
             })
         }
         
-        XCTContext.runActivity(named: "When pairObject is PBXPair.") { _ in
+        XCTContext.runActivity(named: "When pairObject is PBXRawType.") { _ in
             XCTContext.runActivity(named: "And It is multiple line isa", block: { _ in
                 let (_, serialization) = make()
                 let got = serialization.generateForEachField(
@@ -292,7 +292,7 @@ class XcodeProjectSerializerTests: XCTestCase {
             })
         }
         
-        XCTContext.runActivity(named: "When pairObject is not [String], not [PBXPair], not PBXPair] (maybe String).") { _ in
+        XCTContext.runActivity(named: "When pairObject is not [String], not [PBXRawType], not PBXRawType] (maybe String).") { _ in
             XCTContext.runActivity(named: "And It is single line isa", block: { _ in
                 XCTContext.runActivity(named: "And It is needs comment", block: { _ in
                     let (_, serialization) = make()

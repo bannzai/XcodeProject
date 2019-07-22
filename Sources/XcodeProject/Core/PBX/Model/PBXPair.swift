@@ -1,5 +1,5 @@
 //
-//  PBXPair.swift
+//  PBXRawType.swift
 //  XcodeProject
 //
 //  Created by Yudai Hirose on 2019/07/10.
@@ -11,9 +11,9 @@ public protocol PBXInterface { }
 
 public typealias PBXRawKey = String
 public typealias PBXAtomicRawValue = String
-public typealias PBXPair = [String: PBXInterface]
+public typealias PBXRawType = [String: PBXInterface]
 
-extension PBXPair: PBXInterface {
+extension PBXRawType: PBXInterface {
     
 }
 

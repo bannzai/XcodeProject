@@ -10,7 +10,7 @@ import Foundation
 
 public struct PBXGroupTranslator: Translator {
     typealias Object = PBX.Group
-    typealias PairType = PBXPair
+    typealias PairType = PBXRawType
     
     func fromPair(with pairType: PairType, allPBX: Context) -> Object {
         // TODO:
@@ -18,7 +18,7 @@ public struct PBXGroupTranslator: Translator {
     }
     
     func toPair(for object: Object) -> PairType {
-        var pair: PBXPair = [
+        var pair: PBXRawType = [
             "isa": object.isa.rawValue,
             "children": object.children.map { $0.id },
             "sourceTree": object.sourceTree.value

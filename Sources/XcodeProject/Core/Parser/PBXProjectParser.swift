@@ -8,7 +8,7 @@
 import Foundation
 
 public protocol Parser {
-    func pair() -> PBXPair
+    func pair() -> PBXRawType
     func projectURL() -> URL
     func projectName() -> String
     func rootObject(with context: Context) -> PBX.Project
@@ -18,9 +18,9 @@ public protocol Parser {
 fileprivate var cachedContext: Context?
 public struct PBXProjectParser {
     private let xcodeprojectUrl: URL
-    private let allPair: PBXPair
-    private var objects: [String: PBXPair] {
-        let objectsPair = allPair["objects"] as! [String: PBXPair]
+    private let allPair: PBXRawType
+    private var objects: [String: PBXRawType] {
+        let objectsPair = allPair["objects"] as! [String: PBXRawType]
         return objectsPair
     }
 
@@ -34,7 +34,7 @@ public struct PBXProjectParser {
         let properties = try PropertyListSerialization.propertyList(from: propertyList, options: PropertyListSerialization.MutabilityOptions(), format: &format)
         
         guard
-            let pair = properties as? PBXPair
+            let pair = properties as? PBXRawType
             else {
                 throw XcodeProjectError.wrongFileFormat
         }
@@ -45,7 +45,7 @@ public struct PBXProjectParser {
 }
 
 extension PBXProjectParser: Parser {
-    public func pair() -> PBXPair {
+    public func pair() -> PBXRawType {
         return allPair
     }
     
