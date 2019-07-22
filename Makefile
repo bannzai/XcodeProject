@@ -1,0 +1,4 @@
+
+
+mint:
+	mint bootstrap --link
