@@ -16,7 +16,7 @@ class XcodeProjectSerializerTests: XCTestCase {
             project: project,
             fieldFormatter: FieldListFormatterImpl(
                 project: project,
-                valueListFormatter: AtomicValueListFieldFormatter(
+                valueListFormatter: AtomicValueListFieldFormatterImpl(
                     project: project,
                     singlelineFormatter: SinglelineAtomicValueListFieldFormatter(project: project),
                     multilineFormatter: MultiplelineAtomicValueListFieldFormatter(project: project))

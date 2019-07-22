@@ -15,10 +15,10 @@ public protocol FieldFormatter: SerializeFormatter {
 public struct FieldListFormatterImpl: FieldFormatter {
 
     public let project: XcodeProject
-    private let valueListFormatter: ValueListFieldFormatter
+    private let valueListFormatter: AtomicValueListFieldFormatter
     public init(
         project: XcodeProject,
-        valueListFormatter: ValueListFieldFormatter
+        valueListFormatter: AtomicValueListFieldFormatter
         ) {
         self.project = project
         self.valueListFormatter = valueListFormatter
