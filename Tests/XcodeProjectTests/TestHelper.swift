@@ -40,6 +40,33 @@ func makeXcodeProject() -> XcodeProject {
     return proejct
 }
 
+func makeFieldFormatter() -> FieldFormatter {
+    do {
+        let parser = try PBXProjectParser(xcodeprojectUrl: xcodeProjectUrl())
+        let project = XcodeProject(
+            parser: parser,
+            hashIDGenerator: PBXObjectHashIDGenerator()
+        )
+        return FieldListFormatterImpl(
+            project: project,
+            atomicValueFormatter: PBXAtomicValueFormatterImpl(project: project),
+            valueListFormatter: PBXAtomicValueListFieldFormatterImpl(
+                project: project,
+                singlelineFormatter: SinglelinePBXAtomicValueListFieldFormatter(project: project),
+                multilineFormatter: MultiplelinePBXAtomicValueListFieldFormatter(project: project)
+            ),
+            mapFormatter: PBXRawMapFormatterImpl(project: project),
+            mapListFormatter: PBXRawMapListFormatterImpl(
+                project: project
+            )
+        )
+    } catch {
+        XCTFail(error.localizedDescription)
+        fatalError()
+    }
+
+}
+
 func makeParserAndSerializer() -> (PBXProjectParser, XcodeProjectSerializer) {
     do {
         let parser = try PBXProjectParser(xcodeprojectUrl: xcodeProjectUrl())
