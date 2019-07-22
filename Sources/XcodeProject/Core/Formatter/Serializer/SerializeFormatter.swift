@@ -7,7 +7,7 @@
 
 import Foundation
 
-public protocol SerializeFormatter {
+public protocol SerializeFormatter: AutoMockable {
     var project: XcodeProject { get }
 }
 

@@ -8,11 +8,11 @@
 import Foundation
 
 public typealias FieldFormatterInfomation = (key: PBXRawKeyType, value: PBXRawAnyValueType, isa: ObjectType)
-public protocol FieldFormatter: SerializeFormatter {
+public protocol FieldFormatter: AutoMockable {
     func format(of info: FieldFormatterInfomation, for level: Int) -> String
 }
 
-public struct FieldListFormatterImpl: FieldFormatter {
+public struct FieldListFormatterImpl: SerializeFormatter, FieldFormatter {
 
     public let project: XcodeProject
     private let atomicValueFormatter: PBXAtomicValueFormatter

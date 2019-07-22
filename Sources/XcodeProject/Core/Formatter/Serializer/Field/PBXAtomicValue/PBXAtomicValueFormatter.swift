@@ -9,11 +9,11 @@ import Foundation
 
 public typealias PBXAtomicValueFormatterInformation = (key: PBXRawKeyType, value: PBXRawAtomicValueType, isa: ObjectType)
 
-public protocol PBXAtomicValueFormatter: SerializeFormatter {
+public protocol PBXAtomicValueFormatter: AutoMockable {
     func format(of info: PBXAtomicValueFormatterInformation, in level: Int) -> String
 }
 
-public struct PBXAtomicValueFormatterImpl: PBXAtomicValueFormatter {
+public struct PBXAtomicValueFormatterImpl: SerializeFormatter, PBXAtomicValueFormatter {
     public let project: XcodeProject
     public init(project: XcodeProject) {
         self.project = project

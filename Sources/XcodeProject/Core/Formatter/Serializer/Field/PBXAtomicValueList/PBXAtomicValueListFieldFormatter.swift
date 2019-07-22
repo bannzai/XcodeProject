@@ -9,11 +9,11 @@ import Foundation
 
 public typealias PBXAtomicValueListFieldFormatterInfomation = (key: PBXRawKeyType, value: [PBXRawAtomicValueType], isa: ObjectType)
 
-public protocol PBXAtomicValueListFieldFormatter: SerializeFormatter {
+public protocol PBXAtomicValueListFieldFormatter: AutoMockable {
     func format(of info: PBXAtomicValueListFieldFormatterInfomation, for level: Int) -> String
 }
 
-public struct PBXAtomicValueListFieldFormatterImpl: PBXAtomicValueListFieldFormatter {
+public struct PBXAtomicValueListFieldFormatterImpl: SerializeFormatter, PBXAtomicValueListFieldFormatter {
     public let project: XcodeProject
     private let singlelineFormatter: PBXAtomicValueListFieldFormatterComponent
     private let multilineFormatter: PBXAtomicValueListFieldFormatterComponent
@@ -43,7 +43,7 @@ public struct PBXAtomicValueListFieldFormatterImpl: PBXAtomicValueListFieldForma
     }
 }
 
-public protocol PBXAtomicValueListFieldFormatterComponent: SerializeFormatter {
+public protocol PBXAtomicValueListFieldFormatterComponent: AutoMockable {
     func format(of info: (key: String, objectIds: [PBXObjectIDType]), level: Int) -> String
 }
 

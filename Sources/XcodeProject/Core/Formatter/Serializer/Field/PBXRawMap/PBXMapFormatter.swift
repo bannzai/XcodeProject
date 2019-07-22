@@ -9,7 +9,7 @@ import Foundation
 
 public typealias PBXRawMapFormatterInformation = (key: PBXRawKeyType, value: PBXRawMapType, isa: ObjectType)
 
-public protocol PBXRawMapFormatter: SerializeFormatter {
+public protocol PBXRawMapFormatter: AutoMockable {
     func format(
         of info: PBXRawMapFormatterInformation,
         in level: Int,
@@ -17,7 +17,7 @@ public protocol PBXRawMapFormatter: SerializeFormatter {
         ) -> String
 }
 
-public struct PBXRawMapFormatterImpl: PBXRawMapFormatter {
+public struct PBXRawMapFormatterImpl: SerializeFormatter, PBXRawMapFormatter {
     public let project: XcodeProject
     public init(project: XcodeProject) {
         self.project = project

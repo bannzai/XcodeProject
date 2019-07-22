@@ -35,7 +35,7 @@ func makeXcodeProject() -> XcodeProject {
     }
 }
 
-func makeFieldFormatter() -> FieldFormatter {
+func makeFieldFormatter() -> FieldListFormatterImpl {
     do {
         let parser = try PBXProjectParser(xcodeprojectUrl: xcodeProjectUrl())
         let project = XcodeProject(

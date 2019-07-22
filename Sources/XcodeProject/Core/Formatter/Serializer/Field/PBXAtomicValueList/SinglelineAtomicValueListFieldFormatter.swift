@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct SinglelinePBXAtomicValueListFieldFormatter: PBXAtomicValueListFieldFormatterComponent {
+public struct SinglelinePBXAtomicValueListFieldFormatter: SerializeFormatter, PBXAtomicValueListFieldFormatterComponent {
     public let project: XcodeProject
     public init(project: XcodeProject) {
         self.project = project
