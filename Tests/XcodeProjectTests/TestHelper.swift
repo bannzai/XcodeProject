@@ -40,25 +40,34 @@ func makeXcodeProject() -> XcodeProject {
     return proejct
 }
 
-func makeContextAndSerializer() -> (Context, XcodeProjectSerializer) {
-    let (context, project) = makeContextAndXcodeProject()
-    let serializer = XcodeProjectSerializer(
-        project: project,
-        fieldFormatter: FieldListFormatterImpl(
+func makeParserAndSerializer() -> (PBXProjectParser, XcodeProjectSerializer) {
+    do {
+        let parser = try PBXProjectParser(xcodeprojectUrl: xcodeProjectUrl())
+        let project = XcodeProject(
+            parser: parser,
+            hashIDGenerator: PBXObjectHashIDGenerator()
+        )
+        let serializer = XcodeProjectSerializer(
             project: project,
-            atomicValueFormatter: PBXAtomicValueFormatterImpl(project: project),
-            valueListFormatter: PBXAtomicValueListFieldFormatterImpl(
+            fieldFormatter: FieldListFormatterImpl(
                 project: project,
-                singlelineFormatter: SinglelinePBXAtomicValueListFieldFormatter(project: project),
-                multilineFormatter: MultiplelinePBXAtomicValueListFieldFormatter(project: project)
-            ),
-            mapFormatter: PBXRawMapFormatterImpl(project: project),
-            mapListFormatter: PBXRawMapListFormatterImpl(
-                project: project
+                atomicValueFormatter: PBXAtomicValueFormatterImpl(project: project),
+                valueListFormatter: PBXAtomicValueListFieldFormatterImpl(
+                    project: project,
+                    singlelineFormatter: SinglelinePBXAtomicValueListFieldFormatter(project: project),
+                    multilineFormatter: MultiplelinePBXAtomicValueListFieldFormatter(project: project)
+                ),
+                mapFormatter: PBXRawMapFormatterImpl(project: project),
+                mapListFormatter: PBXRawMapListFormatterImpl(
+                    project: project
+                )
             )
         )
-    )
-    return (context, serializer)
+        return (parser, serializer)
+    } catch {
+        XCTFail(error.localizedDescription)
+        fatalError()
+    }
 }
 
 extension Context {

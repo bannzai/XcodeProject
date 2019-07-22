@@ -11,7 +11,8 @@ import Swdifft
 
 class XcodeProjectSerializerTests: XCTestCase {
     func make() -> (Context, XcodeProjectSerializer) {
-        return makeContextAndSerializer()
+        let r = makeParserAndSerializer()
+        return (r.0.context(), r.1)
     }
     
     func testSerialize() {
@@ -246,51 +247,6 @@ class XcodeProjectSerializerTests: XCTestCase {
                     };
                     """
                 )
-            })
-        }
-        
-        XCTContext.runActivity(named: "When pairObject is not [String], not [PBXRawMapType], not PBXRawMapType] (maybe String).") { _ in
-            XCTContext.runActivity(named: "And It is single line isa", block: { _ in
-                XCTContext.runActivity(named: "And It is needs comment", block: { _ in
-                    let (_, serialization) = make()
-                    let got = serialization.generateForEachField(
-                        for: (objectKey: "fileRef", pairObject: "BA4268031F89EB7F001FA700"),
-                        with: .PBXBuildFile,
-                        and: 0
-                    )
-                    XCTAssertEqual(
-                        got,
-                        "fileRef = BA4268031F89EB7F001FA700 /* AppDelegate.swift */;\(spaceForOneline)"
-                    )
-                })
-                XCTContext.runActivity(named: "And It is multiple line isa", block: { _ in
-                    XCTContext.runActivity(named: "And It is needs comment", block: { _ in
-                        let (_, serialization) = make()
-                        let got = serialization.generateForEachField(
-                            for: (objectKey: "ProductGroup", pairObject: "BAD04C0022E35F61008ADCAD"),
-                            with: .PBXProject,
-                            and: 0
-                        )
-                        XCTAssertEqual(
-                            got,
-                            "ProductGroup = BAD04C0022E35F61008ADCAD /* Products */;"
-                        )
-                    })
-                })
-                XCTContext.runActivity(named: "And It is not needs comment", block: { _ in
-                    let (_, serialization) = make()
-                    let got = serialization.generateForEachField(
-                        for: (objectKey: "remoteGlobalIDString", pairObject: "BA4267FF1F89EB7F001FA700"),
-                        with: .PBXContainerItemProxy,
-                        and: 0
-                    )
-                    XCTAssertEqual(
-                        got,
-                        """
-                        remoteGlobalIDString = BA4267FF1F89EB7F001FA700;
-                        """
-                    )
-                })
             })
         }
     }
