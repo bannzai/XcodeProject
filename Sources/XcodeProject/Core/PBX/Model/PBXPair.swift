@@ -13,3 +13,5 @@ public typealias PBXRawType = [PBXRawKeyType: PBXRawAnyValueType]
 
 // FIXME: For parsed pbx propertylist values, after all string raw value.
 public typealias PBXRawAtomicValueType = String
+
+public typealias PBXObjectIDType = PBXRawAtomicValueType
