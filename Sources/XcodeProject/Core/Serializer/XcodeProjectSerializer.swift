@@ -11,9 +11,6 @@ public protocol Serializer {
     func serialize() -> String
 }
 
-internal let indent = FormatterIndent.indent
-internal let newLine = FormatterIndent.newLine
-internal let spaceForOneline = FormatterIndent.spaceForOneline
 public struct XcodeProjectSerializer {
     private let project: XcodeProject
     private let xcodeProjectFormatter: XcodeProjectFormatter

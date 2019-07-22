@@ -18,6 +18,10 @@ public struct FormatterIndent {
     static internal let spaceForOneline = " "
 }
 
+internal let indent = FormatterIndent.indent
+internal let newLine = FormatterIndent.newLine
+internal let spaceForOneline = FormatterIndent.spaceForOneline
+
 extension SerializeFormatter {
     func indent(_ level: Int) -> String {
         var ret = ""
