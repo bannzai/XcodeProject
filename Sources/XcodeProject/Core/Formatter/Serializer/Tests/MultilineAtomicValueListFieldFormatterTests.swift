@@ -9,14 +9,12 @@ import XCTest
 @testable import XcodeProject
 
 class MultilineAtomicValueListFieldFormatterTests: XCTestCase {
-    func make() -> AtomicValueListFieldFormatter.Component.Multipleline {
-        return AtomicValueListFieldFormatter
-            .Component
-            .Multipleline(
-                project: makeXcodeProject()
+    func make() -> MultiplelineAtomicValueListFieldFormatter {
+        return MultiplelineAtomicValueListFieldFormatter(
+            project: makeXcodeProject()
         )
     }
-
+    
     func testFormat() {
         XCTContext.runActivity(named: "When empty object ids", block: { _ in
             let formatter = make()

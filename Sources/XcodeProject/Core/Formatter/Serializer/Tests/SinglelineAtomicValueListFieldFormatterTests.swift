@@ -10,10 +10,8 @@ import XCTest
 
 class SinglelineAtomicValueListFieldFormatterTests: XCTestCase {
 
-    func make() -> AtomicValueListFieldFormatter.Component.Singleline {
-        return AtomicValueListFieldFormatter
-            .Component
-            .Singleline(
+    func make() -> SinglelineAtomicValueListFieldFormatter {
+        return SinglelineAtomicValueListFieldFormatter(
                 project: makeXcodeProject()
         )
     }
