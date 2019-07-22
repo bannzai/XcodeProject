@@ -66,12 +66,12 @@ class XcodeProjectSerializerTests: XCTestCase {
                             dictionary: [
                                 "isa": "PBXShellScriptBuildPhase",
                                 "buildActionMask": 2147483647,
-                                "files": [Any](),
-                                "inputFileListPaths": [Any](),
-                                "inputPaths": [Any](),
+                                "files": [PBXInterface](),
+                                "inputFileListPaths": [PBXInterface](),
+                                "inputPaths": [PBXInterface](),
                                 "name": "Single Line Script",
-                                "outputFileListPaths": [Any](),
-                                "outputPaths": [Any](),
+                                "outputFileListPaths": [PBXInterface](),
+                                "outputPaths": [PBXInterface](),
                                 "runOnlyForDeploymentPostprocessing": 0,
                                 "shellPath": "/bin/sh",
                                 "shellScript": "# Type a script or drag a script file from your workspace to insert its path.\necho \"Script\"\n"
