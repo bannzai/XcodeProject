@@ -10,5 +10,5 @@ import Foundation
 
 public enum PathComponent {
     case simple(String)
-    case environmentPath(Environment, String)
+    case environmentPath(SourceTreeType.Environment, String)
 }

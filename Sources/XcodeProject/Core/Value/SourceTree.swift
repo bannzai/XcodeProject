@@ -9,6 +9,17 @@
 import Foundation
 
 public enum SourceTreeType {
+    public enum Environment: String, CaseIterable {
+        case PROJECT_FILE_PATH
+        case TARGET_NAME
+        
+        case BUILT_PRODUCTS_DIR
+        case DEVELOPER_DIR
+        case SDKROOT
+        case SOURCE_ROOT
+        case SRCROOT
+    }
+    
     case group
     case absolute
     case folder(Environment)
