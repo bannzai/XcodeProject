@@ -15,7 +15,7 @@ class PBXProjectParserTests: XCTestCase {
 //            XCTAssert(parser.context().dictionary.count == 58)
 //            XCTAssert(parser.context().fullFilePaths.count == 15)
 //            XCTAssert(parser.context().grouped.count == 13)
-            XCTAssert(parser.pair().count == 5)
+            XCTAssert(parser.context().allPBX.count == 5)
         } catch {
             XCTFail(error.localizedDescription)
         }

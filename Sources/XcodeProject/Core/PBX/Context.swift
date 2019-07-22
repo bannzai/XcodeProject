@@ -13,10 +13,12 @@ public protocol Context: class {
     var objects: [String: PBX.Object] { get set }
     var fullFilePaths: PathType { get }
     var xcodeProject: XcodeProject! { get }
+    var xcodeprojectUrl: URL { get }
     var allPBX: PBXRawMapType { get }
     
     func inject(contexualXcodeProject: XcodeProject)
     func extractPBXProject() -> PBX.Project
+    func extractProjectName() -> String
     func resetFullFilePaths()
 
     func object<T: PBX.Object>(for key: String) -> T
@@ -27,9 +29,14 @@ class InternalContext: Context {
     var fullFilePaths: PathType = [:]
     weak var xcodeProject: XcodeProject!
     var allPBX: PBXRawMapType
+    let xcodeprojectUrl: URL
 
-    init(allPBX: PBXRawMapType) {
+    init(
+        allPBX: PBXRawMapType,
+        xcodeProjectUrl: URL
+        ) {
         self.allPBX = allPBX
+        self.xcodeprojectUrl = xcodeProjectUrl
         setup()
     }
     
@@ -44,6 +51,22 @@ class InternalContext: Context {
             }
         }
         fatalError()
+    }
+    
+    func extractProjectName() -> String {
+        guard let xcodeProjFile = xcodeprojectUrl
+            .pathComponents
+            .dropLast() // drop project.pbxproj
+            .last // get PROJECTNAME.xcodeproj
+            else {
+                fatalError("No Xcode project found from \(xcodeprojectUrl.absoluteString), please specify one")
+        }
+        
+        guard let projectName = xcodeProjFile.components(separatedBy: ".").first else {
+            fatalError("Can not get project name from \(xcodeProjFile)")
+        }
+        
+        return projectName
     }
 
     func object<T: PBX.Object>(for key: String) -> T {

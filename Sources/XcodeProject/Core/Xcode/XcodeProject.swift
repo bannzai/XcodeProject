@@ -10,10 +10,16 @@
 import Foundation
 
 open class XcodeProject {
-    public private(set) lazy var projectName: String = parser.projectName()
-    public private(set) lazy var pbxUrl: URL = parser.projectURL()
-    public private(set) lazy var context: Context = parser.context()
-    public private(set) lazy var fullPair: PBXRawMapType = parser.pair()
+    public var projectName: String {
+        return context.extractProjectName()
+    }
+    public var pbxUrl: URL {
+       return context.xcodeprojectUrl
+    }
+    public let context: Context
+    public var fullPair: PBXRawMapType {
+        return context.allPBX
+    }
     
     public var rootID: String {
         return context.allPBX["rootObject"] as! String
@@ -28,7 +34,9 @@ open class XcodeProject {
         ) {
         self.parser = parser
         self.hashIDGenerator = hashIDGenerator
-        self.context.inject(contexualXcodeProject: self)
+        
+        context = parser.context()
+        context.inject(contexualXcodeProject: self)
     }
 }
 
