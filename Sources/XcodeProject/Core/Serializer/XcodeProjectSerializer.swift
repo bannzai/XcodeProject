@@ -165,7 +165,6 @@ internal extension XcodeProjectSerializer {
         let pairObject = pair.pairObject
         
         if objectKey == "isa" {
-            // skip
             fatalError("unexcepct isa: \(isa)")
         }
         

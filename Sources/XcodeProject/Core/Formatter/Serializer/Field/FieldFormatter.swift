@@ -28,7 +28,6 @@ public struct FieldListFormatterImpl: FieldFormatter {
         let object = info.value
         
         if key == "isa" {
-            // skip
             fatalError("unexcepct isa: \(info.isa)")
         }
         

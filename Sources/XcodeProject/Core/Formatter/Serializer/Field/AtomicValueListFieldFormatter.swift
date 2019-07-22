@@ -30,7 +30,6 @@ public struct AtomicValueListFieldFormatter: ValueListFieldFormatter {
         let key = try! escape(with: info.key)
 
         if key == "isa" {
-            // skip
             fatalError("unexcepct isa: \(info.isa)")
         }
         
