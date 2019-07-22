@@ -180,21 +180,6 @@ class XcodeProjectSerializerTests: XCTestCase {
                 )
             })
             XCTContext.runActivity(named: "And It is multiple line isa", block: { _ in
-                XCTContext.runActivity(named: "And it passed is empty object ids", block: { _ in
-                    let (_, serialization) = make()
-                    let got = serialization.generateForEachField(
-                        for: (objectKey: "files", pairObject: []),
-                        with: .PBXResourcesBuildPhase,
-                        and: 0
-                    )
-                    XCTAssertEqual(
-                        got,
-                        """
-                        files = (
-                        );
-                        """
-                    )
-                })
                 XCTContext.runActivity(named: "And it passed is not empty object ids", block: { _ in
                     let (_, serialization) = make()
                     let got = serialization.generateForEachField(

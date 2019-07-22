@@ -17,10 +17,17 @@ class MultilineAtomicValueListFieldFormatterTests: XCTestCase {
         )
     }
 
-    func tesFormat() {
+    func testFormat() {
         XCTContext.runActivity(named: "When empty object ids", block: { _ in
             let formatter = make()
-//            formatter.format(of: <#T##(key: String, objectIds: [PBXObjectIDType])#>, level: <#T##Int#>)
+            let got = formatter.format(of: (key: "files", objectIds: []), level: 0)
+            XCTAssertEqual(
+                got,
+                """
+                files = (
+                );
+                """
+            )
         })
     }
 
