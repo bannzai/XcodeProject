@@ -171,30 +171,8 @@ internal extension XcodeProjectSerializer {
         let isMultiline: Bool = isMultiLineClosure(isa)
         if let _ = pairObject as? [String] {
             return fieldFormatter.format(of: (key: objectKey, value: pairObject, isa: isa), for: level)
-        } else if let pairList = pairObject as? [PBXRawMapType] {
-            let content = pairList
-                .map { pair -> String in
-                    let generateForEachFields = pair
-                        .sorted { $0.0 < $1.0 }
-                        .map { key, value in
-                            return """
-                            \(indentClosure(level + 2))\(generateForEachField(for: (key, value), with: isa, and: level + 1))
-                            """
-                        }
-                        .joined(separator: newLine)
-                    return """
-                    \(indentClosure(level + 1)){
-                    \(generateForEachFields)
-                    \(indentClosure(level + 1))},
-                    """
-                }
-                .joined(separator: "")
-            
-            return """
-            \(objectKey) = (
-            \(content)
-            \(indentClosure(level)));
-            """
+        } else if let _ = pairObject as? [PBXRawMapType] {
+            return fieldFormatter.format(of: (key: objectKey, value: pairObject, isa: isa), for: level)
         } else if let pair = pairObject as? PBXRawMapType {
             let top = indentClosure(level + 1)
             let content = pair

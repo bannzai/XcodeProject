@@ -19,7 +19,11 @@ class XcodeProjectSerializerTests: XCTestCase {
                 valueListFormatter: AtomicValueListFieldFormatterImpl(
                     project: project,
                     singlelineFormatter: SinglelineAtomicValueListFieldFormatter(project: project),
-                    multilineFormatter: MultiplelineAtomicValueListFieldFormatter(project: project))
+                    multilineFormatter: MultiplelineAtomicValueListFieldFormatter(project: project)
+                ),
+                mapListFormatter: PBXRawMapListFormatterImpl(
+                    project: project
+                )
             )
         )
         return (context, serializer)
