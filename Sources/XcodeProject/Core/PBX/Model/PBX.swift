@@ -103,10 +103,10 @@ extension /* prefix */ PBX {
         }
         
         fileprivate func generateFullPath() -> PathComponent {
-            guard let path = allPBX.fullFilePaths[self.id] else {
+            guard let path = context.fullFilePaths[self.id] else {
                 fatalError(assertionMessage(description:
                     "unexpected id: \(id)",
-                    "and fullFilePaths: \(allPBX.fullFilePaths)"
+                    "and fullFilePaths: \(context.fullFilePaths)"
                     )
                 )
             }

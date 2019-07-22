@@ -85,7 +85,7 @@ extension PBXProjectParser: Parser {
             id: id,
             dictionary: projectPair,
             isa: ObjectType.PBXProject.rawValue,
-            allPBX: context
+            context: context
         )
     }
     
@@ -116,7 +116,7 @@ extension PBXProjectParser: Parser {
                     id: hashId,
                     dictionary: objectDictionary,
                     isa: isa,
-                    allPBX: context
+                    context: context
                 )
                 
                 context.dictionary[hashId] = pbxObject

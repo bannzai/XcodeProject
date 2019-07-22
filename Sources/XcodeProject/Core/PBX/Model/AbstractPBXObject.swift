@@ -14,7 +14,7 @@ extension PBX {
         public let id: String
         public let dictionary: PBXRawMapType
         public let isa: ObjectType
-        public let allPBX: Context
+        public let context: Context
         
         // FIXME:
         open var objectDictionary: PBXRawMapType {
@@ -25,12 +25,12 @@ extension PBX {
             id: String,
             dictionary: PBXRawMapType,
             isa: String,
-            allPBX: Context
+            context: Context
             ) {
             self.id = id
             self.dictionary = dictionary
             self.isa = ObjectType(for: isa)
-            self.allPBX = allPBX
+            self.context = context
         }
         
         final func extractStringIfExists(for key: String) -> String? {
@@ -67,12 +67,12 @@ extension PBX {
         
         final func extractObject<T: PBX.Object>(for key: String) -> T {
             let objectKey = extractString(for: key)
-            return allPBX.object(for: objectKey)
+            return context.object(for: objectKey)
         }
         
         final func extractObjects<T: PBX.Object>(for key: String) -> [T] {
             let objectKeys = extractStrings(for: key)
-            return objectKeys.map(allPBX.object)
+            return objectKeys.map(context.object)
         }
         
         final func extractPair(for key: String) -> PBXRawMapType {

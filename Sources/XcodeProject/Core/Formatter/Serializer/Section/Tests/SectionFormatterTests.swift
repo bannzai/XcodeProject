@@ -43,7 +43,7 @@ class SectionFormatterTests: XCTestCase {
                                 "shellScript": "# Type a script or drag a script file from your workspace to insert its path.\necho \"Script\"\n"
                             ],
                             isa: ObjectType.PBXShellScriptBuildPhase.rawValue,
-                            allPBX: formatter.project.allPBX
+                            context: formatter.project.context
                         ),
                     ]
                 )
@@ -87,7 +87,7 @@ class SectionFormatterTests: XCTestCase {
                                 "fileRef": "BA4268031F89EB7F001FA700",
                             ],
                             isa: "PBXBuildFile",
-                            allPBX: formatter.project.allPBX
+                            context: formatter.project.context
                         )
                     ]
                 )
@@ -118,7 +118,7 @@ class SectionFormatterTests: XCTestCase {
                             "remoteInfo": "iOSTestProject"
                         ],
                         isa: "PBXContainerItemProxy",
-                        allPBX: formatter.project.allPBX
+                        context: formatter.project.context
                     )
                 ]
             )

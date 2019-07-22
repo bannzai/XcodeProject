@@ -75,7 +75,7 @@ extension SerializeFormatter {
             return "Project object"
         }
         
-        guard let object = project.allPBX.dictionary[hashId] else {
+        guard let object = project.context.dictionary[hashId] else {
             return ""
         }
         
@@ -126,7 +126,7 @@ extension SerializeFormatter {
     }
     
     func buildPhaseByFileId() -> [String: PBX.BuildPhase]  {
-        let buildPhases = self.project.allPBX.dictionary
+        let buildPhases = self.project.context.dictionary
             .values
             .compactMap { $0 as? PBX.BuildPhase }
         

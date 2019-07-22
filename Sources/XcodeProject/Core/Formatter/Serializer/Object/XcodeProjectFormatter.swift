@@ -28,7 +28,7 @@ public struct XcodeProjectFormatterImpl: XcodeProjectFormatter {
             .reduce("") { (lines, pair: (key: String, _: Any)) in
                 switch pair.key {
                 case "objects":
-                    return lines + objectRowFormatter.format(context: project.allPBX)
+                    return lines + objectRowFormatter.format(context: project.context)
                 case _:
                     return lines + otherRowFormatter.format(key: pair.key)
                 }
