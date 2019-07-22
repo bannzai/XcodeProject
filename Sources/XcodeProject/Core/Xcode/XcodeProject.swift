@@ -12,7 +12,6 @@ import Foundation
 open class XcodeProject {
     public private(set) lazy var projectName: String = parser.projectName()
     public private(set) lazy var pbxUrl: URL = parser.projectURL()
-    public private(set) lazy var context: Context = parser.context()
     public private(set) lazy var project: PBX.Project = parser.rootObject(with: context)
     public private(set) lazy var fullPair: PBXRawMapType = parser.pair()
     
@@ -25,7 +24,7 @@ open class XcodeProject {
         ) {
         self.parser = parser
         self.hashIDGenerator = hashIDGenerator
-        self.context.inject(contexualXcodeProject: self)
+        parser.context().inject(contexualXcodeProject: self)
     }
 }
 
