@@ -58,13 +58,13 @@ public struct XcodeProjectSerializer {
     }
     
     private let project: XcodeProject
-    private let fieldFormatter: FieldFormatter
+    private let sectionFormatter: SectionFormatter
     public init(
         project: XcodeProject,
-        fieldFormatter: FieldFormatter
+        sectionFormatter: SectionFormatter
         ) {
         self.project = project
-        self.fieldFormatter = fieldFormatter
+        self.sectionFormatter = sectionFormatter
     }
 }
 
@@ -160,60 +160,8 @@ internal extension XcodeProjectSerializer {
         return " /* \(comment) */"
     }
     
-    func generateForEachField(for pair: (objectKey: String, pairObject: Any), with isa: ObjectType, and level: Int) -> String {
-        let objectKey = try! escape(with: pair.objectKey)
-        let pairObject = pair.pairObject
-        
-        if objectKey == "isa" {
-            fatalError("unexcepct isa: \(isa)")
-        }
-        
-        return fieldFormatter.format(of: (key: objectKey, value: pairObject, isa: isa), for: level)
-    }
-    
     func generateContentEachSection(isa: ObjectType, objects: [PBX.Object]) -> String {
-        let eachObjectPairContent = objects
-            .sorted { $0.id < $1.id }
-            .map { object -> String in
-                let isMultiline = isMultiLineClosure(isa)
-                let comment = wrapComment(for: object.id)
-                let isaValue = "isa = \(isa.rawValue);"
-                let objectPair = object.objectDictionary
-                    .sorted { $0.0 < $1.0 }
-                    .compactMap { (key: String, value: Any) -> String? in
-                        if key == "isa" {
-                            // skip
-                            return nil
-                        }
-                        
-                        let content = generateForEachField(for: (key, value), with: isa, and: 3)
-                        if content.isEmpty {
-                            return nil
-                        }
-                        return indentClosure(isMultiline ? 3 : 0) + content
-                    }.joined(separator: isMultiline ? newLine : "")
-                switch isMultiline {
-                case true:
-                    return """
-                    \(indentClosure(2))\(object.id)\(comment) = {
-                    \(indentClosure(3))\(isaValue)
-                    \(objectPair)
-                    \(indentClosure(2))};
-                    """
-                case false:
-                    return """
-                    \(indentClosure(2))\(object.id)\(comment) = {\(isaValue)\(spaceForOneline)\(objectPair)};
-                    """
-                }
-            }
-            .joined(separator: newLine)
-        
-        return """
-        /* Begin \(isa.rawValue) section */
-        \(eachObjectPairContent)
-        /* End \(isa.rawValue) section */
-        
-        """
+        return sectionFormatter.format(isa: isa, objects: objects)
     }
     
     
