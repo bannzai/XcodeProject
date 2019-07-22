@@ -12,6 +12,7 @@ public typealias PathType = [String: PathComponent]
 public protocol Context: class {
     var dictionary: [String: PBX.Object] { get set }
     var fullFilePaths: PathType { get }
+    var xcodeProject: XcodeProject! { get }
     
     func object<T: PBX.Object>(for key: String) -> T
     func resetFullFilePaths(with project: PBX.Project)
@@ -20,6 +21,13 @@ public protocol Context: class {
 class InternalContext: Context {
     var dictionary: [String: PBX.Object] = [:]
     var fullFilePaths: PathType = [:]
+    weak var xcodeProject: XcodeProject!
+    
+    init() { }
+    
+    func inject(contexualXcodeProject: XcodeProject) {
+        self.xcodeProject = contexualXcodeProject
+    }
     
     func object<T: PBX.Object>(for key: String) -> T {
         guard let object = dictionary[key] as? T else {
