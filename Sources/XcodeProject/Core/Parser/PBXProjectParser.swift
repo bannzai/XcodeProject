@@ -94,7 +94,7 @@ extension PBXProjectParser: Parser {
             return context
         }
         
-        let context = Context()
+        let context = InternalContext()
         defer {
             cachedContext = context
         }

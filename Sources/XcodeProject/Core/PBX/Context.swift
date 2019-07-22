@@ -8,8 +8,16 @@
 
 import Foundation
 
-open class Context {
-    typealias PathType = [String: PathComponent]
+public typealias PathType = [String: PathComponent]
+public protocol Context: class {
+    var dictionary: [String: PBX.Object] { get set }
+    var fullFilePaths: PathType { get }
+    
+    func object<T: PBX.Object>(for key: String) -> T
+    func resetFullFilePaths(with project: PBX.Project)
+}
+
+class InternalContext: Context {
     var dictionary: [String: PBX.Object] = [:]
     var fullFilePaths: PathType = [:]
     
@@ -20,22 +28,24 @@ open class Context {
         return object
     }
     
-    public func resetFullFilePaths(with project: PBX.Project) {
+    func resetFullFilePaths(with project: PBX.Project) {
         fullFilePaths.removeAll()
         
         createFileRefPath(with: project.mainGroup)
         createFileRefForSubGroupPath(with: project.mainGroup)
         createGroupPath(with: project.mainGroup, parentPath: "")
     }
+}
     
-    fileprivate func createGroupPath(with group: PBX.Group, parentPath: String) {
+private extension InternalContext {
+    func createGroupPath(with group: PBX.Group, parentPath: String) {
         let path = group.path ?? group.name ?? ""
         group.fullPath = ""
         group.fullPath = parentPath + "/" + path
         group.subGroups.forEach { createGroupPath(with: $0, parentPath: group.fullPath) }
     }
     
-    fileprivate func createFileRefForSubGroupPath(with group: PBX.Group, prefix: String = "") {
+    func createFileRefForSubGroupPath(with group: PBX.Group, prefix: String = "") {
         group
             .subGroups
             .forEach { subGroup in
@@ -56,7 +66,7 @@ open class Context {
         }
     }
     
-    fileprivate func createFileRefPath(with group: PBX.Group, prefix: String = "") {
+    func createFileRefPath(with group: PBX.Group, prefix: String = "") {
         group
             .fileRefs
             .forEach { reference in
@@ -78,7 +88,7 @@ open class Context {
         }
     }
     
-    fileprivate func generatePath(with prefix: String, path: String) -> String {
+    func generatePath(with prefix: String, path: String) -> String {
         return prefix + "/" + path
     }
 }
