@@ -166,21 +166,6 @@ class XcodeProjectSerializerTests: XCTestCase {
     }
     
     func testGenerateForEachFieldForPairWithISAAndLevel() {
-        XCTContext.runActivity(named: "When pairObject is [String].") { _ in
-            XCTContext.runActivity(named: "And It is single line isa", block: { _ in
-                let (_, serialization) = make()
-                let got = serialization.generateForEachField(
-                    for: (objectKey: "ATTRIBUTES", pairObject: ["CodeSignOnCopy", "RemoveHeadersOnCopy"]),
-                    with: .PBXBuildFile,
-                    and: 0
-                )
-                XCTAssertEqual(
-                    got,
-                    "ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); "
-                )
-            })
-        }
-        
         XCTContext.runActivity(named: "When pairObject is [PBXRawType].") { _ in
             XCTContext.runActivity(named: "And It is multiple line isa", block: { _ in
                 let (_, serialization) = make()
