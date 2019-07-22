@@ -7,7 +7,13 @@
 
 import Foundation
 
-public struct AtomicValueListFieldFormatter: FieldFormatter {
+public typealias ValueListFieldFormatterInfomation = (key: PBXRawKeyType, value: [PBXRawAtomicValueType], isa: ObjectType)
+
+public protocol ValueListFieldFormatter: SerializeFormatter {
+    func format(of info: ValueListFieldFormatterInfomation, for level: Int) -> String
+}
+
+public struct AtomicValueListFieldFormatter: ValueListFieldFormatter {
     public let project: XcodeProject
     private let singlelineFormatter: AtomicValueListFieldFormatterComponent
     private let multilineFormatter: AtomicValueListFieldFormatterComponent
@@ -20,7 +26,7 @@ public struct AtomicValueListFieldFormatter: FieldFormatter {
         self.singlelineFormatter = singlelineFormatter
         self.multilineFormatter = multilineFormatter
     }
-    public func format(of info: FieldFormatterInfomation, for level: Int) -> String {
+    public func format(of info: ValueListFieldFormatterInfomation, for level: Int) -> String {
         let key = try! escape(with: info.key)
 
         if key == "isa" {
