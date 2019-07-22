@@ -106,7 +106,18 @@ extension /* prefix */ PBX {
     
     open class Group: Reference {
         override open var objectDictionary: PBXRawMapType {
-            return PBXGroupTranslator().toPair(for: self)
+            var pair: PBXRawMapType = [
+                "isa": isa.rawValue,
+                "children": children.map { $0.id },
+                "sourceTree": sourceTree.value
+            ]
+            if let name = name  {
+                pair["name"] = name
+            }
+            if let path = path {
+                pair["path"] = path
+            }
+            return pair
         }
         
         open lazy var children: [Reference] = self.extractObjects(for: "children")
