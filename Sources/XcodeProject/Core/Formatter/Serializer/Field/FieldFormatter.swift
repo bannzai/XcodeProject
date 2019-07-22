@@ -47,7 +47,11 @@ public struct FieldListFormatterImpl: FieldFormatter {
             return mapListFormatter.format(of: (key: key, value: mapList, isa: info.isa), in: level, next: self)
         case let map as PBXRawMapType:
             return mapFormatter.format(of: (key: key, value: map, isa: info.isa), in: level, next: self)
-        case let value as PBXRawAtomicValueType:
+        case let value as Int:
+            return atomicValueFormatter.format(of: (key: key, value: value, isa: info.isa), in: level)
+        case let value as Int32:
+            return atomicValueFormatter.format(of: (key: key, value: value, isa: info.isa), in: level)
+        case let value as String:
             return atomicValueFormatter.format(of: (key: key, value: value, isa: info.isa), in: level)
         case _:
             fatalError("Unexpected type: \(info)")

@@ -36,9 +36,9 @@ public struct PBXAtomicValueListFieldFormatterImpl: PBXAtomicValueListFieldForma
         let objectIds = info.value
         switch isMultiLine(info.isa) {
         case false:
-            return singlelineFormatter.format(of: (key: key, objectIds: objectIds), level: level)
+            return singlelineFormatter.format(of: (key: key, objectIds: objectIds.map { $0.pbxValue() }), level: level)
         case true:
-            return multilineFormatter.format(of: (key: key, objectIds: objectIds), level: level)
+            return multilineFormatter.format(of: (key: key, objectIds: objectIds.map { $0.pbxValue() }), level: level)
         }
     }
 }

@@ -168,32 +168,7 @@ internal extension XcodeProjectSerializer {
             fatalError("unexcepct isa: \(isa)")
         }
         
-        let isMultiline: Bool = isMultiLineClosure(isa)
-        if let _ = pairObject as? [String] {
-            return fieldFormatter.format(of: (key: objectKey, value: pairObject, isa: isa), for: level)
-        } else if let _ = pairObject as? [PBXRawMapType] {
-            return fieldFormatter.format(of: (key: objectKey, value: pairObject, isa: isa), for: level)
-        } else if let pair = pairObject as? PBXRawMapType {
-            let top = indentClosure(level + 1)
-            let content = pair
-                .sorted { $0.0 < $1.0 }
-                .compactMap { key, value in
-                    return top + generateForEachField(for: (key, value), with: isa, and: level + 1)
-                }
-                .joined(separator: newLine)
-            return """
-            \(objectKey) = {
-            \(content)
-            \(indentClosure(level))};
-            """
-        } else {
-            let string = try! escape(with: "\(pairObject)")
-            let isNeedComment = !(objectKey == "remoteGlobalIDString" || objectKey == "TestTargetID")
-            let comment = isNeedComment ? wrapComment(for: string) : ""
-            let space = isMultiline ? "" : spaceForOneline
-            let content = "\(objectKey) = \(string)\(comment);\(space)"
-            return content
-        }
+        return fieldFormatter.format(of: (key: objectKey, value: pairObject, isa: isa), for: level)
     }
     
     func generateContentEachSection(isa: ObjectType, objects: [PBX.Object]) -> String {

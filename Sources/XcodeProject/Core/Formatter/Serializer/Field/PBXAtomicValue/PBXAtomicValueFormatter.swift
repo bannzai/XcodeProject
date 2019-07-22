@@ -24,7 +24,7 @@ public struct PBXAtomicValueFormatterImpl: PBXAtomicValueFormatter {
         let value = info.value
         
         let isMultiline = isMultiLine(info.isa)
-        let string = try! escape(with: value)
+        let string = try! escape(with: value.pbxValue())
         let isNeedComment = !(key == "remoteGlobalIDString" || key == "TestTargetID")
         let comment = isNeedComment ? wrapComment(for: string) : ""
         let space = isMultiline ? "" : spaceForOneline
