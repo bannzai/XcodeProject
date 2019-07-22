@@ -69,28 +69,33 @@ func makeParserAndSerializer() -> (PBXProjectParser, XcodeProjectSerializer) {
             parser: parser,
             hashIDGenerator: PBXObjectHashIDGenerator()
         )
-        let sectionFormatter = SectionFormatterImpl(
-            project: project,
-            rowFormatter: SectionRowFormatterImpl(
-                project: project,
-                fieldFormatter: FieldListFormatterImpl(
+        let xcodeProjectFormatter = XcodeProjectFormatterImpl(
+            objectRowFormatter: ObjectRowFormatterImpl(
+                sectionFormatter: SectionFormatterImpl(
                     project: project,
-                    atomicValueFormatter: PBXAtomicValueFormatterImpl(project: project),
-                    valueListFormatter: PBXAtomicValueListFieldFormatterImpl(
+                    rowFormatter: SectionRowFormatterImpl(
                         project: project,
-                        singlelineFormatter: SinglelinePBXAtomicValueListFieldFormatter(project: project),
-                        multilineFormatter: MultiplelinePBXAtomicValueListFieldFormatter(project: project)
-                    ),
-                    mapFormatter: PBXRawMapFormatterImpl(project: project),
-                    mapListFormatter: PBXRawMapListFormatterImpl(
-                        project: project
+                        fieldFormatter: FieldListFormatterImpl(
+                            project: project,
+                            atomicValueFormatter: PBXAtomicValueFormatterImpl(project: project),
+                            valueListFormatter: PBXAtomicValueListFieldFormatterImpl(
+                                project: project,
+                                singlelineFormatter: SinglelinePBXAtomicValueListFieldFormatter(project: project),
+                                multilineFormatter: MultiplelinePBXAtomicValueListFieldFormatter(project: project)
+                            ),
+                            mapFormatter: PBXRawMapFormatterImpl(project: project),
+                            mapListFormatter: PBXRawMapListFormatterImpl(
+                                project: project
+                            )
+                        )
                     )
                 )
-            )
+            ),
+            otherRowFormatter: TopRowFormatterImpl(project: project)
         )
         let serializer = XcodeProjectSerializer(
             project: project,
-            sectionFormatter: sectionFormatter
+            xcodeProjectFormatter: xcodeProjectFormatter
         )
         return (parser, serializer)
     } catch {

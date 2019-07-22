@@ -58,13 +58,13 @@ public struct XcodeProjectSerializer {
     }
     
     private let project: XcodeProject
-    private let sectionFormatter: SectionFormatter
+    private let xcodeProjectFormatter: XcodeProjectFormatter
     public init(
         project: XcodeProject,
-        sectionFormatter: SectionFormatter
+        xcodeProjectFormatter: XcodeProjectFormatter
         ) {
         self.project = project
-        self.sectionFormatter = sectionFormatter
+        self.xcodeProjectFormatter = xcodeProjectFormatter
     }
 }
 
@@ -159,58 +159,8 @@ internal extension XcodeProjectSerializer {
         }
         return " /* \(comment) */"
     }
-    
-    func generateContentEachSection(isa: ObjectType, objects: [PBX.Object]) -> String {
-        return sectionFormatter.format(isa: isa, objects: objects)
-    }
-    
-    
+
     func generateWriteContent() -> String {
-        let content = project.fullPair
-            .sorted { $0.0 < $1.0 }
-            .reduce("") { (lines, pair: (key: String, _: Any)) in
-                let objectKey = pair.key
-                switch objectKey {
-                case "objects":
-                    let groupedObject = project.allPBX.dictionary
-                        .values
-                        .toArray()
-                        .groupBy { $0.isa.rawValue }
-                    let objectsContent = groupedObject
-                        .keys
-                        .sorted()
-                        .map { isa in
-                            return (ObjectType(for: isa), groupedObject[isa]!)
-                        }
-                        .map { isa, objects -> String in
-                            return generateContentEachSection(isa: isa, objects: objects)
-                        }
-                        .joined(separator: newLine)
-                    let row = """
-                    \(indent)objects = {
-                    
-                    \(objectsContent)\(indent)};
-                    
-                    """
-                    return lines + row
-                case _:
-                    let comment = wrapComment(for: objectKey)
-                    let row = "\(objectKey) = \(project.fullPair[objectKey]!)\(comment);"
-                    let content = row
-                        .components(separatedBy: newLine)
-                        .map { r in
-                            return indent + r
-                        }
-                        .joined(separator: newLine)
-                    
-                    return lines + content + newLine
-                }
-        }
-        return """
-        // !$*UTF8*$!
-        {
-        \(content)}
-        
-        """
+        return xcodeProjectFormatter.format(with: project)
     }
 }
