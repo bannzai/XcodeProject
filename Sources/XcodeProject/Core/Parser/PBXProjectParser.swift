@@ -15,8 +15,8 @@ public protocol Parser {
     func context() -> Context
 }
 
-fileprivate var cachedContext: Context?
-public struct PBXProjectParser {
+public class PBXProjectParser {
+    private var cachedContext: Context?
     private let xcodeprojectUrl: URL
     private let allPair: PBXRawMapType
     private var objects: [String: PBXRawMapType] {
