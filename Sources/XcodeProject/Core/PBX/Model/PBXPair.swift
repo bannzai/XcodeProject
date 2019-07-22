@@ -7,4 +7,6 @@
 
 import Foundation
 
-public typealias PBXRawType = [String: Any]
+public typealias PBXRawKeyType = String
+public typealias PBXRawAtomicType = Any
+public typealias PBXRawType = [PBXRawKeyType: PBXRawAtomicType]
