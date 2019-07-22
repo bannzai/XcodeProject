@@ -166,29 +166,6 @@ class XcodeProjectSerializerTests: XCTestCase {
     }
     
     func testGenerateForEachFieldForPairWithISAAndLevel() {
-        XCTContext.runActivity(named: "When pairObject is [PBXRawMapType].") { _ in
-            XCTContext.runActivity(named: "And It is multiple line isa", block: { _ in
-                let (_, serialization) = make()
-                let got = serialization.generateForEachField(
-                    for: (objectKey: "projectReferences", pairObject: [
-                        ["ProductGroup": "BAD04C0022E35F61008ADCAD", "ProjectRef": "BAD04BFF22E35F61008ADCAD"],
-                        ]
-                    ),
-                    with: .PBXProject,
-                    and: 0
-                )
-                XCTAssertEqual(
-                    got,
-                    """
-                    projectReferences = (
-                    \(indent){
-                    \(indent)\(indent)ProductGroup = BAD04C0022E35F61008ADCAD /* Products */;
-                    \(indent)\(indent)ProjectRef = BAD04BFF22E35F61008ADCAD /* ReferenceProject.xcodeproj */;
-                    \(indent)},
-                    );
-                    """
-                )
-            })
-        }
+        
     }
 }

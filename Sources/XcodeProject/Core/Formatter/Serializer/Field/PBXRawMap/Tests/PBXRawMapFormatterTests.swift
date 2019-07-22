@@ -8,7 +8,7 @@
 import XCTest
 @testable import XcodeProject
 
-class PBXRawMapFormatterTests: XCTestCase{
+class PBXRawMapFormatterTests: XCTestCase {
     func make() -> (FieldFormatter, PBXRawMapFormatterImpl) {
         let nextFormatter = makeFieldFormatter()
         return (nextFormatter, PBXRawMapFormatterImpl(project: nextFormatter.project))
