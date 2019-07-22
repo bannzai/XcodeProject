@@ -27,7 +27,6 @@ public class XcodeProject {
         self.hashIDGenerator = hashIDGenerator
         
         context = parser.context()
-        context.inject(contexualXcodeProject: self)
     }
 }
 

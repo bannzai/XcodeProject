@@ -13,11 +13,9 @@ public typealias PathType = [String: PathComponent]
 public protocol Context: class {
     var objects: [String: PBX.Object] { get set }
     var fullFilePaths: PathType { get }
-    var xcodeProject: XcodeProject! { get }
     var xcodeprojectUrl: URL { get }
     var allPBX: PBXRawMapType { get }
     
-    func inject(contexualXcodeProject: XcodeProject)
     func extractPBXProject() -> PBX.Project
     func extractProjectName() -> String
     func resetFullFilePaths()
@@ -28,7 +26,6 @@ public protocol Context: class {
 class InternalContext: Context {
     var objects: [String: PBX.Object] = [:]
     var fullFilePaths: PathType = [:]
-    weak var xcodeProject: XcodeProject!
     var allPBX: PBXRawMapType
     let xcodeprojectUrl: URL
 
@@ -41,10 +38,6 @@ class InternalContext: Context {
         setup()
     }
     
-    func inject(contexualXcodeProject: XcodeProject) {
-        self.xcodeProject = contexualXcodeProject
-    }
-
     func extractPBXProject() -> PBX.Project {
         for value in objects.values {
             if let v = value as? PBX.Project {
