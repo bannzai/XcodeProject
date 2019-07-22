@@ -10,9 +10,6 @@
 import Foundation
 
 open class XcodeProject {
-    public var projectName: String {
-        return context.extractProjectName()
-    }
     public let context: Context
 
     public var rootID: String {

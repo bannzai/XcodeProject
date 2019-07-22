@@ -111,7 +111,7 @@ extension SerializeFormatter {
             let target = targetsByConfigId()[hashId]!
             return "Build configuration list for \(target.isa) \"\(target.name)\""
         case is XC.ConfigurationList:
-            return "Build configuration list for PBXProject \"\(project.projectName)\""
+            return "Build configuration list for PBXProject \"\(project.context.extractProjectName())\""
         default:
             return ""
         }
