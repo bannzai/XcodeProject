@@ -15,7 +15,7 @@ class SerializerFormatterTests: XCTestCase {
     }
     
     func testEscape() {
-        XCTContext.runActivity(named: "A", block: { _ in
+        XCTContext.runActivity(named: "Input Run Script", block: { _ in
             do {
                 let formatter = make()
                 let input = "\"# Type a script or drag a script file from your workspace to insert its path.\necho \"Script\"\n\""
