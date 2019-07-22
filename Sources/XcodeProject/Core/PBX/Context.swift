@@ -13,7 +13,8 @@ public protocol Context: class {
     var dictionary: [String: PBX.Object] { get set }
     var fullFilePaths: PathType { get }
     var xcodeProject: XcodeProject! { get }
-    
+    func inject(contexualXcodeProject: XcodeProject) 
+
     func object<T: PBX.Object>(for key: String) -> T
     func resetFullFilePaths(with project: PBX.Project)
 }
