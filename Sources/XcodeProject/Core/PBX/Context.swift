@@ -9,6 +9,7 @@
 import Foundation
 
 public typealias PathType = [String: PathComponent]
+// TODO: Confirm Iteratable, Collection
 public protocol Context: class {
     var objects: [String: PBX.Object] { get set }
     var fullFilePaths: PathType { get }
