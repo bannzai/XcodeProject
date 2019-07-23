@@ -8,7 +8,7 @@
 
 import Foundation
 
-public typealias PathType = [String: PathComponent]
+public typealias PathType = [PBXObjectIDType: PathComponent]
 // TODO: Confirm Iteratable, Collection
 public protocol Context: class {
     var objects: [String: PBX.Object] { get set }
