@@ -36,7 +36,7 @@ extension XcodeProject {
         FileReferenceAppenderImpl().append(context: context, fileName: fileName, and: fileRefId)
     }
     
-    private func makeGroupEachPaths(for projectRootPath: String) -> [(PBX.Group, String)] {
+    func makeGroupEachPaths(for projectRootPath: String) -> [(PBX.Group, String)] {
         return context
             .objects
             .values
@@ -52,19 +52,36 @@ extension XcodeProject {
         }
     }
     
-    func appendGroupIfNeeded(with groupEachPaths: [(PBX.Group, String)], childId: String, groupPathNames: [String]) {
-        if groupPathNames.isEmpty {
-            return
-        }
-        
+    func existsGroup(groupEachPaths: [(PBX.Group, String)], groupPathNames: [String]) -> PBX.Group? {
         let groupPath = groupPathNames.joined(separator: "/")
         let alreadyExistsGroup = groupEachPaths
             .filter { (group, path) -> Bool in
                 return path == groupPath
             }
             .first
+
+        return alreadyExistsGroup?.0
+    }
+    
+    func isExistsGroupPath(path: String) -> Bool {
+        return context
+            .objects
+            .values
+            .compactMap {
+                $0 as? PBX.Group
+            }
+            .map { group in
+                return group.fullPath
+        }
+        .contains(path)
+    }
+    
+    func appendGroupIfNeeded(with groupEachPaths: [(PBX.Group, String)], childId: String, groupPathNames: [String]) {
+        if groupPathNames.isEmpty {
+            return
+        }
         
-        if let group = alreadyExistsGroup?.0 {
+        if let group = existsGroup(groupEachPaths: groupEachPaths, groupPathNames: groupPathNames) {
             let reference: PBX.Reference = context.objects[childId] as! PBX.Reference
             group.children.append(reference)
             return

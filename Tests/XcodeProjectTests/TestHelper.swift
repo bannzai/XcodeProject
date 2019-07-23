@@ -21,6 +21,26 @@ func xcodeProjectUrl() -> URL {
     return url
 }
 
+func projectRootPath() -> URL {
+    guard
+        let testPath = ProcessInfo().environment["PBXProjectPath"],
+        let url = URL(
+            string: String(
+                testPath
+                    .components(separatedBy: "/")
+                    .dropLast() // drop project.pbxproj
+                    .dropLast() // drop PROJECTNAME.xcodeproj
+                    .joined(separator: "/")
+            ) + "/"
+        )
+        else {
+            XCTFail("Should set environment PBXProjectPath.")
+            fatalError()
+    }
+    
+    return url
+}
+
 func makeXcodeProject() -> XcodeProject {
     do {
         let parser = try PBXProjectContextParser(xcodeprojectUrl: xcodeProjectUrl())
