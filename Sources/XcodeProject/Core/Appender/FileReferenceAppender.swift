@@ -12,6 +12,8 @@ public protocol FileReferenceAppender {
 }
 
 public struct FileReferenceAppenderImpl: FileReferenceAppender {
+    public init() { }
+    
     public func append(context: Context, fileName: String, and fileRefId: String) {
         let fileRef: PBX.FileReference
         
