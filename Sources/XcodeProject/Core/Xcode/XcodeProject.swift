@@ -52,7 +52,8 @@ extension XcodeProject {
         }
     }
     
-    func appendGroupIfNeeded(with groupEachPaths: [(PBX.Group, String)], childId: String, groupPathNames: [String]) {
+    func appendGroupIfNeeded(childId: String, groupPathNames: [String]) {
+        let gropuPathNames = makeGroupEachPaths(for: <#T##String#>)
         if groupPathNames.isEmpty {
             return
         }
