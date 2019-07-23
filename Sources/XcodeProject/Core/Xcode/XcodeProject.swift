@@ -32,8 +32,12 @@ public class XcodeProject {
 
 // MARK: - Append
 extension XcodeProject {
-    func appendFileRef(_ fileName: String, and fileRefId: String) {
-        FileReferenceAppenderImpl().append(context: context, fileName: fileName, and: fileRefId)
+    func appendFileRef(_ fileName: String, filePath: PBXRawPathType) {
+        FileReferenceAppenderImpl(
+            hashIDGenerator: PBXObjectHashIDGenerator(),
+            groupExtractor: GroupExtractorImpl()
+        )
+        .append(context: context, filePath: filePath)
     }
     
     func group(for path: String) -> PBX.Group? {
@@ -46,15 +50,13 @@ extension XcodeProject {
     }
     
     // TODO: [String]
-    func appendGroupIfNeeded(childId: String, path: String) {
+    func appendGroupIfNeeded(childrenIDs: [String], path: String) {
         if path.isEmpty {
-            return
+            fatalError("Unexpected for path is empty")
         }
         
-        if let lastGroup = group(for: path) {
-            if let reference = context.objects[childId] as? PBX.Group {
-                lastGroup.children.append(reference)
-            }
+        let isEnd = group(for: path)
+        if isEnd != nil {
             return
         }
         
@@ -66,9 +68,7 @@ extension XcodeProject {
         let isa = ObjectType.PBXGroup.rawValue
         let pair: PBXRawMapType = [
             "isa": isa,
-            "children": [
-                childId
-            ],
+            "children": childrenIDs,
             "path": pathName,
             "sourceTree": "<group>"
         ]
@@ -82,7 +82,7 @@ extension XcodeProject {
         )
         
         context.objects[uuid] = group
-        appendGroupIfNeeded(childId: uuid, path: Array(groupPathNames.dropLast()).joined(separator: "/"))
+        appendGroupIfNeeded(childrenIDs: [uuid], path: Array(groupPathNames.dropLast()).joined(separator: "/"))
     }
 
     private func makeBuildFile(for buildFileId: String, and fileRefId: String) -> PBX.BuildFile { // build file
@@ -187,14 +187,14 @@ extension XcodeProject {
             else {
                 fatalError(assertionMessage(description: "unexpected get file name for append"))
         }
+       
+        let path = groupPathNames.joined(separator: "/")
+        appendGroupIfNeeded(childrenIDs: [], path: path)
         
         let fileRefId = hashIDGenerator.generate()
-        appendFileRef(fileName, and: fileRefId)
+        appendFileRef(fileName, filePath: filePath)
         
         context.reset()
-        
-        let path = groupPathNames.joined(separator: "/")
-        appendGroupIfNeeded(childId: fileRefId, path: path)
 
         let buildFileId = hashIDGenerator.generate()
         let buildFile = makeBuildFile(for: buildFileId, and: fileRefId)
