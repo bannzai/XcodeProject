@@ -68,6 +68,17 @@ class XcodeProjectTests: XCTestCase {
             XCTAssertNotEqual(originalObjects.keys.count, xcodeproject.context.objects.keys.count)
             XCTAssertNotEqual(originalObjects.values.count, xcodeproject.context.objects.values.count)
         }
+        
+        XCTContext.runActivity(named: "When is exists group") { (_) in
+            let xcodeproject = makeXcodeProject()
+            let originalObjects = xcodeproject.context.objects
+            
+            XCTAssertEqual(originalObjects.keys.count, xcodeproject.context.objects.keys.count)
+            XCTAssertEqual(originalObjects.values.count, xcodeproject.context.objects.values.count)
+            xcodeproject.appendGroupIfNeeded(childId: "ABCDEFG", path: "iOSTestProject/Group")
+            XCTAssertEqual(originalObjects.keys.count, xcodeproject.context.objects.keys.count)
+            XCTAssertEqual(originalObjects.values.count, xcodeproject.context.objects.values.count)
+        }
     }
 
 }

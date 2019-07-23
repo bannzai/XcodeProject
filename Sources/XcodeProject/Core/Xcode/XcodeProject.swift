@@ -52,8 +52,9 @@ extension XcodeProject {
         }
         
         if let lastGroup = group(for: path) {
-            let reference = context.objects[childId] as! PBX.Group
-            lastGroup.children.append(reference)
+            if let reference = context.objects[childId] as? PBX.Group {
+                lastGroup.children.append(reference)
+            }
             return
         }
         
