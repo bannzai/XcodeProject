@@ -33,25 +33,7 @@ public class XcodeProject {
 // MARK: - Append
 extension XcodeProject {
     func appendFileRef(_ fileName: String, and fileRefId: String) {
-        let fileRef: PBX.FileReference
-        
-        let isa = ObjectType.PBXFileReference.rawValue
-        let pair: PBXRawMapType = [
-            "isa": isa,
-            "fileEncoding": 4,
-            "lastKnownFileType": LastKnownFile(fileName: fileName).value,
-            "path": fileName,
-            "sourceTree": "<group>"
-        ]
-        
-        fileRef = PBX.FileReference(
-            id: fileRefId,
-            dictionary: pair,
-            isa: isa,
-            context: context
-        )
-        
-        context.objects[fileRefId] = fileRef
+        FileReferenceAppenderImpl().append(context: context, fileName: fileName, and: fileRefId)
     }
     
     private func makeGroupEachPaths(for projectRootPath: String) -> [(PBX.Group, String)] {
