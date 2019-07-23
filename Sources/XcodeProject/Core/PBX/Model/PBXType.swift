@@ -32,3 +32,4 @@ extension Int32: PBXRawAtomicValuable {
 public typealias PBXRawAtomicValueType = PBXRawAtomicValuable
 
 public typealias PBXObjectIDType = String
+public typealias PBXRawPathType = String
