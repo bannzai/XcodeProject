@@ -8,7 +8,7 @@
 import Foundation
 
 public protocol FileReferenceAppender {
-    func append(context: Context, filePath: PBXRawPathType) -> PBX.FileReference
+    @discardableResult func append(context: Context, filePath: PBXRawPathType) -> PBX.FileReference
 }
 
 public struct FileReferenceAppenderImpl: FileReferenceAppender {
@@ -27,7 +27,7 @@ public struct FileReferenceAppenderImpl: FileReferenceAppender {
         return nil
     }
     
-    public func append(context: Context, filePath: PBXRawPathType) -> PBX.FileReference {
+    @discardableResult public func append(context: Context, filePath: PBXRawPathType) -> PBX.FileReference {
         let pathComponent = filePath.components(separatedBy: "/")
         guard let fileName = pathComponent.last else {
             fatalError()

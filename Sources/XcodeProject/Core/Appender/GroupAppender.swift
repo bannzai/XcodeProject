@@ -8,11 +8,11 @@
 import Foundation
 
 public protocol GroupAppender {
-    func append(
+    @discardableResult func append(
         context: Context,
-        childId: String,
-        path: String
-    )
+        childrenIDs: [PBXObjectIDType],
+        path: PBXRawPathType
+    ) -> PBX.Group
 }
 
 public struct GroupAppenderImpl: GroupAppender {
@@ -28,20 +28,17 @@ public struct GroupAppenderImpl: GroupAppender {
     
     public func append(
         context: Context,
-        childId: String,
-        path: String
-        ) {
+        childrenIDs: [PBXObjectIDType],
+        path: PBXRawPathType
+        ) -> PBX.Group {
         if path.isEmpty {
-            return
+            fatalError("Unexpected for path is empty")
         }
         
-        if let lastGroup = groupExtractor.extract(context: context, path: path) {
-            if let reference = context.objects[childId] as? PBX.Group {
-                lastGroup.children.append(reference)
-            }
-            return
+        if let alreadyExistsGroup = groupExtractor.extract(context: context, path: path) {
+            return alreadyExistsGroup
         }
-        
+
         let groupPathNames = path.components(separatedBy: "/")
         guard let pathName = groupPathNames.last else {
             fatalError("unexpected not exists last value")
@@ -50,9 +47,7 @@ public struct GroupAppenderImpl: GroupAppender {
         let isa = ObjectType.PBXGroup.rawValue
         let pair: PBXRawMapType = [
             "isa": isa,
-            "children": [
-                childId
-            ],
+            "children": childrenIDs,
             "path": pathName,
             "sourceTree": "<group>"
         ]
@@ -66,10 +61,19 @@ public struct GroupAppenderImpl: GroupAppender {
         )
         
         context.objects[uuid] = group
-        append(
-            context: context,
-            childId: uuid,
-            path: Array(groupPathNames.dropLast()).joined(separator: "/")
-        )
+        
+        let nextPathComponent = groupPathNames.dropLast()
+        let isEnd = nextPathComponent.isEmpty
+        if isEnd {
+            return group
+        }
+        
+        next: do {
+            return append(
+                context: context,
+                childrenIDs: [uuid],
+                path: Array(nextPathComponent).joined(separator: "/")
+            )
+        }
     }
 }
