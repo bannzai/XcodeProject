@@ -26,26 +26,34 @@ class XcodeProjectTests: XCTestCase {
         XCTAssertNotEqual(originalObjects.values.count, xcodeproject.context.objects.values.count)
     }
     
-    func testIsExistsGroupPath() {
+    func testExistsGroup() {
         XCTContext.runActivity(named: "When is exists group", block:  { _ in
             XCTContext.runActivity(named: "It is flatten", block: { _ in
                 let xcodeproject = makeXcodeProject()
-                XCTAssertTrue(
-                    xcodeproject.isExistsGroupPath(path: "iOSTestProject")
+                XCTAssertNotNil(
+                    xcodeproject.existsGroup(path: "iOSTestProject")
                 )
             })
             XCTContext.runActivity(named: "It is nested", block: { _ in
                 let xcodeproject = makeXcodeProject()
-                XCTAssertTrue(
-                    xcodeproject.isExistsGroupPath(path: "iOSTestProject/Group")
+                XCTAssertNotNil(
+                    xcodeproject.existsGroup(path: "iOSTestProject/Group")
                 )
             })
         })
         XCTContext.runActivity(named: "When is not exists group", block:  { _ in
-            let xcodeproject = makeXcodeProject()
-            XCTAssertFalse(
-                xcodeproject.isExistsGroupPath(path: "Hoge")
-            )
+            XCTContext.runActivity(named: "It is flatten", block: { _ in
+                let xcodeproject = makeXcodeProject()
+                XCTAssertNil(
+                    xcodeproject.existsGroup(path: "Hoge")
+                )
+            })
+            XCTContext.runActivity(named: "It is nested", block: { _ in
+                let xcodeproject = makeXcodeProject()
+                XCTAssertNil(
+                    xcodeproject.existsGroup(path: "Hoge/Fuga")
+                )
+            })
         })
     }
     

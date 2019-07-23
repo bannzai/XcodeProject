@@ -63,17 +63,13 @@ extension XcodeProject {
         return alreadyExistsGroup?.0
     }
     
-    func isExistsGroupPath(path: String) -> Bool {
+    func existsGroup(path: String) -> PBX.Group? {
         return context
             .objects
             .values
-            .compactMap {
-                $0 as? PBX.Group
-            }
-            .map { group in
-                return group.fullPath
-        }
-        .contains(path)
+            .compactMap { $0 as? PBX.Group }
+            .filter { $0.fullPath == path }
+            .last
     }
     
     func appendGroupIfNeeded(with groupEachPaths: [(PBX.Group, String)], childId: String, groupPathNames: [String]) {
