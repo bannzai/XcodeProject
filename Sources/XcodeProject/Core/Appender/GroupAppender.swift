@@ -7,7 +7,6 @@
 
 import Foundation
 
-public typealias GroupPathPair = (PBX.Group, String)
 public protocol GroupAppender {
     func append(
         context: Context,
@@ -18,19 +17,13 @@ public protocol GroupAppender {
 
 public struct GroupAppenderImpl: GroupAppender {
     private let hashIDGenerator: StringGenerator
+    private let groupExtractor: GroupExtractor
     public init(
-        hashIDGenerator: StringGenerator
+        hashIDGenerator: StringGenerator,
+        groupExtractor: GroupExtractor
         ) {
         self.hashIDGenerator = hashIDGenerator
-    }
-    
-    internal func group(context: Context, for path: String) -> PBX.Group? {
-        return context
-            .objects
-            .values
-            .compactMap { $0 as? PBX.Group }
-            .filter { $0.fullPath == path }
-            .last
+        self.groupExtractor = groupExtractor
     }
     
     public func append(
@@ -42,7 +35,7 @@ public struct GroupAppenderImpl: GroupAppender {
             return
         }
         
-        if let lastGroup = group(context: context, for: path) {
+        if let lastGroup = groupExtractor.extract(context: context, path: path) {
             if let reference = context.objects[childId] as? PBX.Group {
                 lastGroup.children.append(reference)
             }
