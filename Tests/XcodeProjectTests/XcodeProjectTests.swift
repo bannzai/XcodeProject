@@ -31,13 +31,13 @@ class XcodeProjectTests: XCTestCase {
             XCTContext.runActivity(named: "It is flatten", block: { _ in
                 let xcodeproject = makeXcodeProject()
                 XCTAssertNotNil(
-                    xcodeproject.existsGroup(path: "iOSTestProject")
+                    xcodeproject.group(for: "iOSTestProject")
                 )
             })
             XCTContext.runActivity(named: "It is nested", block: { _ in
                 let xcodeproject = makeXcodeProject()
                 XCTAssertNotNil(
-                    xcodeproject.existsGroup(path: "iOSTestProject/Group")
+                    xcodeproject.group(for: "iOSTestProject/Group")
                 )
             })
         })
@@ -45,35 +45,29 @@ class XcodeProjectTests: XCTestCase {
             XCTContext.runActivity(named: "It is flatten", block: { _ in
                 let xcodeproject = makeXcodeProject()
                 XCTAssertNil(
-                    xcodeproject.existsGroup(path: "Hoge")
+                    xcodeproject.group(for: "Hoge")
                 )
             })
             XCTContext.runActivity(named: "It is nested", block: { _ in
                 let xcodeproject = makeXcodeProject()
                 XCTAssertNil(
-                    xcodeproject.existsGroup(path: "Hoge/Fuga")
+                    xcodeproject.group(for: "Hoge/Fuga")
                 )
             })
         })
     }
     
     func testGroup() {
-        let xcodeproject = makeXcodeProject()
-        
-        XCTContext.runActivity(named: "./") { (_) in
-            let groupEachPaths = xcodeproject.makeGroupEachPaths(for: "./")
-            let result = xcodeproject.existsGroup(groupEachPaths: groupEachPaths, groupPathNames: ["Domain", "Model"])
-            XCTAssertTrue(result == nil)
+        XCTContext.runActivity(named: "When is not exists group") { (_) in
+            let xcodeproject = makeXcodeProject()
+            let originalObjects = xcodeproject.context.objects
+            
+            XCTAssertEqual(originalObjects.keys.count, xcodeproject.context.objects.keys.count)
+            XCTAssertEqual(originalObjects.values.count, xcodeproject.context.objects.values.count)
+            xcodeproject.appendGroupIfNeeded(childId: "ABCDEFG", path: "iOSTestProject/Group2")
+            XCTAssertNotEqual(originalObjects.keys.count, xcodeproject.context.objects.keys.count)
+            XCTAssertNotEqual(originalObjects.values.count, xcodeproject.context.objects.values.count)
         }
-        
-        XCTContext.runActivity(named: projectRootPath().absoluteString) { (_) in
-            print(projectRootPath().absoluteString)
-            print(isDirectory(projectRootPath().absoluteString))
-            let groupEachPaths = xcodeproject.makeGroupEachPaths(for: projectRootPath().absoluteString)
-            let result = xcodeproject.existsGroup(groupEachPaths: groupEachPaths, groupPathNames: ["iOSTestProject"])
-            XCTAssertTrue(result == nil)
-        }
-        
     }
 
 }

@@ -36,34 +36,7 @@ extension XcodeProject {
         FileReferenceAppenderImpl().append(context: context, fileName: fileName, and: fileRefId)
     }
     
-    func makeGroupEachPaths(for projectRootPath: String) -> [(PBX.Group, String)] {
-        return context
-            .objects
-            .values
-            .compactMap {
-                $0 as? PBX.Group
-            }
-            .compactMap { group -> (PBX.Group, String) in
-                let path = (projectRootPath + group.fullPath)
-                    .components(separatedBy: "/")
-                    .filter { !$0.isEmpty }
-                    .joined(separator: "/")
-                return (group, path)
-        }
-    }
-    
-    func existsGroup(groupEachPaths: [(PBX.Group, String)], groupPathNames: [String]) -> PBX.Group? {
-        let groupPath = groupPathNames.joined(separator: "/")
-        let alreadyExistsGroup = groupEachPaths
-            .filter { (group, path) -> Bool in
-                return path == groupPath
-            }
-            .first
-
-        return alreadyExistsGroup?.0
-    }
-    
-    func existsGroup(path: String) -> PBX.Group? {
+    func group(for path: String) -> PBX.Group? {
         return context
             .objects
             .values
@@ -72,43 +45,45 @@ extension XcodeProject {
             .last
     }
     
-    func appendGroupIfNeeded(with groupEachPaths: [(PBX.Group, String)], childId: String, groupPathNames: [String]) {
-        if groupPathNames.isEmpty {
+    // TODO: [String]
+    func appendGroupIfNeeded(childId: String, path: String) {
+        if path.isEmpty {
             return
         }
         
-        if let group = existsGroup(groupEachPaths: groupEachPaths, groupPathNames: groupPathNames) {
-            let reference: PBX.Reference = context.objects[childId] as! PBX.Reference
-            group.children.append(reference)
+        if let lastGroup = group(for: path) {
+            let reference = context.objects[childId] as! PBX.Group
+            lastGroup.children.append(reference)
             return
-        } else {
-            guard let pathName = groupPathNames.last else {
-                fatalError("unexpected not exists last value")
-            }
-            
-            let isa = ObjectType.PBXGroup.rawValue
-            let pair: PBXRawMapType = [
-                "isa": isa,
-                "children": [
-                    childId
-                ],
-                "path": pathName,
-                "sourceTree": "<group>"
-            ]
-            
-            let uuid = hashIDGenerator.generate()
-            let group = PBX.Group(
-                id: uuid,
-                dictionary: pair,
-                isa: isa,
-                context: context
-            )
-            
-            context.objects[uuid] = group
-            appendGroupIfNeeded(with: groupEachPaths, childId: uuid, groupPathNames: Array(groupPathNames.dropLast()))
         }
+        
+        let groupPathNames = path.components(separatedBy: "/")
+        guard let pathName = groupPathNames.last else {
+            fatalError("unexpected not exists last value")
+        }
+        
+        let isa = ObjectType.PBXGroup.rawValue
+        let pair: PBXRawMapType = [
+            "isa": isa,
+            "children": [
+                childId
+            ],
+            "path": pathName,
+            "sourceTree": "<group>"
+        ]
+        
+        let uuid = hashIDGenerator.generate()
+        let group = PBX.Group(
+            id: uuid,
+            dictionary: pair,
+            isa: isa,
+            context: context
+        )
+        
+        context.objects[uuid] = group
+        appendGroupIfNeeded(childId: uuid, path: Array(groupPathNames.dropLast()).joined(separator: "/"))
     }
-    
+
     private func makeBuildFile(for buildFileId: String, and fileRefId: String) -> PBX.BuildFile { // build file
         let isa = ObjectType.PBXBuildFile.rawValue
         let pair: PBXRawMapType = [
@@ -217,9 +192,9 @@ extension XcodeProject {
         
         context.reset()
         
-        let groupEachPaths = makeGroupEachPaths(for: projectRootPath)
-        appendGroupIfNeeded(with: groupEachPaths, childId: fileRefId, groupPathNames: groupPathNames)
-        
+        let path = groupPathNames.joined(separator: "/")
+        appendGroupIfNeeded(childId: fileRefId, path: path)
+
         let buildFileId = hashIDGenerator.generate()
         let buildFile = makeBuildFile(for: buildFileId, and: fileRefId)
         
