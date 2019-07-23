@@ -57,7 +57,7 @@ class XcodeProjectTests: XCTestCase {
         })
     }
     
-    func testGroup() {
+    func testAppendGroup() {
         XCTContext.runActivity(named: "When is not exists group") { (_) in
             let xcodeproject = makeXcodeProject()
             let originalObjects = xcodeproject.context.objects
