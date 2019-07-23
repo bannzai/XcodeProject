@@ -32,7 +32,7 @@ public class XcodeProject {
 
 // MARK: - Append
 extension XcodeProject {
-    fileprivate func appendFileRef(_ fileName: String, and fileRefId: String) {
+    func appendFileRef(_ fileName: String, and fileRefId: String) {
         let fileRef: PBX.FileReference
         
         let isa = ObjectType.PBXFileReference.rawValue
