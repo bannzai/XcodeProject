@@ -14,18 +14,6 @@ func isDirectory(_ dirName: String) -> Bool {
 
 
 class XcodeProjectTests: XCTestCase {
-    
-    func testAppendFieeRef() {
-        let xcodeproject = makeXcodeProject()
-        let originalObjects = xcodeproject.context.objects
-        
-        XCTAssertEqual(originalObjects.keys.count, xcodeproject.context.objects.keys.count)
-        XCTAssertEqual(originalObjects.values.count, xcodeproject.context.objects.values.count)
-        xcodeproject.appendFileRef("aaaa.swift", and: "ABCDEFG")
-        XCTAssertNotEqual(originalObjects.keys.count, xcodeproject.context.objects.keys.count)
-        XCTAssertNotEqual(originalObjects.values.count, xcodeproject.context.objects.values.count)
-    }
-    
     func testExistsGroup() {
         XCTContext.runActivity(named: "When is exists group", block:  { _ in
             XCTContext.runActivity(named: "It is flatten", block: { _ in
@@ -56,29 +44,4 @@ class XcodeProjectTests: XCTestCase {
             })
         })
     }
-    
-    func testAppendGroup() {
-        XCTContext.runActivity(named: "When is not exists group") { (_) in
-            let xcodeproject = makeXcodeProject()
-            let originalObjects = xcodeproject.context.objects
-            
-            XCTAssertEqual(originalObjects.keys.count, xcodeproject.context.objects.keys.count)
-            XCTAssertEqual(originalObjects.values.count, xcodeproject.context.objects.values.count)
-            xcodeproject.appendGroupIfNeeded(childId: "ABCDEFG", path: "iOSTestProject/Group2")
-            XCTAssertNotEqual(originalObjects.keys.count, xcodeproject.context.objects.keys.count)
-            XCTAssertNotEqual(originalObjects.values.count, xcodeproject.context.objects.values.count)
-        }
-        
-        XCTContext.runActivity(named: "When is exists group") { (_) in
-            let xcodeproject = makeXcodeProject()
-            let originalObjects = xcodeproject.context.objects
-            
-            XCTAssertEqual(originalObjects.keys.count, xcodeproject.context.objects.keys.count)
-            XCTAssertEqual(originalObjects.values.count, xcodeproject.context.objects.values.count)
-            xcodeproject.appendGroupIfNeeded(childId: "ABCDEFG", path: "iOSTestProject/Group")
-            XCTAssertEqual(originalObjects.keys.count, xcodeproject.context.objects.keys.count)
-            XCTAssertEqual(originalObjects.values.count, xcodeproject.context.objects.values.count)
-        }
-    }
-
 }
