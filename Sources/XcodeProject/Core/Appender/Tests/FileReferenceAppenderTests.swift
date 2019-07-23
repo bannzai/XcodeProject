@@ -11,7 +11,10 @@ import XCTest
 class FileReferenceAppenderTests: XCTestCase {
 
     func make() -> FileReferenceAppenderImpl {
-        return FileReferenceAppenderImpl()
+        return FileReferenceAppenderImpl(
+            hashIDGenerator: PBXObjectHashIDGenerator(),
+            groupExtractor: GroupExtractorImpl()
+        )
     }
     
     func testAppend() {
@@ -21,7 +24,7 @@ class FileReferenceAppenderTests: XCTestCase {
         
         XCTAssertEqual(originalObjects.keys.count, xcodeproject.context.objects.keys.count)
         XCTAssertEqual(originalObjects.values.count, xcodeproject.context.objects.values.count)
-        appender.append(context: xcodeproject.context, fileName: "aaaa.swift", and: "ABCDEFG")
+        appender.append(context: xcodeproject.context, filePath: "aaaaa.swift")
         XCTAssertNotEqual(originalObjects.keys.count, xcodeproject.context.objects.keys.count)
         XCTAssertNotEqual(originalObjects.values.count, xcodeproject.context.objects.values.count)
     }
