@@ -197,10 +197,10 @@ extension XcodeProject {
         
         context.reset()
 
-        BuildPhaseAppenderImpl(
+        BuildFileAppenderImpl(
             hashIDGenerator: PBXObjectHashIDGenerator(),
-            resourceBuildPhaseAppender: ResourceBuildPhaseAppenderImpl(hashIDGenerator: PBXObjectHashIDGenerator()),
-            sourceBuildPhaseAppender: SourceBuildPhaseAppenderImpl(hashIDGenerator: PBXObjectHashIDGenerator())
+            resourceBuildFileAppender: ResourceBuildPhaseAppenderImpl(hashIDGenerator: PBXObjectHashIDGenerator()),
+            sourceBuildFileAppender: SourceBuildPhaseAppenderImpl(hashIDGenerator: PBXObjectHashIDGenerator())
         )
         .append(context: context, fileRefID: fileRefId, targetName: targetName, fileName: fileName)
     }

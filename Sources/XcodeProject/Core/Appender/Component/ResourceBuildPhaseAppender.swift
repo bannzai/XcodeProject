@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct ResourceBuildPhaseAppenderImpl: EachBuildPhaseAppender {
+public struct ResourceBuildPhaseAppenderImpl: BuildPhaseAppender {
     private let hashIDGenerator: StringGenerator
     public init(
         hashIDGenerator: StringGenerator

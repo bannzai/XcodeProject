@@ -12,6 +12,8 @@ public protocol GroupExtractor {
 }
 
 public struct GroupExtractorImpl: GroupExtractor {
+    public init() { }
+    
     public func extract(context: Context, path: String) -> PBX.Group? {
         return context
             .objects
