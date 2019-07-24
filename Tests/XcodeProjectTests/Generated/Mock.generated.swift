@@ -228,3 +228,23 @@ class SerializeFormatterMock: SerializeFormatter {
     var underlyingProject: XcodeProject!
 
 }
+class StringGeneratorMock: StringGenerator {
+    var methodCalledStack: [String] = []
+
+
+    //MARK: - generate
+
+    var generateCallsCount = 0
+    var generateCalled: Bool {
+        return generateCallsCount > 0
+    }
+    var generateReturnValue: String!
+    var generateClosure: (() -> String)?
+
+    func generate() -> String {
+        methodCalledStack.append("generate")
+        generateCallsCount += 1
+        return generateClosure.map({ $0() }) ?? generateReturnValue
+    }
+
+}
