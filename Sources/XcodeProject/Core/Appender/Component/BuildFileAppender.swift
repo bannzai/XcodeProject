@@ -18,16 +18,16 @@ public protocol BuildFileAppender {
 
 public struct BuildFileAppenderImpl: BuildFileAppender {
     private let hashIDGenerator: StringGenerator
-    private let resourceBuildFileAppender: BuildPhaseAppender
-    private let sourceBuildFileAppender: BuildPhaseAppender
+    private let resourceBuildPhaseAppender: BuildPhaseAppender
+    private let sourceBuildPhaseAppender: BuildPhaseAppender
     public init(
         hashIDGenerator: StringGenerator,
-        resourceBuildFileAppender: BuildPhaseAppender,
-        sourceBuildFileAppender: BuildPhaseAppender
+        resourceBuildPhaseAppender: BuildPhaseAppender,
+        sourceBuildPhaseAppender: BuildPhaseAppender
         ) {
         self.hashIDGenerator = hashIDGenerator
-        self.resourceBuildFileAppender = resourceBuildFileAppender
-        self.sourceBuildFileAppender = sourceBuildFileAppender
+        self.resourceBuildPhaseAppender = resourceBuildPhaseAppender
+        self.sourceBuildPhaseAppender = sourceBuildPhaseAppender
     }
     
     @discardableResult public func append(
@@ -50,9 +50,9 @@ public struct BuildFileAppenderImpl: BuildFileAppender {
         let lastKnownType = LastKnownFile(fileName: fileName)
         switch lastKnownType.type {
         case .resourceFile, .markdown, .text:
-            resourceBuildFileAppender.append(context: context, buildFile: buildFile, target: target)
+            resourceBuildPhaseAppender.append(context: context, buildFile: buildFile, target: target)
         case .sourceCode:
-            sourceBuildFileAppender.append(context: context, buildFile: buildFile, target: target)
+            sourceBuildPhaseAppender.append(context: context, buildFile: buildFile, target: target)
         }
         
         return buildFile

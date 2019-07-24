@@ -8,10 +8,10 @@
 import XCTest
 @testable import XcodeProject
 
-class BuildPhaseAppenderTests: XCTestCase {
+class BuildFileAppenderTests: XCTestCase {
     
-    func make() -> BuildPhaseAppender {
-        return BuildPhaseAppenderImpl(
+    func make() -> BuildFileAppender {
+        return BuildFileAppenderImpl(
             hashIDGenerator: PBXObjectHashIDGenerator(),
             resourceBuildPhaseAppender: ResourceBuildPhaseAppenderImpl(hashIDGenerator: PBXObjectHashIDGenerator()),
             sourceBuildPhaseAppender: SourceBuildPhaseAppenderImpl(hashIDGenerator: PBXObjectHashIDGenerator())
