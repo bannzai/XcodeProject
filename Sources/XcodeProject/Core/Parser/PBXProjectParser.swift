@@ -8,13 +8,17 @@
 import Foundation
 
 public protocol ContextParser {
-    func context() -> Context
+    func parse(xcodeprojectUrl: URL) throws -> Context
 }
 
 public class PBXProjectContextParser {
-    private let cachedContext: Context
-    
-    init(xcodeprojectUrl: URL) throws {
+    public init() {
+        
+    }
+}
+
+extension PBXProjectContextParser: ContextParser {
+    public func parse(xcodeprojectUrl: URL) throws -> Context {
         guard
             let propertyList = try? Data(contentsOf: xcodeprojectUrl)
             else {
@@ -30,12 +34,6 @@ public class PBXProjectContextParser {
         }
         
         let context = InternalContext(allPBX: allPBX, xcodeProjectUrl: xcodeprojectUrl)
-        cachedContext = context
-    }
-}
-
-extension PBXProjectContextParser: ContextParser {
-    public func context() -> Context {
-        return cachedContext
+        return context
     }
 }

@@ -16,17 +16,12 @@ public class XcodeProject {
         return context.allPBX["rootObject"] as! String
     }
     
-    private let parser: ContextParser
-    private let hashIDGenerator: StringGenerator
-
     public init(
-        parser: ContextParser,
-        hashIDGenerator: StringGenerator
-        ) {
-        self.parser = parser
-        self.hashIDGenerator = hashIDGenerator
-        
-        context = parser.context()
+        xcodeprojectURL: URL,
+        parser: ContextParser = PBXProjectContextParser(),
+        hashIDGenerator: StringGenerator = PBXObjectHashIDGenerator()
+        ) throws {
+        context = try parser.parse(xcodeprojectUrl: xcodeprojectURL)
     }
 }
 
