@@ -33,8 +33,8 @@ class BuildFileAppenderTests: XCTestCase {
             XCTAssertEqual(originalObjects.keys.count, xcodeproject.context.objects.keys.count)
             XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.BuildFile }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.BuildFile }.count)
             appender.append(context: xcodeproject.context, fileRefID: fileRef.id, targetName: "iOSTestProject", fileName: fileRef.path!)
-            XCTAssertNotEqual(originalObjects.keys.count, xcodeproject.context.objects.keys.count)
-            XCTAssertNotEqual(originalObjects.values.compactMap { $0 as? PBX.BuildFile }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.BuildFile }.count)
+            XCTAssertEqual(originalObjects.keys.count + 1, xcodeproject.context.objects.keys.count)
+            XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.BuildFile }.count + 1, xcodeproject.context.objects.values.compactMap { $0 as? PBX.BuildFile }.count)
         })
         
         // TODO: extract build file from build phase

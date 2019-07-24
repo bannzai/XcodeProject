@@ -55,8 +55,8 @@ public struct FileReferenceAppenderImpl: FileReferenceAppender {
         )
 
         context.objects[fileRefId] = fileRef
-        
-        appendGroupIfExists: do {
+
+        appendToGroupIfExists: do {
             if let lastGroup = groupExtractor.extract(context: context, path: groupPath) {
                 if let reference = context.objects[lastGroup.id] as? PBX.Group {
                     lastGroup.children.append(reference)

@@ -27,8 +27,8 @@ class FileReferenceAppenderTests: XCTestCase {
             XCTAssertEqual(originalObjects.keys.count, xcodeproject.context.objects.keys.count)
             XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.FileReference }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.FileReference }.count)
             appender.append(context: xcodeproject.context, filePath: "aaaaa.swift")
-            XCTAssertNotEqual(originalObjects.keys.count, xcodeproject.context.objects.keys.count)
-            XCTAssertNotEqual(originalObjects.values.compactMap { $0 as? PBX.FileReference }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.FileReference }.count)
+            XCTAssertEqual(originalObjects.keys.count + 1, xcodeproject.context.objects.keys.count)
+            XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.FileReference }.count + 1, xcodeproject.context.objects.values.compactMap { $0 as? PBX.FileReference }.count)
         })
         
         XCTContext.runActivity(named: "When append file is exist", block: { _ in

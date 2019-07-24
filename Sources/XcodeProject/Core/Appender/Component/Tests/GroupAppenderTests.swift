@@ -33,8 +33,8 @@ class GroupAppenderTests: XCTestCase {
                 XCTAssertEqual(originalObjects.keys.count, xcodeproject.context.objects.keys.count)
                 XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.Group }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.Group }.count)
                 appender.append(context: xcodeproject.context, childrenIDs: ["aaa"], path: "Hoge")
-                XCTAssertNotEqual(originalObjects.keys.count, xcodeproject.context.objects.keys.count)
-                XCTAssertNotEqual(originalObjects.values.compactMap { $0 as? PBX.Group }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.Group }.count)
+                XCTAssertEqual(originalObjects.keys.count + 1, xcodeproject.context.objects.keys.count)
+                XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.Group }.count + 1, xcodeproject.context.objects.values.compactMap { $0 as? PBX.Group }.count)
             })
             XCTContext.runActivity(named: "And nested directory", block: { _ in
                 groupExtractor = GroupExtractorImpl()
@@ -45,8 +45,8 @@ class GroupAppenderTests: XCTestCase {
                 XCTAssertEqual(originalObjects.keys.count, xcodeproject.context.objects.keys.count)
                 XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.Group }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.Group }.count)
                 appender.append(context: xcodeproject.context, childrenIDs: ["aaa"], path: "Hoge/Fuga")
-                XCTAssertNotEqual(originalObjects.keys.count, xcodeproject.context.objects.keys.count)
-                XCTAssertNotEqual(originalObjects.values.compactMap { $0 as? PBX.Group }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.Group }.count)
+                XCTAssertEqual(originalObjects.keys.count + 2, xcodeproject.context.objects.keys.count)
+                XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.Group }.count + 2, xcodeproject.context.objects.values.compactMap { $0 as? PBX.Group }.count)
             })
             XCTContext.runActivity(named: "And top level directory is exist, but lower directory is not exists", block: { _ in
                 groupExtractor = GroupExtractorImpl()
@@ -57,8 +57,8 @@ class GroupAppenderTests: XCTestCase {
                 XCTAssertEqual(originalObjects.keys.count, xcodeproject.context.objects.keys.count)
                 XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.Group }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.Group }.count)
                 appender.append(context: xcodeproject.context, childrenIDs: ["aaa"], path: "iOSTestProject/Fuga")
-                XCTAssertNotEqual(originalObjects.keys.count, xcodeproject.context.objects.keys.count)
-                XCTAssertNotEqual(originalObjects.values.compactMap { $0 as? PBX.Group }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.Group }.count)
+                XCTAssertEqual(originalObjects.keys.count + 1, xcodeproject.context.objects.keys.count)
+                XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.Group }.count + 1, xcodeproject.context.objects.values.compactMap { $0 as? PBX.Group }.count)
             })
         })
         
