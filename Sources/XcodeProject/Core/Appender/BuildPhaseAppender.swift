@@ -21,11 +21,11 @@ public protocol EachBuildPhaseAppender {
 }
 
 public struct BuildPhaseAppenderImpl: BuildPhaseAppender {
-    private let hashIDGenerator: PBXObjectHashIDGenerator
+    private let hashIDGenerator: StringGenerator
     private let resourceBuildPhaseAppender: EachBuildPhaseAppender
     private let sourceBuildPhaseAppender: EachBuildPhaseAppender
     public init(
-        hashIDGenerator: PBXObjectHashIDGenerator,
+        hashIDGenerator: StringGenerator,
         resourceBuildPhaseAppender: EachBuildPhaseAppender,
         sourceBuildPhaseAppender: EachBuildPhaseAppender
         ) {

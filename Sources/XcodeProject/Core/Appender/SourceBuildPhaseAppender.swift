@@ -8,9 +8,9 @@
 import Foundation
 
 public struct SourceBuildPhaseAppenderImpl: EachBuildPhaseAppender {
-    private let hashIDGenerator: PBXObjectHashIDGenerator
+    private let hashIDGenerator: StringGenerator
     public init(
-        hashIDGenerator: PBXObjectHashIDGenerator
+        hashIDGenerator: StringGenerator
         ) {
         self.hashIDGenerator = hashIDGenerator
     }
