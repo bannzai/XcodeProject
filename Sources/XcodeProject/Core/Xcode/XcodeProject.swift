@@ -176,32 +176,31 @@ extension XcodeProject {
         )
     }
     
-    public func appendFilePath(
-        with projectRootPath: String,
-        filePath: String,
-        targetName: String
-        ) {
-        let pathComponents = filePath.components(separatedBy: "/").filter { !$0.isEmpty }
-        let groupPathNames = Array(pathComponents.dropLast())
-        guard
-            let fileName = pathComponents.last
-            else {
-                fatalError(assertionMessage(description: "unexpected get file name for append"))
-        }
+    public func appendFilePath(projectRootPath: String, filePath: String, targetName: String) {
+        let groupPathNames = Array(filePath
+            .components(separatedBy: "/")
+            .filter { !$0.isEmpty }
+            .dropLast()
+        )
+        
+        let _ = GroupAppenderImpl(
+            hashIDGenerator: PBXObjectHashIDGenerator(),
+            groupExtractor: GroupExtractorImpl()
+        )
+        .append(context: context, childrenIDs: [], path: groupPathNames.joined(separator: "/"))
        
-        let path = groupPathNames.joined(separator: "/")
-        appendGroupIfNeeded(childrenIDs: [], path: path)
+        let fileRef = FileReferenceAppenderImpl(
+            hashIDGenerator: PBXObjectHashIDGenerator(),
+            fileRefExtractor: FileRefExtractorImpl(groupExtractor: GroupExtractorImpl()),
+            groupExtractor: GroupExtractorImpl()
+        )
+        .append(context: context, filePath: filePath)
         
-        let fileRefId = hashIDGenerator.generate()
-        appendFileRef(fileName, filePath: filePath)
-        
-        context.reset()
-
         BuildFileAppenderImpl(
             hashIDGenerator: PBXObjectHashIDGenerator(),
             resourceBuildPhaseAppender: ResourceBuildPhaseAppenderImpl(hashIDGenerator: PBXObjectHashIDGenerator()),
             sourceBuildPhaseAppender: SourceBuildPhaseAppenderImpl(hashIDGenerator: PBXObjectHashIDGenerator())
         )
-        .append(context: context, fileRefID: fileRefId, targetName: targetName, fileName: fileName)
+        .append(context: context, fileRefID: fileRef.id, targetName: targetName, fileName: fileRef.path!)
     }
 }

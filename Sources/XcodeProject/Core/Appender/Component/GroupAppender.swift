@@ -26,7 +26,7 @@ public struct GroupAppenderImpl: GroupAppender {
         self.groupExtractor = groupExtractor
     }
     
-    public func append(
+    @discardableResult public func append(
         context: Context,
         childrenIDs: [PBXObjectIDType],
         path: PBXRawPathType
