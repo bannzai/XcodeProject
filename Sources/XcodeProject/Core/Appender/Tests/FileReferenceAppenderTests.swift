@@ -18,14 +18,28 @@ class FileReferenceAppenderTests: XCTestCase {
     }
     
     func testAppend() {
-        let xcodeproject = makeXcodeProject()
-        let appender = make()
-        let originalObjects = xcodeproject.context.objects
+        XCTContext.runActivity(named: "When append file is not exist", block: { _ in
+            let xcodeproject = makeXcodeProject()
+            let appender = make()
+            let originalObjects = xcodeproject.context.objects
+            
+            XCTAssertEqual(originalObjects.keys.count, xcodeproject.context.objects.keys.count)
+            XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.FileReference }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.FileReference }.count)
+            appender.append(context: xcodeproject.context, filePath: "aaaaa.swift")
+            XCTAssertNotEqual(originalObjects.keys.count, xcodeproject.context.objects.keys.count)
+            XCTAssertNotEqual(originalObjects.values.compactMap { $0 as? PBX.FileReference }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.FileReference }.count)
+        })
         
-        XCTAssertEqual(originalObjects.keys.count, xcodeproject.context.objects.keys.count)
-        XCTAssertEqual(originalObjects.values.count, xcodeproject.context.objects.values.count)
-        appender.append(context: xcodeproject.context, filePath: "aaaaa.swift")
-        XCTAssertNotEqual(originalObjects.keys.count, xcodeproject.context.objects.keys.count)
-        XCTAssertNotEqual(originalObjects.values.count, xcodeproject.context.objects.values.count)
+        XCTContext.runActivity(named: "When append file is exist", block: { _ in
+            let xcodeproject = makeXcodeProject()
+            let appender = make()
+            let originalObjects = xcodeproject.context.objects
+            
+            XCTAssertEqual(originalObjects.keys.count, xcodeproject.context.objects.keys.count)
+            XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.FileReference }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.FileReference }.count)
+            appender.append(context: xcodeproject.context, filePath: "iOSTestProject/AppDelegate.swift")
+            XCTAssertEqual(originalObjects.keys.count, xcodeproject.context.objects.keys.count)
+            XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.FileReference }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.FileReference }.count)
+        })
     }
 }

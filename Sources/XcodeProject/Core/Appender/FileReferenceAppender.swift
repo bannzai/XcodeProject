@@ -22,9 +22,16 @@ public struct FileReferenceAppenderImpl: FileReferenceAppender {
         self.groupExtractor = groupExtractor
     }
     
-    private func extractFielRef(context: Context, filePath: PBXRawPathType) -> PBX.FileReference? {
-        // TODO: Implement. but very heavy
-        return nil
+    private func extractFielRef(context: Context, groupPath: PBXRawPathType, fileName: String) -> PBX.FileReference? {
+        switch groupExtractor.extract(context: context, path: groupPath) {
+        case .some(let group):
+            guard let fileReference = group.children.compactMap ({ $0 as? PBX.FileReference }).filter ({ $0.path == fileName }).first else {
+                return nil
+            }
+            return fileReference
+        case .none:
+            return nil
+        }
     }
     
     @discardableResult public func append(context: Context, filePath: PBXRawPathType) -> PBX.FileReference {
@@ -33,7 +40,8 @@ public struct FileReferenceAppenderImpl: FileReferenceAppender {
             fatalError()
         }
 
-        if let reference = extractFielRef(context: context, filePath: filePath) {
+        let groupPath = pathComponent.dropLast().joined(separator: "/")
+        if let reference = extractFielRef(context: context, groupPath: groupPath, fileName: fileName) {
             return reference
         }
         
@@ -58,7 +66,6 @@ public struct FileReferenceAppenderImpl: FileReferenceAppender {
         context.objects[fileRefId] = fileRef
         
         appendGroupIfExists: do {
-            let groupPath = pathComponent.dropLast().joined(separator: "/")
             if let lastGroup = groupExtractor.extract(context: context, path: groupPath) {
                 if let reference = context.objects[lastGroup.id] as? PBX.Group {
                     lastGroup.children.append(reference)
