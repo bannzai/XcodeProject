@@ -7,7 +7,7 @@
 
 import Foundation
 
-public protocol StringGenerator {
+public protocol StringGenerator: AutoMockable {
     func generate() -> String
 }
 
