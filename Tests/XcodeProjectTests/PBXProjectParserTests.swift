@@ -11,22 +11,11 @@ import XCTest
 class PBXProjectContextParserTests: XCTestCase {
     func testParse() {
         do {
-            let parser = try PBXProjectContextParser(xcodeprojectUrl: xcodeProjectUrl())
+            let context = try PBXProjectContextParser().parse(xcodeprojectUrl: xcodeProjectUrl())
 //            XCTAssert(parser.context().dictionary.count == 58)
 //            XCTAssert(parser.context().fullFilePaths.count == 15)
 //            XCTAssert(parser.context().grouped.count == 13)
-            XCTAssert(parser.context().allPBX.count == 5)
-        } catch {
-            XCTFail(error.localizedDescription)
-        }
-    }
-
-    func testShouldCacheContext() {
-        do {
-            let parser = try PBXProjectContextParser(xcodeprojectUrl: xcodeProjectUrl())
-            let context1 = parser.context()
-            let context2 = parser.context()
-            XCTAssert(context1 === context2)
+            XCTAssert(context.allPBX.count == 5)
         } catch {
             XCTFail(error.localizedDescription)
         }

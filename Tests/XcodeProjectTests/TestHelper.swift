@@ -43,10 +43,8 @@ func projectRootPath() -> URL {
 
 func makeXcodeProject() -> XcodeProject {
     do {
-        let parser = try PBXProjectContextParser(xcodeprojectUrl: xcodeProjectUrl())
-        let project = XcodeProject(
-            parser: parser,
-            hashIDGenerator: PBXObjectHashIDGenerator()
+        let project = try XcodeProject(
+            xcodeprojectURL: xcodeProjectUrl()
         )
         return project
     } catch {
@@ -57,10 +55,8 @@ func makeXcodeProject() -> XcodeProject {
 
 func makeFieldFormatter() -> FieldListFormatterImpl {
     do {
-        let parser = try PBXProjectContextParser(xcodeprojectUrl: xcodeProjectUrl())
-        let project = XcodeProject(
-            parser: parser,
-            hashIDGenerator: PBXObjectHashIDGenerator()
+        let project = try XcodeProject(
+            xcodeprojectURL: xcodeProjectUrl()
         )
         return FieldListFormatterImpl(
             project: project,
@@ -82,12 +78,10 @@ func makeFieldFormatter() -> FieldListFormatterImpl {
 
 }
 
-func makeContextParserAndSerializer() -> (PBXProjectContextParser, XcodeProjectSerializer) {
+func makeSerializer() -> XcodeProjectSerializer {
     do {
-        let parser = try PBXProjectContextParser(xcodeprojectUrl: xcodeProjectUrl())
-        let project = XcodeProject(
-            parser: parser,
-            hashIDGenerator: PBXObjectHashIDGenerator()
+        let project = try XcodeProject(
+            xcodeprojectURL: xcodeProjectUrl()
         )
         let xcodeProjectFormatter = XcodeProjectFormatterImpl(
             objectRowFormatter: ObjectRowFormatterImpl(
@@ -117,7 +111,7 @@ func makeContextParserAndSerializer() -> (PBXProjectContextParser, XcodeProjectS
             project: project,
             xcodeProjectFormatter: xcodeProjectFormatter
         )
-        return (parser, serializer)
+        return serializer
     } catch {
         XCTFail(error.localizedDescription)
         fatalError()

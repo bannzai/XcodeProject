@@ -10,8 +10,7 @@ import XCTest
 
 class ContextTests: XCTestCase {
     func make() -> InternalContext {
-        let (parser, _) = makeContextParserAndSerializer()
-        return parser.context() as! InternalContext
+        return try! PBXProjectContextParser().parse(xcodeprojectUrl: xcodeProjectUrl()) as! InternalContext
     }
     
     func testCreateGroupPath() {

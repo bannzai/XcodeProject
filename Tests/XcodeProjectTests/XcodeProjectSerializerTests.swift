@@ -10,15 +10,14 @@ import XCTest
 import Swdifft
 
 class XcodeProjectSerializerTests: XCTestCase {
-    func make() -> (Context, XcodeProjectSerializer) {
-        let r = makeContextParserAndSerializer()
-        return (r.0.context(), r.1)
+    func make() -> XcodeProjectSerializer {
+        return makeSerializer()
     }
     
     func testSerialize() {
         do {
             let originalContent = try String(contentsOf: xcodeProjectUrl(), encoding: String.Encoding.utf8)
-            let (_, serialization) = make()
+            let serialization = make()
             let generateString = serialization.serialize()
             
             print(generateString)
