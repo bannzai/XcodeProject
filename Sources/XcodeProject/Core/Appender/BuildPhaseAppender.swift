@@ -8,16 +8,16 @@
 import Foundation
 
 public protocol BuildPhaseAppender {
-    func append(
+    @discardableResult func append(
         context: Context,
         fileRefID: PBXObjectIDType,
         targetName: String,
         fileName: String
-    )
+    ) -> PBX.BuildPhase
 }
 
 public protocol EachBuildPhaseAppender {
-    func append(context: Context, buildFile: PBX.BuildFile, target: PBX.NativeTarget)
+    @discardableResult func append(context: Context, buildFile: PBX.BuildFile, target: PBX.NativeTarget) -> PBX.BuildPhase
 }
 
 public struct BuildPhaseAppenderImpl: BuildPhaseAppender {
@@ -34,12 +34,12 @@ public struct BuildPhaseAppenderImpl: BuildPhaseAppender {
         self.sourceBuildPhaseAppender = sourceBuildPhaseAppender
     }
     
-    public func append(
+    @discardableResult public func append(
         context: Context,
         fileRefID: PBXObjectIDType,
         targetName: String,
         fileName: String
-        ) {
+        ) -> PBX.BuildPhase {
         guard let target = context
             .objects
             .values
@@ -54,9 +54,9 @@ public struct BuildPhaseAppenderImpl: BuildPhaseAppender {
         let lastKnownType = LastKnownFile(fileName: fileName)
         switch lastKnownType.type {
         case .resourceFile, .markdown, .text:
-            resourceBuildPhaseAppender.append(context: context, buildFile: buildFile, target: target)
+            return resourceBuildPhaseAppender.append(context: context, buildFile: buildFile, target: target)
         case .sourceCode:
-            sourceBuildPhaseAppender.append(context: context, buildFile: buildFile, target: target)
+            return sourceBuildPhaseAppender.append(context: context, buildFile: buildFile, target: target)
         }
     }
     

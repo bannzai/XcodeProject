@@ -15,30 +15,32 @@ public struct SourceBuildPhaseAppenderImpl: EachBuildPhaseAppender {
         self.hashIDGenerator = hashIDGenerator
     }
     
-    public func append(context: Context, buildFile: PBX.BuildFile, target: PBX.NativeTarget) {
+    @discardableResult public func append(context: Context, buildFile: PBX.BuildFile, target: PBX.NativeTarget) -> PBX.BuildPhase {
         let sourcesBuildPhase = target.buildPhases.compactMap { $0 as? PBX.SourcesBuildPhase }.first
-        guard sourcesBuildPhase == nil else {
-            // already exists
-            sourcesBuildPhase?.files.append(buildFile)
-            return
+        switch sourcesBuildPhase {
+        case .some(let sourcesBuildPhase):
+            sourcesBuildPhase.files.append(buildFile)
+            return sourcesBuildPhase
+        case .none:
+            let isa = ObjectType.PBXSourcesBuildPhase.rawValue
+            let pair: PBXRawMapType = [
+                "isa": isa,
+                "buildActionMask": Int32.max,
+                "files": [
+                    buildFile.id
+                ],
+                "runOnlyForDeploymentPostprocessing": 0
+            ]
+            
+            let buildPhaseId = hashIDGenerator.generate()
+            let sourceBuildPhase = PBX.SourcesBuildPhase(
+                id: buildPhaseId,
+                dictionary: pair,
+                isa: isa,
+                context: context
+            )
+            context.objects[buildPhaseId] = sourceBuildPhase
+            return sourceBuildPhase
         }
-        
-        let isa = ObjectType.PBXSourcesBuildPhase.rawValue
-        let pair: PBXRawMapType = [
-            "isa": isa,
-            "buildActionMask": Int32.max,
-            "files": [
-                buildFile.id
-            ],
-            "runOnlyForDeploymentPostprocessing": 0
-        ]
-        
-        let buildPhaseId = hashIDGenerator.generate()
-        context.objects[buildPhaseId] = PBX.SourcesBuildPhase(
-            id: buildPhaseId,
-            dictionary: pair,
-            isa: isa,
-            context: context
-        )
     }
 }

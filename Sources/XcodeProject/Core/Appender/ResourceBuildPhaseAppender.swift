@@ -15,30 +15,32 @@ public struct ResourceBuildPhaseAppenderImpl: EachBuildPhaseAppender {
         self.hashIDGenerator = hashIDGenerator
     }
     
-    public func append(context: Context, buildFile: PBX.BuildFile, target: PBX.NativeTarget) {
-        let builPhase = target.buildPhases.compactMap { $0 as? PBX.ResourcesBuildPhase }.first
-        guard builPhase == nil else {
-            // already exists
-            builPhase?.files.append(buildFile)
-            return
+    @discardableResult public func append(context: Context, buildFile: PBX.BuildFile, target: PBX.NativeTarget) -> PBX.BuildPhase {
+        let buildPhase = target.buildPhases.compactMap { $0 as? PBX.ResourcesBuildPhase }.first
+        switch buildPhase {
+        case .some(let buildPhase):
+            buildPhase.files.append(buildFile)
+            return buildPhase
+        case .none:
+            let isa = ObjectType.PBXResourcesBuildPhase.rawValue
+            let pair: PBXRawMapType = [
+                "isa": isa,
+                "buildActionMask": Int32.max,
+                "files": [
+                    buildFile.id
+                ],
+                "runOnlyForDeploymentPostprocessing": 0
+            ]
+            
+            let buildPhaseId = hashIDGenerator.generate()
+            let buildPhase = PBX.ResourcesBuildPhase(
+                id: buildPhaseId,
+                dictionary: pair,
+                isa: isa,
+                context: context
+            )
+            context.objects[buildPhaseId] = buildPhase
+            return buildPhase
         }
-        
-        let isa = ObjectType.PBXResourcesBuildPhase.rawValue
-        let pair: PBXRawMapType = [
-            "isa": isa,
-            "buildActionMask": Int32.max,
-            "files": [
-                buildFile.id
-            ],
-            "runOnlyForDeploymentPostprocessing": 0
-        ]
-        
-        let buildPhaseId = hashIDGenerator.generate()
-        context.objects[buildPhaseId] = PBX.ResourcesBuildPhase(
-            id: buildPhaseId,
-            dictionary: pair,
-            isa: isa,
-            context: context
-        )
     }
 }
