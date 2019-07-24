@@ -13,25 +13,16 @@ public protocol FileReferenceAppender {
 
 public struct FileReferenceAppenderImpl: FileReferenceAppender {
     private let hashIDGenerator: StringGenerator
+    private let fileRefExtractor: FileRefExtractor
     private let groupExtractor: GroupExtractor
     public init(
         hashIDGenerator: StringGenerator,
+        fileRefExtractor: FileRefExtractor,
         groupExtractor: GroupExtractor
         ) {
         self.hashIDGenerator = hashIDGenerator
+        self.fileRefExtractor = fileRefExtractor
         self.groupExtractor = groupExtractor
-    }
-    
-    private func extractFielRef(context: Context, groupPath: PBXRawPathType, fileName: String) -> PBX.FileReference? {
-        switch groupExtractor.extract(context: context, path: groupPath) {
-        case .some(let group):
-            guard let fileReference = group.children.compactMap ({ $0 as? PBX.FileReference }).filter ({ $0.path == fileName }).first else {
-                return nil
-            }
-            return fileReference
-        case .none:
-            return nil
-        }
     }
     
     @discardableResult public func append(context: Context, filePath: PBXRawPathType) -> PBX.FileReference {
@@ -41,7 +32,7 @@ public struct FileReferenceAppenderImpl: FileReferenceAppender {
         }
 
         let groupPath = pathComponent.dropLast().joined(separator: "/")
-        if let reference = extractFielRef(context: context, groupPath: groupPath, fileName: fileName) {
+        if let reference = fileRefExtractor.extract(context: context, groupPath: groupPath, fileName: fileName) {
             return reference
         }
         

@@ -13,6 +13,7 @@ class FileReferenceAppenderTests: XCTestCase {
     func make() -> FileReferenceAppenderImpl {
         return FileReferenceAppenderImpl(
             hashIDGenerator: PBXObjectHashIDGenerator(),
+            fileRefExtractor: FileRefExtractorImpl(groupExtractor: GroupExtractorImpl()),
             groupExtractor: GroupExtractorImpl()
         )
     }

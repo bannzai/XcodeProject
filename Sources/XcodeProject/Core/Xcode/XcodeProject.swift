@@ -35,6 +35,7 @@ extension XcodeProject {
     func appendFileRef(_ fileName: String, filePath: PBXRawPathType) {
         FileReferenceAppenderImpl(
             hashIDGenerator: PBXObjectHashIDGenerator(),
+            fileRefExtractor: FileRefExtractorImpl(groupExtractor: GroupExtractorImpl()),
             groupExtractor: GroupExtractorImpl()
         )
         .append(context: context, filePath: filePath)
@@ -198,7 +199,7 @@ extension XcodeProject {
 
         let buildFileId = hashIDGenerator.generate()
         let buildFile = makeBuildFile(for: buildFileId, and: fileRefId)
-        
+       
         let buildPhaseId = hashIDGenerator.generate()
         appendBuildPhase(with: buildPhaseId, and: buildFile, for: targetName, fileName: fileName)
     }
