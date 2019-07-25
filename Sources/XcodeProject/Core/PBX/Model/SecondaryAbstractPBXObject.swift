@@ -22,7 +22,20 @@ extension PBX {
     }
     
     open class BuildPhase: ProjectItem {
-        open lazy var files: [BuildFile] = self.extractObjects(for: "files")
+        lazy var _files: [BuildFile] = self.extractObjects(for: "files")
+        public var files: [BuildFile] {
+            get { return _files }
+            set {
+                _files = newValue
+                _files.forEach { file in
+                    let isAlreadyExists = context.objects.map { $0.key }.contains(file.id)
+                    if isAlreadyExists {
+                        return
+                    }
+                    context.objects[file.id] = file
+                }
+            }
+        }
     }
     
     open class Target: ProjectItem {
