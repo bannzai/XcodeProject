@@ -27,18 +27,20 @@ public class XcodeProject {
 
 // MARK: - Append
 extension XcodeProject {
-    public func appendFilePath(projectRootPath: String, filePath: String, targetName: String) {
+    public func append(filePath: PBXRawPathType, to projectRootPath: PBXRawPathType, targetName: String) {
         let groupPathNames = Array(filePath
             .components(separatedBy: "/")
             .filter { !$0.isEmpty }
             .dropLast()
         )
         
-        let _ = GroupAppenderImpl(
-            hashIDGenerator: PBXObjectHashIDGenerator(),
-            groupExtractor: GroupExtractorImpl()
-        )
-        .append(context: context, childrenIDs: [], path: groupPathNames.joined(separator: "/"))
+        if !groupPathNames.isEmpty {
+            let _ = GroupAppenderImpl(
+                hashIDGenerator: PBXObjectHashIDGenerator(),
+                groupExtractor: GroupExtractorImpl()
+                )
+                .append(context: context, childrenIDs: [], path: groupPathNames.joined(separator: "/"))
+        }
        
         let fileRef = FileReferenceAppenderImpl(
             hashIDGenerator: PBXObjectHashIDGenerator(),
