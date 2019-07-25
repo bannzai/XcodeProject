@@ -12,5 +12,5 @@ public protocol ResourcesBuildPhaseExtractor: BuildPhaseExtractor, AutoMockable 
 }
 
 public struct ResourcesBuildPhaseExtractorImpl: ResourcesBuildPhaseExtractor {
-    public typealias BuildPhase = PBX.ResourcesBuildPhase
+    public init() { }
 }
