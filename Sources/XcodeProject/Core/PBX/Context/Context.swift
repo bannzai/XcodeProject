@@ -69,7 +69,7 @@ class InternalContext: Context {
 
     func object<T: PBX.Object>(for key: String) -> T {
         guard let object = objects[key] as? T else {
-            fatalError(assertionMessage(description: "wrong format is \(type(of: self)): \(key)"))
+            fatalError(assertionMessage(description: "wrong format is \(T.self): \(key)"))
         }
         return object
     }

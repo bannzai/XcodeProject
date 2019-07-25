@@ -130,7 +130,21 @@ extension /* prefix */ PBX {
             return pair
         }
         
-        open lazy var children: [Reference] = self.extractObjects(for: "children")
+        lazy var _children: [Reference] = self.extractObjects(for: "children")
+        open var children: [Reference] {
+            get { return _children }
+            set {
+                _children = newValue
+                _children.forEach { child in
+                    let isAlreadyExists = context.objects.map { $0.key }.contains(child.id)
+                    if isAlreadyExists {
+                        return
+                    }
+                    context.objects[child.id] = child
+                }
+            }
+        }
+        
         open var fullPath: String = ""
         
         // convenience accessor
