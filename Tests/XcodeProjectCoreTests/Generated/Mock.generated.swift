@@ -12,7 +12,7 @@ import UIKit
 import AppKit
 #endif
 
-@testable import XcodeProject
+@testable import XcodeProjectCore
 
 
 

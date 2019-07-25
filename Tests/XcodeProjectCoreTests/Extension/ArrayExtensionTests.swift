@@ -1,5 +1,5 @@
 import XCTest
-@testable import XcodeProject
+@testable import XcodeProjectCore
 
 class ArrayExtensionTests: XCTestCase {
     func testOfType() {

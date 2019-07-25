@@ -6,7 +6,7 @@
 //
 
 import XCTest
-@testable import XcodeProject
+@testable import XcodeProjectCore
 
 class BuildFileAppenderTests: XCTestCase {
     

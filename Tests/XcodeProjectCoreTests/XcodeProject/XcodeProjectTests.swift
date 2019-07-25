@@ -1,5 +1,5 @@
 import XCTest
-@testable import XcodeProject
+@testable import XcodeProjectCore
 
 class XcodeProjectTests: XCTestCase {
     
@@ -110,7 +110,7 @@ class XcodeProjectTests: XCTestCase {
                         XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.BuildFile }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.BuildFile }.count)
                     }
                     
-                    xcodeproject.append(filePath: "Hoge/aaaa.swift", to: xcodeProjectUrl().absoluteString, targetName: "iOSTestProject")
+                    xcodeproject.append(filePath: "Hoge/aaaa.swift", targetName: "iOSTestProject")
                     
                     to: do {
                         XCTAssertEqual(originalObjects.keys.count + 3, xcodeproject.context.objects.keys.count)
@@ -130,7 +130,7 @@ class XcodeProjectTests: XCTestCase {
                         XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.BuildFile }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.BuildFile }.count)
                     }
                     
-                    xcodeproject.append(filePath: "Hoge/Fuga/aaaa.swift", to: xcodeProjectUrl().absoluteString, targetName: "iOSTestProject")
+                    xcodeproject.append(filePath: "Hoge/Fuga/aaaa.swift", targetName: "iOSTestProject")
                     
                     to: do {
                         XCTAssertEqual(originalObjects.keys.count + 4, xcodeproject.context.objects.keys.count)
@@ -152,7 +152,7 @@ class XcodeProjectTests: XCTestCase {
                         XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.BuildFile }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.BuildFile }.count)
                     }
                     
-                    xcodeproject.append(filePath: "aaaa.swift", to: xcodeProjectUrl().absoluteString, targetName: "iOSTestProject")
+                    xcodeproject.append(filePath: "aaaa.swift", targetName: "iOSTestProject")
                     
                     to: do {
                         XCTAssertEqual(originalObjects.keys.count + 2, xcodeproject.context.objects.keys.count)
@@ -172,7 +172,7 @@ class XcodeProjectTests: XCTestCase {
                         XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.BuildFile }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.BuildFile }.count)
                     }
                     
-                    xcodeproject.append(filePath: "iOSTestProject/aaaa.swift", to: xcodeProjectUrl().absoluteString, targetName: "iOSTestProject")
+                    xcodeproject.append(filePath: "iOSTestProject/aaaa.swift", targetName: "iOSTestProject")
                     
                     to: do {
                         XCTAssertEqual(originalObjects.keys.count + 2, xcodeproject.context.objects.keys.count)
@@ -192,7 +192,7 @@ class XcodeProjectTests: XCTestCase {
                         XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.BuildFile }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.BuildFile }.count)
                     }
                     
-                    xcodeproject.append(filePath: "iOSTestProject/Group/aaaa.swift", to: xcodeProjectUrl().absoluteString, targetName: "iOSTestProject")
+                    xcodeproject.append(filePath: "iOSTestProject/Group/aaaa.swift", targetName: "iOSTestProject")
                     
                     to: do {
                         XCTAssertEqual(originalObjects.keys.count + 2, xcodeproject.context.objects.keys.count)
@@ -217,7 +217,7 @@ class XcodeProjectTests: XCTestCase {
                         XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.BuildFile }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.BuildFile }.count)
                     }
                     
-                    xcodeproject.append(filePath: "Config.swift", to: xcodeProjectUrl().absoluteString, targetName: "iOSTestProject")
+                    xcodeproject.append(filePath: "Config.swift", targetName: "iOSTestProject")
                     
                     to: do {
                         XCTAssertEqual(originalObjects.keys.count, xcodeproject.context.objects.keys.count)
@@ -237,7 +237,7 @@ class XcodeProjectTests: XCTestCase {
                         XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.BuildFile }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.BuildFile }.count)
                     }
                     
-                    xcodeproject.append(filePath: "iOSTestProject/AppDelegate.swift", to: xcodeProjectUrl().absoluteString, targetName: "iOSTestProject")
+                    xcodeproject.append(filePath: "iOSTestProject/AppDelegate.swift", targetName: "iOSTestProject")
                     
                     to: do {
                         XCTAssertEqual(originalObjects.keys.count, xcodeproject.context.objects.keys.count)
@@ -257,7 +257,7 @@ class XcodeProjectTests: XCTestCase {
                         XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.BuildFile }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.BuildFile }.count)
                     }
                     
-                    xcodeproject.append(filePath: "iOSTestProject/Group/FileReference.swift", to: xcodeProjectUrl().absoluteString, targetName: "iOSTestProject")
+                    xcodeproject.append(filePath: "iOSTestProject/Group/FileReference.swift", targetName: "iOSTestProject")
                     
                     to: do {
                         XCTAssertEqual(originalObjects.keys.count, xcodeproject.context.objects.keys.count)

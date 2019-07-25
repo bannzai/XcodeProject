@@ -7,7 +7,7 @@
 
 import Foundation
 import XCTest
-@testable import XcodeProject
+@testable import XcodeProjectCore
 
 func xcodeProjectUrl() -> URL {
     guard
