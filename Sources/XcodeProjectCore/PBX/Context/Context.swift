@@ -23,12 +23,31 @@ public protocol Context: class {
     func object<T: PBX.Object>(for key: String) -> T
 }
 
+// MARK: Convenience Accessors
 extension Context {
     public var rootID: String {
         return allPBX["rootObject"] as! String
     }
     public var mainGroup: PBX.Group {
         return extractPBXProject().mainGroup
+    }
+    private func list<T: PBX.Object>() -> [T] {
+        return objects.values.toArray().ofType(T.self)
+    }
+    public var fileRefs: [PBX.FileReference] {
+        return list()
+    }
+    public var groups: [PBX.Group] {
+        return list()
+    }
+    public var buildFiles: [PBX.BuildFile] {
+        return list()
+    }
+    public var buildPhases: [PBX.BuildPhase] {
+        return list()
+    }
+    public var targets: [PBX.Target] {
+        return list()
     }
 }
 

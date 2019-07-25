@@ -49,23 +49,20 @@ extension XcodeProject {
     public var mainGroup: PBX.Group {
         return context.mainGroup
     }
-    private func list<T: PBX.Object>() -> [T] {
-        return objects.values.toArray().ofType(T.self)
-    }
     public var fileRefs: [PBX.FileReference] {
-        return list()
+        return context.fileRefs
     }
     public var groups: [PBX.Group] {
-        return list()
+        return context.groups
     }
     public var buildFiles: [PBX.BuildFile] {
-        return list()
+        return context.buildFiles
     }
     public var buildPhases: [PBX.BuildPhase] {
-        return list()
+        return context.buildPhases
     }
     public var targets: [PBX.Target] {
-        return list()
+        return context.targets
     }
 }
 
