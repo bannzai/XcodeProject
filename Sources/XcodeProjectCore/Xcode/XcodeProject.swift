@@ -52,7 +52,7 @@ extension XcodeProject {
     private func list<T: PBX.Object>() -> [T] {
         return objects.values.toArray().ofType(T.self)
     }
-    public var fileRefs: [PBX.Group] {
+    public var fileRefs: [PBX.FileReference] {
         return list()
     }
     public var groups: [PBX.Group] {

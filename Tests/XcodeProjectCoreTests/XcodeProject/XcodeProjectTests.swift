@@ -61,14 +61,14 @@ class XcodeProjectTests: XCTestCase {
                 XCTAssertEqual(subject(originalObjects), subject(project.objects))
                 XCTAssertEqual(originalObjects.count, project.context.objects.count)
                 XCTAssertEqual(originalObjects.count, project.objects.count)
-                XCTAssertFalse(project.objects.map { $0.key }.contains("ABC"))
+                XCTAssertFalse(project.fileRefs.map { $0.id }.contains("ABC"))
             }
             project.groups.filter { $0.fullPath == "iOSTestProject" }.first!.children.append(maker.make(context: project.context, fileName: "aaaa.swift"))
             to: do {
                 XCTAssertEqual(subject(originalObjects), subject(project.objects))
                 XCTAssertEqual(originalObjects.count + 1, project.context.objects.count)
                 XCTAssertEqual(originalObjects.count + 1, project.objects.count)
-                XCTAssertTrue(project.objects.map { $0.key }.contains("ABC"))
+                XCTAssertTrue(project.fileRefs.map { $0.id }.contains("ABC"))
             }
         })
         XCTContext.runActivity(named: "Append Buld File configuration to target of iOSTestProject/. It is append same references and added original context `objects`.", block: { _ in
