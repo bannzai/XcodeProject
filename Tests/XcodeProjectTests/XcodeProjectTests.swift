@@ -220,11 +220,10 @@ class XcodeProjectTests: XCTestCase {
                     xcodeproject.append(filePath: "Config.swift", to: xcodeProjectUrl().absoluteString, targetName: "iOSTestProject")
                     
                     to: do {
-                        // TODO: Fix for build file count
-//                        XCTAssertEqual(originalObjects.keys.count + 1, xcodeproject.context.objects.keys.count)
+                        XCTAssertEqual(originalObjects.keys.count, xcodeproject.context.objects.keys.count)
                         XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.Group }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.Group }.count)
                         XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.FileReference }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.FileReference }.count)
-//                        XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.BuildFile }.count + 1, xcodeproject.context.objects.values.compactMap { $0 as? PBX.BuildFile }.count)
+                        XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.BuildFile }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.BuildFile }.count)
                     }
                 })
                 XCTContext.runActivity(named: "when under the iOSTestProject/", block: { _ in
@@ -241,11 +240,10 @@ class XcodeProjectTests: XCTestCase {
                     xcodeproject.append(filePath: "iOSTestProject/AppDelegate.swift", to: xcodeProjectUrl().absoluteString, targetName: "iOSTestProject")
                     
                     to: do {
-                        // TODO: Fix for build file count
-//                        XCTAssertEqual(originalObjects.keys.count + 2, xcodeproject.context.objects.keys.count)
+                        XCTAssertEqual(originalObjects.keys.count, xcodeproject.context.objects.keys.count)
                         XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.Group }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.Group }.count)
                         XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.FileReference }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.FileReference }.count)
-//                        XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.BuildFile }.count + 1, xcodeproject.context.objects.values.compactMap { $0 as? PBX.BuildFile }.count)
+                        XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.BuildFile }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.BuildFile }.count)
                     }
                 })
                 XCTContext.runActivity(named: "when under the iOSTestProject/Group", block: { _ in
@@ -253,7 +251,6 @@ class XcodeProjectTests: XCTestCase {
                     let originalObjects = xcodeproject.context.objects
                     
                     from: do {
-                        // TODO: Fix for build file count
                         XCTAssertEqual(originalObjects.keys.count, xcodeproject.context.objects.keys.count)
                         XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.Group }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.Group }.count)
                         XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.FileReference }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.FileReference }.count)
@@ -263,10 +260,10 @@ class XcodeProjectTests: XCTestCase {
                     xcodeproject.append(filePath: "iOSTestProject/Group/FileReference.swift", to: xcodeProjectUrl().absoluteString, targetName: "iOSTestProject")
                     
                     to: do {
-//                        XCTAssertEqual(originalObjects.keys.count + 2, xcodeproject.context.objects.keys.count)
+                        XCTAssertEqual(originalObjects.keys.count, xcodeproject.context.objects.keys.count)
                         XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.Group }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.Group }.count)
                         XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.FileReference }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.FileReference }.count)
-//                        XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.BuildFile }.count + 1, xcodeproject.context.objects.values.compactMap { $0 as? PBX.BuildFile }.count)
+                        XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.BuildFile }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.BuildFile }.count)
                     }
                 })
             })
