@@ -71,7 +71,7 @@ extension XcodeProject {
 
 // MARK: - Append
 extension XcodeProject {
-    public func appendFile(path: PBXRawPathType, targetName: String) {
+    @discardableResult public func appendFile(path: PBXRawPathType, targetName: String) -> PBX.FileReference {
         let groupPathNames = Array(path
             .components(separatedBy: "/")
             .filter { !$0.isEmpty }
@@ -97,12 +97,12 @@ extension XcodeProject {
         case _:
             break
         }
+        
+        return fileRef
     }
     
-    public func appendGroup(path: PBXRawPathType, targetName: String) {
-        if !path.isEmpty {
-            groupAppender.append(context: context, childrenIDs: [], path: path)
-        }
+    @discardableResult public func appendGroup(path: PBXRawPathType, targetName: String) -> PBX.Group? {
+        return path.isEmpty ? nil : groupAppender.append(context: context, childrenIDs: [], path: path)
     }
 }
 
