@@ -64,7 +64,7 @@ extension XcodeProject {
     public var buildPhases: [PBX.BuildPhase] {
         return list()
     }
-    public var targets: [PBX.Group] {
+    public var targets: [PBX.Target] {
         return list()
     }
 }
