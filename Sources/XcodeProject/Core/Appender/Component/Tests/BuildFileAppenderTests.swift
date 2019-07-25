@@ -25,7 +25,8 @@ class BuildFileAppenderTests: XCTestCase {
 
             let mockIDGenerator = StringGeneratorMock()
             mockIDGenerator.generateReturnValue = "ABC"
-            let fileRef = FileReferenceAppenderImpl(hashIDGenerator: mockIDGenerator, fileRefExtractor: FileRefExtractorImpl(groupExtractor: GroupExtractorImpl()), groupExtractor: GroupExtractorImpl())
+            let maker = FileReferenceMakerImpl(hashIDGenerator: mockIDGenerator)
+            let fileRef = FileReferenceAppenderImpl(fileReferenceMaker: maker)
                 .append(context: xcodeproject.context, filePath: "iOSTestProject/Hoge.swift")
             
             let originalObjects = xcodeproject.context.objects

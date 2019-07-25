@@ -14,8 +14,9 @@ func isDirectory(_ dirName: String) -> Bool {
 
 
 class XcodeProjectTests: XCTestCase {
-    func testWrite() {
-        
+    func test_edting_xcode_project() {
+        let project = makeXcodeProject()
+//        project.objects.compactMap { $0 as? PBX.Group }.filter { $0.fullPath == "iOSProject" }.first!.fileRefs.append(<#T##newElement: PBX.FileReference##PBX.FileReference#>)
     }
     
     func testAppendFilePathToTargetName() {

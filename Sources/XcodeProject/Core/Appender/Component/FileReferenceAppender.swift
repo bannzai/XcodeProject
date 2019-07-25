@@ -12,15 +12,15 @@ public protocol FileReferenceAppender {
 }
 
 public struct FileReferenceAppenderImpl: FileReferenceAppender {
-    private let hashIDGenerator: StringGenerator
+    private let fileReferenceMaker: FileReferenceMaker
     private let fileRefExtractor: FileRefExtractor
     private let groupExtractor: GroupExtractor
     public init(
-        hashIDGenerator: StringGenerator = PBXObjectHashIDGenerator(),
+        fileReferenceMaker: FileReferenceMaker = FileReferenceMakerImpl(),
         fileRefExtractor: FileRefExtractor = FileRefExtractorImpl(),
         groupExtractor: GroupExtractor = GroupExtractorImpl()
         ) {
-        self.hashIDGenerator = hashIDGenerator
+        self.fileReferenceMaker = fileReferenceMaker
         self.fileRefExtractor = fileRefExtractor
         self.groupExtractor = groupExtractor
     }
@@ -36,25 +36,8 @@ public struct FileReferenceAppenderImpl: FileReferenceAppender {
             return reference
         }
         
-        let fileRefId = hashIDGenerator.generate()
-        
-        let isa = ObjectType.PBXFileReference.rawValue
-        let pair: PBXRawMapType = [
-            "isa": isa,
-            "fileEncoding": 4,
-            "lastKnownFileType": LastKnownFile(fileName: fileName).value,
-            "path": fileName,
-            "sourceTree": "<group>"
-        ]
-        
-        let fileRef = PBX.FileReference(
-            id: fileRefId,
-            dictionary: pair,
-            isa: isa,
-            context: context
-        )
-
-        context.objects[fileRefId] = fileRef
+        let fileRef = fileReferenceMaker.make(context: context, fileName: fileName)
+        context.objects[fileRef.id] = fileRef
 
         appendToGroupIfExists: do {
             if let lastGroup = groupExtractor.extract(context: context, path: groupPath) {
