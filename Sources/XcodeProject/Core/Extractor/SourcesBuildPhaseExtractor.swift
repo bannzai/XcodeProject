@@ -17,7 +17,9 @@ public struct SourcesBuildPhaseExtractorImpl: SourcesBuildPhaseExtractor {
             .objects
             .values
             .compactMap { $0 as? PBX.NativeTarget }
-            .filter { $0.name == targetName }
+            .first { $0.name == targetName }?
+            .buildPhases
+            .compactMap { $0 as? PBX.SourcesBuildPhase }
             .first
     }
 }
