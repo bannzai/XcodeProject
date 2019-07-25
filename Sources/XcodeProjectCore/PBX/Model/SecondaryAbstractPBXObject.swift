@@ -58,7 +58,7 @@ extension PBX {
         }
         
         public func appendSourceBuildFile(fileName: String) {
-            guard let fileRef = buildPhases.flatMap ({ $0.files })[fileName: fileName]?.fileRef else {
+            guard let fileRef = context.fileRefs[nameOrPath: fileName] else {
                 fatalError("Not exists fileRef for name of \(fileName)")
             }
             let buildPhase = BuildPhaseMakerImpl()
@@ -70,7 +70,7 @@ extension PBX {
             buildPhases.append(buildPhase)
         }
         public func appendResourceBuildFile(fileName: String) {
-            guard let fileRef = buildPhases.flatMap ({ $0.files })[fileName: fileName]?.fileRef else {
+            guard let fileRef = context.fileRefs[nameOrPath: fileName] else {
                 fatalError("Not exists fileRef for name of \(fileName)")
             }
             let buildPhase = BuildPhaseMakerImpl()

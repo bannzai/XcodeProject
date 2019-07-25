@@ -13,12 +13,12 @@ class PBXTargetTests: XCTestCase {
         let project = makeXcodeProject()
         let target = project.targets[name: "iOSTestProject"]!
         let originalBuildPhases = target.buildPhases
-        let subjectForFiles: ([PBX.BuildPhase]) -> Int = {
-            $0.compactMap { $0 as? PBX.SourcesBuildPhase }.first!.files.count
+        let subjectForBuildPhases: ([PBX.BuildPhase]) -> Int = {
+            $0.compactMap { $0 as? PBX.SourcesBuildPhase }.count
         }
         from: do {
             XCTAssertEqual(originalBuildPhases.count, target.buildPhases.count)
-            XCTAssertEqual(subjectForFiles(originalBuildPhases), subjectForFiles(target.buildPhases))
+            XCTAssertEqual(subjectForBuildPhases(originalBuildPhases), subjectForBuildPhases(project.targets[name: "iOSTestProject"]!.buildPhases))
         }
 
         project.groups.first?.appendFile(name: "aaa.swift")
@@ -26,7 +26,7 @@ class PBXTargetTests: XCTestCase {
         
         to: do {
             XCTAssertEqual(originalBuildPhases.count + 1, target.buildPhases.count)
-            XCTAssertEqual(subjectForFiles(originalBuildPhases) + 1, subjectForFiles(target.buildPhases))
+            XCTAssertEqual(subjectForBuildPhases(originalBuildPhases) + 1, subjectForBuildPhases(project.targets[name: "iOSTestProject"]!.buildPhases))
         }
     }
 }
