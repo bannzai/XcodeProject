@@ -9,14 +9,17 @@ import Foundation
 
 public struct ResourceBuildPhaseAppenderImpl: BuildPhaseAppender {
     private let hashIDGenerator: StringGenerator
+    private let extractor: ResourcesBuildPhaseExtractor
     public init(
-        hashIDGenerator: StringGenerator = PBXObjectHashIDGenerator()
+        hashIDGenerator: StringGenerator = PBXObjectHashIDGenerator(),
+        extractor: ResourcesBuildPhaseExtractor = ResourcesBuildPhaseExtractorImpl()
         ) {
         self.hashIDGenerator = hashIDGenerator
+        self.extractor = extractor
     }
     
     @discardableResult public func append(context: Context, buildFile: PBX.BuildFile, target: PBX.NativeTarget) -> PBX.BuildPhase {
-        let buildPhase = target.buildPhases.compactMap { $0 as? PBX.ResourcesBuildPhase }.first
+        let buildPhase = extractor.extract(context: context, targetName: target.name)
         switch buildPhase {
         case .some(let buildPhase):
             buildPhase.files.append(buildFile)
