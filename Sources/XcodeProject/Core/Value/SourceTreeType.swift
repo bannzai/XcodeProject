@@ -8,7 +8,10 @@
 
 import Foundation
 
+// SourceTreeType is a show path of localion on file systems for each PBX elements.
 public enum SourceTreeType {
+    
+    // Environment are describe the elements required for XcodeProject.
     public enum Environment: String, CaseIterable {
         case PROJECT_FILE_PATH
         case TARGET_NAME
