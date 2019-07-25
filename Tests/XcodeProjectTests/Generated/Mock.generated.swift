@@ -162,6 +162,11 @@ class PBXRawMapListFormatterMock: PBXRawMapListFormatter {
 class ResourcesBuildPhaseExtractorMock: ResourcesBuildPhaseExtractor {
     var methodCalledStack: [String] = []
 
+    var targetExtractor: NativeTargetExtractor {
+        get { return underlyingTargetExtractor }
+        set(value) { underlyingTargetExtractor = value }
+    }
+    var underlyingTargetExtractor: NativeTargetExtractor!
 
     //MARK: - extract
 
@@ -233,6 +238,11 @@ class SerializeFormatterMock: SerializeFormatter {
 class SourcesBuildPhaseExtractorMock: SourcesBuildPhaseExtractor {
     var methodCalledStack: [String] = []
 
+    var targetExtractor: NativeTargetExtractor {
+        get { return underlyingTargetExtractor }
+        set(value) { underlyingTargetExtractor = value }
+    }
+    var underlyingTargetExtractor: NativeTargetExtractor!
 
     //MARK: - extract
 
