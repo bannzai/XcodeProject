@@ -62,6 +62,11 @@ public struct GroupAppenderImpl: GroupAppender {
         
         context.objects[uuid] = group
         
+        defer {
+            // FIXME:
+            context.resetGroupFullPaths()
+        }
+        
         let nextPathComponent = groupPathNames.dropLast()
         let isEnd = nextPathComponent.isEmpty
         if isEnd {
