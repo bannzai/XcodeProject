@@ -30,10 +30,11 @@ class XcodeProjectTests: XCTestCase {
             XCTAssertEqual(content1, content2)
         })
         XCTContext.runActivity(named: "When it is edited", block: { _ in
-            // Overwrite
-            let project1 = makeXcodeProject()
             // Resverse
             let projectForResverse = makeXcodeProject()
+            
+            // Overwrite
+            let project1 = makeXcodeProject()
             let serializer1 = XcodeProjectSerializer()
             let content1 = serializer1.serialize(project: project1)
             let maker1 = FileReferenceMakerImpl()
