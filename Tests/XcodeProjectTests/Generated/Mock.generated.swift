@@ -33,19 +33,19 @@ class FieldFormatterMock: FieldFormatter {
 
     //MARK: - format
 
-    var formatOfForCallsCount = 0
-    var formatOfForCalled: Bool {
-        return formatOfForCallsCount > 0
+    var formatContextOfForCallsCount = 0
+    var formatContextOfForCalled: Bool {
+        return formatContextOfForCallsCount > 0
     }
-    var formatOfForReceivedArguments: (info: FieldFormatterInfomation, level: Int)?
-    var formatOfForReturnValue: String!
-    var formatOfForClosure: ((FieldFormatterInfomation, Int) -> String)?
+    var formatContextOfForReceivedArguments: (context: Context, info: FieldFormatterInfomation, level: Int)?
+    var formatContextOfForReturnValue: String!
+    var formatContextOfForClosure: ((Context, FieldFormatterInfomation, Int) -> String)?
 
-    func format(of info: FieldFormatterInfomation, for level: Int) -> String {
-        methodCalledStack.append("format(of:for:)")
-        formatOfForCallsCount += 1
-        formatOfForReceivedArguments = (info: info, level: level)
-        return formatOfForClosure.map({ $0(info, level) }) ?? formatOfForReturnValue
+    func format(context: Context, of info: FieldFormatterInfomation, for level: Int) -> String {
+        methodCalledStack.append("format(context:of:for:)")
+        formatContextOfForCallsCount += 1
+        formatContextOfForReceivedArguments = (context: context, info: info, level: level)
+        return formatContextOfForClosure.map({ $0(context, info, level) }) ?? formatContextOfForReturnValue
     }
 
 }
@@ -55,19 +55,19 @@ class PBXAtomicValueFormatterMock: PBXAtomicValueFormatter {
 
     //MARK: - format
 
-    var formatOfInCallsCount = 0
-    var formatOfInCalled: Bool {
-        return formatOfInCallsCount > 0
+    var formatContextOfInCallsCount = 0
+    var formatContextOfInCalled: Bool {
+        return formatContextOfInCallsCount > 0
     }
-    var formatOfInReceivedArguments: (info: PBXAtomicValueFormatterInformation, level: Int)?
-    var formatOfInReturnValue: String!
-    var formatOfInClosure: ((PBXAtomicValueFormatterInformation, Int) -> String)?
+    var formatContextOfInReceivedArguments: (context: Context, info: PBXAtomicValueFormatterInformation, level: Int)?
+    var formatContextOfInReturnValue: String!
+    var formatContextOfInClosure: ((Context, PBXAtomicValueFormatterInformation, Int) -> String)?
 
-    func format(of info: PBXAtomicValueFormatterInformation, in level: Int) -> String {
-        methodCalledStack.append("format(of:in:)")
-        formatOfInCallsCount += 1
-        formatOfInReceivedArguments = (info: info, level: level)
-        return formatOfInClosure.map({ $0(info, level) }) ?? formatOfInReturnValue
+    func format(context: Context, of info: PBXAtomicValueFormatterInformation, in level: Int) -> String {
+        methodCalledStack.append("format(context:of:in:)")
+        formatContextOfInCallsCount += 1
+        formatContextOfInReceivedArguments = (context: context, info: info, level: level)
+        return formatContextOfInClosure.map({ $0(context, info, level) }) ?? formatContextOfInReturnValue
     }
 
 }
@@ -77,19 +77,19 @@ class PBXAtomicValueListFieldFormatterMock: PBXAtomicValueListFieldFormatter {
 
     //MARK: - format
 
-    var formatOfForCallsCount = 0
-    var formatOfForCalled: Bool {
-        return formatOfForCallsCount > 0
+    var formatContextOfForCallsCount = 0
+    var formatContextOfForCalled: Bool {
+        return formatContextOfForCallsCount > 0
     }
-    var formatOfForReceivedArguments: (info: PBXAtomicValueListFieldFormatterInfomation, level: Int)?
-    var formatOfForReturnValue: String!
-    var formatOfForClosure: ((PBXAtomicValueListFieldFormatterInfomation, Int) -> String)?
+    var formatContextOfForReceivedArguments: (context: Context, info: PBXAtomicValueListFieldFormatterInfomation, level: Int)?
+    var formatContextOfForReturnValue: String!
+    var formatContextOfForClosure: ((Context, PBXAtomicValueListFieldFormatterInfomation, Int) -> String)?
 
-    func format(of info: PBXAtomicValueListFieldFormatterInfomation, for level: Int) -> String {
-        methodCalledStack.append("format(of:for:)")
-        formatOfForCallsCount += 1
-        formatOfForReceivedArguments = (info: info, level: level)
-        return formatOfForClosure.map({ $0(info, level) }) ?? formatOfForReturnValue
+    func format(context: Context, of info: PBXAtomicValueListFieldFormatterInfomation, for level: Int) -> String {
+        methodCalledStack.append("format(context:of:for:)")
+        formatContextOfForCallsCount += 1
+        formatContextOfForReceivedArguments = (context: context, info: info, level: level)
+        return formatContextOfForClosure.map({ $0(context, info, level) }) ?? formatContextOfForReturnValue
     }
 
 }
@@ -99,19 +99,19 @@ class PBXAtomicValueListFieldFormatterComponentMock: PBXAtomicValueListFieldForm
 
     //MARK: - format
 
-    var formatOfLevelCallsCount = 0
-    var formatOfLevelCalled: Bool {
-        return formatOfLevelCallsCount > 0
+    var formatContextOfLevelCallsCount = 0
+    var formatContextOfLevelCalled: Bool {
+        return formatContextOfLevelCallsCount > 0
     }
-    var formatOfLevelReceivedArguments: (info: (key: String, objectIds: [PBXObjectIDType]), level: Int)?
-    var formatOfLevelReturnValue: String!
-    var formatOfLevelClosure: (((key: String, objectIds: [PBXObjectIDType]), Int) -> String)?
+    var formatContextOfLevelReceivedArguments: (context: Context, info: (key: String, objectIds: [PBXObjectIDType]), level: Int)?
+    var formatContextOfLevelReturnValue: String!
+    var formatContextOfLevelClosure: ((Context, (key: String, objectIds: [PBXObjectIDType]), Int) -> String)?
 
-    func format(of info: (key: String, objectIds: [PBXObjectIDType]), level: Int) -> String {
-        methodCalledStack.append("format(of:level:)")
-        formatOfLevelCallsCount += 1
-        formatOfLevelReceivedArguments = (info: info, level: level)
-        return formatOfLevelClosure.map({ $0(info, level) }) ?? formatOfLevelReturnValue
+    func format(context: Context, of info: (key: String, objectIds: [PBXObjectIDType]), level: Int) -> String {
+        methodCalledStack.append("format(context:of:level:)")
+        formatContextOfLevelCallsCount += 1
+        formatContextOfLevelReceivedArguments = (context: context, info: info, level: level)
+        return formatContextOfLevelClosure.map({ $0(context, info, level) }) ?? formatContextOfLevelReturnValue
     }
 
 }
@@ -121,111 +121,91 @@ class PBXRawMapFormatterMock: PBXRawMapFormatter {
 
     //MARK: - format
 
-    var formatOfInNextCallsCount = 0
-    var formatOfInNextCalled: Bool {
-        return formatOfInNextCallsCount > 0
+    var formatContextOfInNextCallsCount = 0
+    var formatContextOfInNextCalled: Bool {
+        return formatContextOfInNextCallsCount > 0
     }
-    var formatOfInNextReceivedArguments: (info: PBXRawMapFormatterInformation, level: Int, nextFormatter: FieldFormatter)?
-    var formatOfInNextReturnValue: String!
-    var formatOfInNextClosure: ((PBXRawMapFormatterInformation, Int, FieldFormatter) -> String)?
+    var formatContextOfInNextReceivedArguments: (context: Context, info: PBXRawMapFormatterInformation, level: Int, nextFormatter: FieldFormatter)?
+    var formatContextOfInNextReturnValue: String!
+    var formatContextOfInNextClosure: ((Context, PBXRawMapFormatterInformation, Int, FieldFormatter) -> String)?
 
-    func format(        of info: PBXRawMapFormatterInformation,        in level: Int,        next nextFormatter: FieldFormatter        ) -> String {
-        methodCalledStack.append("format(of:in:next:)")
-        formatOfInNextCallsCount += 1
-        formatOfInNextReceivedArguments = (info: info, level: level, nextFormatter: nextFormatter)
-        return formatOfInNextClosure.map({ $0(info, level, nextFormatter) }) ?? formatOfInNextReturnValue
+    func format(        context: Context,        of info: PBXRawMapFormatterInformation,        in level: Int,        next nextFormatter: FieldFormatter        ) -> String {
+        methodCalledStack.append("format(context:of:in:next:)")
+        formatContextOfInNextCallsCount += 1
+        formatContextOfInNextReceivedArguments = (context: context, info: info, level: level, nextFormatter: nextFormatter)
+        return formatContextOfInNextClosure.map({ $0(context, info, level, nextFormatter) }) ?? formatContextOfInNextReturnValue
     }
 
 }
 class PBXRawMapListFormatterMock: PBXRawMapListFormatter {
     var methodCalledStack: [String] = []
 
-    var project: XcodeProject {
-        get { return underlyingProject }
-        set(value) { underlyingProject = value }
-    }
-    var underlyingProject: XcodeProject!
 
     //MARK: - format
 
-    var formatOfInNextCallsCount = 0
-    var formatOfInNextCalled: Bool {
-        return formatOfInNextCallsCount > 0
+    var formatContextOfInNextCallsCount = 0
+    var formatContextOfInNextCalled: Bool {
+        return formatContextOfInNextCallsCount > 0
     }
-    var formatOfInNextReceivedArguments: (info: PBXRawMapListFormatterInformation, level: Int, nextFormatter: FieldFormatter)?
-    var formatOfInNextReturnValue: String!
-    var formatOfInNextClosure: ((PBXRawMapListFormatterInformation, Int, FieldFormatter) -> String)?
+    var formatContextOfInNextReceivedArguments: (context: Context, info: PBXRawMapListFormatterInformation, level: Int, nextFormatter: FieldFormatter)?
+    var formatContextOfInNextReturnValue: String!
+    var formatContextOfInNextClosure: ((Context, PBXRawMapListFormatterInformation, Int, FieldFormatter) -> String)?
 
-    func format(        of info: PBXRawMapListFormatterInformation,        in level: Int,        next nextFormatter: FieldFormatter    ) -> String {
-        methodCalledStack.append("format(of:in:next:)")
-        formatOfInNextCallsCount += 1
-        formatOfInNextReceivedArguments = (info: info, level: level, nextFormatter: nextFormatter)
-        return formatOfInNextClosure.map({ $0(info, level, nextFormatter) }) ?? formatOfInNextReturnValue
+    func format(        context: Context,        of info: PBXRawMapListFormatterInformation,        in level: Int,        next nextFormatter: FieldFormatter    ) -> String {
+        methodCalledStack.append("format(context:of:in:next:)")
+        formatContextOfInNextCallsCount += 1
+        formatContextOfInNextReceivedArguments = (context: context, info: info, level: level, nextFormatter: nextFormatter)
+        return formatContextOfInNextClosure.map({ $0(context, info, level, nextFormatter) }) ?? formatContextOfInNextReturnValue
     }
 
 }
 class SectionFormatterMock: SectionFormatter {
     var methodCalledStack: [String] = []
 
-    var project: XcodeProject {
-        get { return underlyingProject }
-        set(value) { underlyingProject = value }
-    }
-    var underlyingProject: XcodeProject!
 
     //MARK: - format
 
-    var formatIsaObjectsCallsCount = 0
-    var formatIsaObjectsCalled: Bool {
-        return formatIsaObjectsCallsCount > 0
+    var formatContextIsaObjectsCallsCount = 0
+    var formatContextIsaObjectsCalled: Bool {
+        return formatContextIsaObjectsCallsCount > 0
     }
-    var formatIsaObjectsReceivedArguments: (isa: ObjectType, objects: [PBX.Object])?
-    var formatIsaObjectsReturnValue: String!
-    var formatIsaObjectsClosure: ((ObjectType, [PBX.Object]) -> String)?
+    var formatContextIsaObjectsReceivedArguments: (context: Context, isa: ObjectType, objects: [PBX.Object])?
+    var formatContextIsaObjectsReturnValue: String!
+    var formatContextIsaObjectsClosure: ((Context, ObjectType, [PBX.Object]) -> String)?
 
-    func format(isa: ObjectType, objects: [PBX.Object]) -> String {
-        methodCalledStack.append("format(isa:objects:)")
-        formatIsaObjectsCallsCount += 1
-        formatIsaObjectsReceivedArguments = (isa: isa, objects: objects)
-        return formatIsaObjectsClosure.map({ $0(isa, objects) }) ?? formatIsaObjectsReturnValue
+    func format(context: Context, isa: ObjectType, objects: [PBX.Object]) -> String {
+        methodCalledStack.append("format(context:isa:objects:)")
+        formatContextIsaObjectsCallsCount += 1
+        formatContextIsaObjectsReceivedArguments = (context: context, isa: isa, objects: objects)
+        return formatContextIsaObjectsClosure.map({ $0(context, isa, objects) }) ?? formatContextIsaObjectsReturnValue
     }
 
 }
 class SectionRowFormatterMock: SectionRowFormatter {
     var methodCalledStack: [String] = []
 
-    var project: XcodeProject {
-        get { return underlyingProject }
-        set(value) { underlyingProject = value }
-    }
-    var underlyingProject: XcodeProject!
 
     //MARK: - format
 
-    var formatOfCallsCount = 0
-    var formatOfCalled: Bool {
-        return formatOfCallsCount > 0
+    var formatContextOfCallsCount = 0
+    var formatContextOfCalled: Bool {
+        return formatContextOfCallsCount > 0
     }
-    var formatOfReceivedInfo: SectionRowFormatterInformation?
-    var formatOfReturnValue: String!
-    var formatOfClosure: ((SectionRowFormatterInformation) -> String)?
+    var formatContextOfReceivedArguments: (context: Context, info: SectionRowFormatterInformation)?
+    var formatContextOfReturnValue: String!
+    var formatContextOfClosure: ((Context, SectionRowFormatterInformation) -> String)?
 
-    func format(of info: SectionRowFormatterInformation) -> String {
-        methodCalledStack.append("format(of:)")
-        formatOfCallsCount += 1
-        formatOfReceivedInfo = info
-        return formatOfClosure.map({ $0(info) }) ?? formatOfReturnValue
+    func format(context: Context, of info: SectionRowFormatterInformation) -> String {
+        methodCalledStack.append("format(context:of:)")
+        formatContextOfCallsCount += 1
+        formatContextOfReceivedArguments = (context: context, info: info)
+        return formatContextOfClosure.map({ $0(context, info) }) ?? formatContextOfReturnValue
     }
 
 }
 class SerializeFormatterMock: SerializeFormatter {
     var methodCalledStack: [String] = []
 
-    var project: XcodeProject {
-        get { return underlyingProject }
-        set(value) { underlyingProject = value }
-    }
-    var underlyingProject: XcodeProject!
 
 }
 class StringGeneratorMock: StringGenerator {
