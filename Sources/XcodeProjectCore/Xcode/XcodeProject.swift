@@ -71,20 +71,19 @@ extension XcodeProject {
 
 // MARK: - Append
 extension XcodeProject {
-    public func appendFile(filePath: PBXRawPathType, targetName: String) {
-        let groupPathNames = Array(filePath
+    public func appendFile(path: PBXRawPathType, targetName: String) {
+        let groupPathNames = Array(path
             .components(separatedBy: "/")
             .filter { !$0.isEmpty }
             .dropLast()
         )
         
-        if !groupPathNames.isEmpty {
-            let _ = groupAppender.append(context: context, childrenIDs: [], path: groupPathNames.joined(separator: "/"))
-        }
-        let fileRef = fileReferenceAppender.append(context: context, filePath: filePath)
+        appendGroup(path: groupPathNames.joined(separator: "/"), targetName: targetName)
+        
+        let fileRef = fileReferenceAppender.append(context: context, filePath: path)
         
         guard let fileName = fileRef.path else {
-            fatalError(assertionMessage(description: "Unexpected pattern for file path is nil after appended file reference: \(fileRef), filePath: \(filePath), targetName: \(targetName)"))
+            fatalError(assertionMessage(description: "Unexpected pattern for file path is nil after appended file reference: \(fileRef), filePath: \(path), targetName: \(targetName)"))
         }
         
         bulidFileAppender.append(context: context, fileRefID: fileRef.id, targetName: targetName, fileName: fileRef.path!)
