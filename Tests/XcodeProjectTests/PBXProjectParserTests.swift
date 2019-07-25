@@ -11,11 +11,7 @@ import XCTest
 class PBXProjectContextParserTests: XCTestCase {
     func testParse() {
         do {
-            let context = try PBXProjectContextParser().parse(xcodeprojectUrl: xcodeProjectUrl())
-//            XCTAssert(parser.context().dictionary.count == 58)
-//            XCTAssert(parser.context().fullFilePaths.count == 15)
-//            XCTAssert(parser.context().grouped.count == 13)
-            XCTAssert(context.allPBX.count == 5)
+            _ = try PBXProjectContextParser().parse(xcodeprojectUrl: xcodeProjectUrl())
         } catch {
             XCTFail(error.localizedDescription)
         }
