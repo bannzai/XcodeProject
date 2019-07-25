@@ -98,6 +98,12 @@ extension XcodeProject {
             break
         }
     }
+    
+    public func appendGroup(path: PBXRawPathType, targetName: String) {
+        if !path.isEmpty {
+            groupAppender.append(context: context, childrenIDs: [], path: path)
+        }
+    }
 }
 
 // MARK: - Write
