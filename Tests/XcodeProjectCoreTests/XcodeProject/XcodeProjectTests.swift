@@ -63,7 +63,7 @@ class XcodeProjectTests: XCTestCase {
                 XCTAssertEqual(originalObjects.count, project.objects.count)
                 XCTAssertFalse(project.objects.map { $0.key }.contains("ABC"))
             }
-            project.objects.values.compactMap { $0 as? PBX.Group }.filter { $0.fullPath == "iOSTestProject" }.first!.children.append(maker.make(context: project.context, fileName: "aaaa.swift"))
+            project.groups.filter { $0.fullPath == "iOSTestProject" }.first!.children.append(maker.make(context: project.context, fileName: "aaaa.swift"))
             to: do {
                 XCTAssertEqual(subject(originalObjects), subject(project.objects))
                 XCTAssertEqual(originalObjects.count + 1, project.context.objects.count)
