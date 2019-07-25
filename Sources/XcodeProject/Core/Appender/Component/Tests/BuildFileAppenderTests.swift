@@ -34,19 +34,18 @@ class BuildFileAppenderTests: XCTestCase {
             XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.BuildFile }.count + 1, xcodeproject.context.objects.values.compactMap { $0 as? PBX.BuildFile }.count)
         })
         
-        // TODO: extract build file from build phase
-//        XCTContext.runActivity(named: "When append file is exist", block: { _ in
-//            let xcodeproject = makeXcodeProject()
-//            let appender = make()
-//            let originalObjects = xcodeproject.context.objects
-//
-//            let fileRef = FileRefExtractorImpl(groupExtractor: GroupExtractorImpl()).extract(context: xcodeproject.context, groupPath: "iOSTestProject", fileName: "AppDelegate.swift")!
-//
-//            XCTAssertEqual(originalObjects.keys.count, xcodeproject.context.objects.keys.count)
-//            XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.BuildFile }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.BuildFile }.count)
-//            appender.append(context: xcodeproject.context, fileRefID: fileRef.id, targetName: "iOSTestProject", fileName: fileRef.path!)
-//            XCTAssertEqual(originalObjects.keys.count, xcodeproject.context.objects.keys.count)
-//            XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.BuildFile }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.BuildFile }.count)
-//        })
+        XCTContext.runActivity(named: "When append file is exist", block: { _ in
+            let xcodeproject = makeXcodeProject()
+            let appender = make()
+            let originalObjects = xcodeproject.context.objects
+
+            let fileRef = FileRefExtractorImpl(groupExtractor: GroupExtractorImpl()).extract(context: xcodeproject.context, groupPath: "iOSTestProject", fileName: "AppDelegate.swift")!
+
+            XCTAssertEqual(originalObjects.keys.count, xcodeproject.context.objects.keys.count)
+            XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.BuildFile }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.BuildFile }.count)
+            appender.append(context: xcodeproject.context, fileRefID: fileRef.id, targetName: "iOSTestProject", fileName: fileRef.path!)
+            XCTAssertEqual(originalObjects.keys.count, xcodeproject.context.objects.keys.count)
+            XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.BuildFile }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.BuildFile }.count)
+        })
     }
 }

@@ -12,5 +12,10 @@ public protocol SourcesBuildPhaseExtractor: BuildPhaseExtractor, AutoMockable {
 }
 
 public struct SourcesBuildPhaseExtractorImpl: SourcesBuildPhaseExtractor {
-    public init() { }
+    public let targetExtractor: NativeTargetExtractor
+    public init(
+        targetExtractor: NativeTargetExtractor = NativeTargetExtractorImpl()
+        ) {
+        self.targetExtractor = targetExtractor
+    }
 }

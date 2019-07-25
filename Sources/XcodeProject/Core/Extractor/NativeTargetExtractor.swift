@@ -12,6 +12,10 @@ public protocol NativeTargetExtractor {
 }
 
 public struct NativeTargetExtractorImpl: NativeTargetExtractor {
+    public init() {
+        
+    }
+    
     public func extract(context: Context, targetName: String) -> PBX.NativeTarget? {
         return context
             .objects

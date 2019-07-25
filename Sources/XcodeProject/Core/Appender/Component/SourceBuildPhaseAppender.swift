@@ -18,8 +18,8 @@ public struct SourceBuildPhaseAppenderImpl: BuildPhaseAppender {
         self.extractor = extractor
     }
     
-    @discardableResult public func append(context: Context, target: PBX.NativeTarget) -> PBX.BuildPhase {
-        if let sourcesBuildPhase = extractor.extract(context: context, targetName: target.name) {
+    @discardableResult public func append(context: Context, targetName: String) -> PBX.BuildPhase {
+        if let sourcesBuildPhase = extractor.extract(context: context, targetName: targetName) {
             return sourcesBuildPhase
         }
         

@@ -27,6 +27,8 @@ public class XcodeProject {
     private let fileReferenceAppender: FileReferenceAppender
     private let groupAppender: GroupAppender
     private let bulidFileAppender: BuildFileAppender
+    private let resourcesBuildPhaseAppender: BuildPhaseAppender
+    private let sourcesBuildPhaseAppender: BuildPhaseAppender
     private let fileWriter: Writer
     public init(
         xcodeprojectURL: URL,
@@ -34,6 +36,8 @@ public class XcodeProject {
         fileWriter: Writer = FileWriter(),
         fileReferenceAppender: FileReferenceAppender = FileReferenceAppenderImpl(),
         groupAppender: GroupAppender = GroupAppenderImpl(),
+        resourcesBuildPhaseAppender: BuildPhaseAppender = ResourceBuildPhaseAppenderImpl(),
+        sourcesBuildPhaseAppender: BuildPhaseAppender = SourceBuildPhaseAppenderImpl(),
         bulidFileAppender: BuildFileAppenderImpl = BuildFileAppenderImpl(),
         hashIDGenerator: StringGenerator = PBXObjectHashIDGenerator()
         ) throws {
@@ -41,6 +45,8 @@ public class XcodeProject {
         self.fileWriter = fileWriter
         self.fileReferenceAppender = fileReferenceAppender
         self.groupAppender = groupAppender
+        self.resourcesBuildPhaseAppender = resourcesBuildPhaseAppender
+        self.sourcesBuildPhaseAppender = sourcesBuildPhaseAppender
         self.bulidFileAppender = bulidFileAppender
     }
 }
@@ -58,7 +64,21 @@ extension XcodeProject {
             let _ = groupAppender.append(context: context, childrenIDs: [], path: groupPathNames.joined(separator: "/"))
         }
         let fileRef = fileReferenceAppender.append(context: context, filePath: filePath)
-        bulidFileAppender.append(context: context, fileRefID: fileRef.id, targetName: targetName, fileName: fileRef.path!)
+        
+        guard let fileName = fileRef.path else {
+            fatalError(assertionMessage(description: "Unexpected pattern for file path is nil after appended file reference: \(fileRef), filePath: \(filePath), targetName: \(targetName)"))
+        }
+        let buildFile = bulidFileAppender.append(context: context, fileRefID: fileRef.id, targetName: targetName, fileName: fileRef.path!)
+        
+        let lastKnownType = KnownFileExtension(fileName: fileName)
+        switch lastKnownType.type {
+        case .resourceFile, .text:
+            resourcesBuildPhaseAppender.append(context: context, targetName: targetName)
+        case .sourceCode:
+            sourcesBuildPhaseAppender.append(context: context, targetName: targetName)
+        case _:
+            break
+        }
     }
 }
 

@@ -18,8 +18,8 @@ public struct ResourceBuildPhaseAppenderImpl: BuildPhaseAppender {
         self.extractor = extractor
     }
     
-    @discardableResult public func append(context: Context, target: PBX.NativeTarget) -> PBX.BuildPhase {
-        if let buildPhase = extractor.extract(context: context, targetName: target.name) {
+    @discardableResult public func append(context: Context, targetName: String) -> PBX.BuildPhase {
+        if let buildPhase = extractor.extract(context: context, targetName: targetName) {
             return buildPhase
         }
         let isa = ObjectType.PBXResourcesBuildPhase.rawValue
