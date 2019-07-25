@@ -11,15 +11,14 @@ import XCTest
 class SinglelinePBXAtomicValueListFieldFormatterTests: XCTestCase {
 
     func make() -> SinglelinePBXAtomicValueListFieldFormatter {
-        return SinglelinePBXAtomicValueListFieldFormatter(
-                project: makeXcodeProject()
-        )
+        return SinglelinePBXAtomicValueListFieldFormatter()
     }
     
     func testFormat() {
         XCTContext.runActivity(named: "When empty object ids", block: { _ in
+            let project = makeXcodeProject()
             let formatter = make()
-            let got = formatter.format(of: (key: "ATTRIBUTES", objectIds: ["CodeSignOnCopy", "RemoveHeadersOnCopy"]), level: 0)
+            let got = formatter.format(context: project.context, of: (key: "ATTRIBUTES", objectIds: ["CodeSignOnCopy", "RemoveHeadersOnCopy"]), level: 0)
             XCTAssertEqual(
                 got,
                 "ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); "
@@ -28,11 +27,6 @@ class SinglelinePBXAtomicValueListFieldFormatterTests: XCTestCase {
         XCTContext.runActivity(named: "When empty object ids", block: { _ in
             // NOTE: Unexpected pattern
         })
-    }
-
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
     }
 
     func testPerformanceExample() {

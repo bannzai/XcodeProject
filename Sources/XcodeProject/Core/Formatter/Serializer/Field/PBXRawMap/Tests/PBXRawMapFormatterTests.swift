@@ -11,13 +11,15 @@ import XCTest
 class PBXRawMapFormatterTests: XCTestCase {
     func make() -> (FieldFormatter, PBXRawMapFormatterImpl) {
         let nextFormatter = makeFieldFormatter()
-        return (nextFormatter, PBXRawMapFormatterImpl(project: nextFormatter.project))
+        return (nextFormatter, PBXRawMapFormatterImpl())
     }
 
     func testFormat() {
         XCTContext.runActivity(named: "And It is multiple line isa", block: { _ in
+            let project = makeXcodeProject()
             let (next, formatter) = make()
             let got = formatter.format(
+                context: project.context,
                 of: (
                     key: "attributes",
                     value: [

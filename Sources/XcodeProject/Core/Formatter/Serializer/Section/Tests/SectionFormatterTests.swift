@@ -10,12 +10,9 @@ import XCTest
 
 class SectionFormatterTests: XCTestCase {
     func make() -> SectionFormatter {
-        let fieldFormatter = makeFieldFormatter()
         return SectionFormatterImpl(
-            project: fieldFormatter.project,
             rowFormatter: SectionRowFormatterImpl(
-                project: fieldFormatter.project,
-                fieldFormatter: fieldFormatter
+                fieldFormatter: makeFieldFormatter()
             )
         )
     }
@@ -23,8 +20,10 @@ class SectionFormatterTests: XCTestCase {
     func testFormat(){
         XCTContext.runActivity(named: "Single line") { (activity) in
             XCTContext.runActivity(named: "When PBXShellScriptBuildPhase") { (_) in
+                let project = makeXcodeProject()
                 let formatter = make()
                 let got = formatter.format(
+                    context: project.context,
                     isa: .PBXShellScriptBuildPhase,
                     objects: [
                         PBX.ShellScriptBuildPhase.init(
@@ -43,7 +42,7 @@ class SectionFormatterTests: XCTestCase {
                                 "shellScript": "# Type a script or drag a script file from your workspace to insert its path.\necho \"Script\"\n"
                             ],
                             isa: ObjectType.PBXShellScriptBuildPhase.rawValue,
-                            context: formatter.project.context
+                            context: project.context
                         ),
                     ]
                 )
@@ -76,8 +75,10 @@ class SectionFormatterTests: XCTestCase {
             }
             
             XCTContext.runActivity(named: "When PBXBuildFile") { (_) in
+                let project = makeXcodeProject()
                 let formatter = make()
                 let got = formatter.format(
+                    context: project.context,
                     isa: .PBXBuildFile,
                     objects: [
                         PBX.BuildFile.init(
@@ -87,7 +88,7 @@ class SectionFormatterTests: XCTestCase {
                                 "fileRef": "BA4268031F89EB7F001FA700",
                             ],
                             isa: "PBXBuildFile",
-                            context: formatter.project.context
+                            context: project.context
                         )
                     ]
                 )
@@ -104,8 +105,10 @@ class SectionFormatterTests: XCTestCase {
         }
         
         XCTContext.runActivity(named: "Multiple line") { (activity) in
+            let project = makeXcodeProject()
             let formatter = make()
             let got = formatter.format(
+                context: project.context,
                 isa: .PBXContainerItemProxy,
                 objects: [
                     PBX.ContainerItemProxy.init(
@@ -118,7 +121,7 @@ class SectionFormatterTests: XCTestCase {
                             "remoteInfo": "iOSTestProject"
                         ],
                         isa: "PBXContainerItemProxy",
-                        context: formatter.project.context
+                        context: project.context
                     )
                 ]
             )

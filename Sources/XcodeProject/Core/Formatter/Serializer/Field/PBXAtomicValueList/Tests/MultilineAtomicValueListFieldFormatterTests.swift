@@ -10,15 +10,14 @@ import XCTest
 
 class MultilinePBXAtomicValueListFieldFormatterTests: XCTestCase {
     func make() -> MultiplelinePBXAtomicValueListFieldFormatter {
-        return MultiplelinePBXAtomicValueListFieldFormatter(
-            project: makeXcodeProject()
-        )
+        return MultiplelinePBXAtomicValueListFieldFormatter()
     }
     
     func testFormat() {
         XCTContext.runActivity(named: "When empty object ids", block: { _ in
+            let project = makeXcodeProject()
             let formatter = make()
-            let got = formatter.format(of: (key: "files", objectIds: []), level: 0)
+            let got = formatter.format(context: project.context, of: (key: "files", objectIds: []), level: 0)
             XCTAssertEqual(
                 got,
                 """
@@ -28,8 +27,9 @@ class MultilinePBXAtomicValueListFieldFormatterTests: XCTestCase {
             )
         })
         XCTContext.runActivity(named: "When empty object ids", block: { _ in
+            let project = makeXcodeProject()
             let formatter = make()
-            let got = formatter.format(of: (key: "files", objectIds: ["BA42680E1F89EB7F001FA700", "BA42680B1F89EB7F001FA700", "BA4268091F89EB7F001FA700"]), level: 0)
+            let got = formatter.format(context: project.context, of: (key: "files", objectIds: ["BA42680E1F89EB7F001FA700", "BA42680B1F89EB7F001FA700", "BA4268091F89EB7F001FA700"]), level: 0)
             XCTAssertEqual(
                 got,
                 """
