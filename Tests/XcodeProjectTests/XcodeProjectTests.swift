@@ -28,35 +28,39 @@ class XcodeProjectTests: XCTestCase {
                 XCTAssertEqual(subject(originalObjects), subject(project.objects))
                 XCTAssertEqual(originalObjects.count, project.context.objects.count)
                 XCTAssertEqual(originalObjects.count, project.objects.count)
+                XCTAssertFalse(project.objects.map { $0.key }.contains("ABC"))
             }
             project.objects.values.compactMap { $0 as? PBX.Group }.filter { $0.fullPath == "iOSTestProject" }.first!.children.append(maker.make(context: project.context, fileName: "aaaa.swift"))
             to: do {
                 XCTAssertEqual(subject(originalObjects), subject(project.objects))
                 XCTAssertEqual(originalObjects.count + 1, project.context.objects.count)
                 XCTAssertEqual(originalObjects.count + 1, project.objects.count)
+                XCTAssertTrue(project.objects.map { $0.key }.contains("ABC"))
             }
         })
-//        XCTContext.runActivity(named: "Append Buld File configuration to target of iOSTestProject/. It is append same references and added original context `objects`.", block: { _ in
-//            let project = makeXcodeProject()
-//            let originalObjects = project.context.objects
-//            let mockIDGenerator = StringGeneratorMock()
-//            mockIDGenerator.generateReturnValue = "ABC"
-//            let maker = FileReferenceMakerImpl(hashIDGenerator: mockIDGenerator)
-//            let subject: ([String: PBX.Object]) -> Int = {
-//                $0.values.compactMap { $0 as? PBX.Group }.filter { $0.fullPath == "iOSTestProject" }.first!.children.count
-//            }
-//            from: do {
-//                XCTAssertEqual(subject(originalObjects), subject(project.objects))
-//                XCTAssertEqual(originalObjects.count, project.context.objects.count)
-//                XCTAssertEqual(originalObjects.count, project.objects.count)
-//            }
-//            project.objects.values.compactMap { $0 as? PBX.Group }.filter { $0.fullPath == "iOSTestProject" }.first!.children.append(maker.make(context: project.context, fileName: "aaaa.swift"))
-//            to: do {
-//                XCTAssertEqual(subject(originalObjects), subject(project.objects))
-//                XCTAssertEqual(originalObjects.count + 1, project.context.objects.count)
-//                XCTAssertEqual(originalObjects.count + 1, project.objects.count)
-//            }
-//        })
+        XCTContext.runActivity(named: "Append Buld File configuration to target of iOSTestProject/. It is append same references and added original context `objects`.", block: { _ in
+            let project = makeXcodeProject()
+            let originalObjects = project.context.objects
+            let mockIDGenerator = StringGeneratorMock()
+            mockIDGenerator.generateReturnValue = "ABC"
+            let maker = BuildFileMakerImpl(hashIDGenerator: mockIDGenerator)
+            let subject: ([String: PBX.Object]) -> Int = {
+                $0.values.compactMap { $0 as? PBX.Target }.filter { $0.name == "iOSTestProject" }.first!.buildPhases.first!.files.count
+            }
+            from: do {
+                XCTAssertEqual(subject(originalObjects), subject(project.objects))
+                XCTAssertEqual(originalObjects.count, project.context.objects.count)
+                XCTAssertEqual(originalObjects.count, project.objects.count)
+                XCTAssertFalse(project.objects.map { $0.key }.contains("ABC"))
+            }
+            project.objects.values.compactMap { $0 as? PBX.Target }.filter { $0.name == "iOSTestProject" }.first!.buildPhases.first!.files.append(maker.make(context: project.context, fileRefId: "ABC"))
+            to: do {
+                XCTAssertEqual(subject(originalObjects), subject(project.objects))
+                XCTAssertEqual(originalObjects.count + 1, project.context.objects.count)
+                XCTAssertEqual(originalObjects.count + 1, project.objects.count)
+                XCTAssertTrue(project.objects.map { $0.key }.contains("ABC"))
+            }
+        })
     }
     
     func testAppendFilePathToTargetName() {
