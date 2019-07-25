@@ -43,7 +43,7 @@ extension XcodeProject {
     public var rootID: String {
         return context.rootID
     }
-    public var objects: WeakDictionary<String, PBX.Object> {
+    public var objects: [String: PBX.Object] {
         return context.objects
     }
     public var mainGroup: PBX.Group {
