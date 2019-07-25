@@ -47,7 +47,7 @@ public struct BuildFileAppenderImpl: BuildFileAppender {
         }
         
         let buildFile = buildFileMaker.make(context: context, fileRefId: fileRefID)
-        let lastKnownType = LastKnownFile(fileName: fileName)
+        let lastKnownType = KnownFileExtension(fileName: fileName)
         switch lastKnownType.type {
         case .resourceFile, .text:
             resourceBuildPhaseAppender.append(context: context, buildFile: buildFile, target: target)

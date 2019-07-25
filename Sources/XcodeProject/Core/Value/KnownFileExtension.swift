@@ -1,5 +1,5 @@
 //
-//  LastKnownFileType.swift
+//  KnownFileExtensionType.swift
 //  xcp
 //
 //  Created by kingkong999yhirose on 2016/12/23.
@@ -8,8 +8,9 @@
 
 import Foundation
 
-struct LastKnownFile {
-    let type: LastKnownFileType
+// KnownFileExtension is a value container file extension.
+struct KnownFileExtension {
+    let type: KnownFileExtensionType
     let value: String
     
     init(fileName: String) {
@@ -37,7 +38,8 @@ struct LastKnownFile {
     }
 }
 
-enum LastKnownFileType {
+// KnownFileExtension is a file extension type as far as I know.
+enum KnownFileExtensionType {
     case resourceFile
     case sourceCode
     case markdown

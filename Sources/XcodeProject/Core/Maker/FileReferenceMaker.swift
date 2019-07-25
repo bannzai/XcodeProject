@@ -26,7 +26,7 @@ public struct FileReferenceMakerImpl: FileReferenceMaker {
         let pair: PBXRawMapType = [
             "isa": isa.rawValue,
             "fileEncoding": 4,
-            "lastKnownFileType": LastKnownFile(fileName: fileName).value,
+            "lastKnownFileType": KnownFileExtension(fileName: fileName).value,
             "path": fileName,
             "sourceTree": "<group>"
         ]
