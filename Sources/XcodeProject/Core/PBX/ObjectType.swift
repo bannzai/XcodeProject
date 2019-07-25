@@ -8,6 +8,7 @@
 
 import Foundation
 
+// ObjectType is a each PBX Object type in project.pbxproj.
 public enum ObjectType: String {
     case PBXProject
     case PBXContainerItemProxy
