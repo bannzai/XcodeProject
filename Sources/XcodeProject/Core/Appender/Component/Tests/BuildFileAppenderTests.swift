@@ -11,11 +11,7 @@ import XCTest
 class BuildFileAppenderTests: XCTestCase {
     
     func make() -> BuildFileAppender {
-        return BuildFileAppenderImpl(
-            hashIDGenerator: PBXObjectHashIDGenerator(),
-            resourceBuildPhaseAppender: ResourceBuildPhaseAppenderImpl(hashIDGenerator: PBXObjectHashIDGenerator()),
-            sourceBuildPhaseAppender: SourceBuildPhaseAppenderImpl(hashIDGenerator: PBXObjectHashIDGenerator())
-        )
+        return BuildFileAppenderImpl()
     }
     
     func testAppend() {

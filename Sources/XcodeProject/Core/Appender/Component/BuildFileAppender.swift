@@ -17,15 +17,15 @@ public protocol BuildFileAppender {
 }
 
 public struct BuildFileAppenderImpl: BuildFileAppender {
-    private let hashIDGenerator: StringGenerator
+    private let buildFileMaker: BuildFileMaker
     private let resourceBuildPhaseAppender: BuildPhaseAppender
     private let sourceBuildPhaseAppender: BuildPhaseAppender
     public init(
-        hashIDGenerator: StringGenerator = PBXObjectHashIDGenerator(),
+        buildFileMaker: BuildFileMaker = BuildFileMakerImpl(),
         resourceBuildPhaseAppender: BuildPhaseAppender = ResourceBuildPhaseAppenderImpl(),
         sourceBuildPhaseAppender: BuildPhaseAppender = SourceBuildPhaseAppenderImpl()
         ) {
-        self.hashIDGenerator = hashIDGenerator
+        self.buildFileMaker = buildFileMaker
         self.resourceBuildPhaseAppender = resourceBuildPhaseAppender
         self.sourceBuildPhaseAppender = sourceBuildPhaseAppender
     }
@@ -46,7 +46,7 @@ public struct BuildFileAppenderImpl: BuildFileAppender {
                 fatalError(assertionMessage(description: "Unexpected target name \(targetName)"))
         }
         
-        let buildFile = makeBuildFile(context: context, fileRefId: fileRefID)
+        let buildFile = buildFileMaker.make(context: context, fileRefId: fileRefID)
         let lastKnownType = LastKnownFile(fileName: fileName)
         switch lastKnownType.type {
         case .resourceFile, .text:
@@ -56,25 +56,6 @@ public struct BuildFileAppenderImpl: BuildFileAppender {
         case _:
             fatalError("Unexpected file format")
         }
-        
-        return buildFile
-    }
-    
-    private func makeBuildFile(context: Context, fileRefId: String) -> PBX.BuildFile {
-        let isa = ObjectType.PBXBuildFile.rawValue
-        let pair: PBXRawMapType = [
-            "isa": isa,
-            "fileRef": fileRefId,
-        ]
-        
-        let buildFileId = hashIDGenerator.generate()
-        let buildFile = PBX.BuildFile(
-            id: buildFileId,
-            dictionary: pair,
-            isa: isa,
-            context: context
-        )
-        context.objects[buildFileId] = buildFile
         
         return buildFile
     }
