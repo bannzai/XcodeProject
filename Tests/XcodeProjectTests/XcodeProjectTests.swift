@@ -15,6 +15,8 @@ func isDirectory(_ dirName: String) -> Bool {
 
 class XcodeProjectTests: XCTestCase {
     
+    // This test is overwrite actual project.pbxproj file.
+    // When this test failed, You should check target project.pbxproj and it revert if necessary.
     func test_overwrite_check() {
         XCTContext.runActivity(named: "When it is no edit", block: { _ in
             // Overwrite
