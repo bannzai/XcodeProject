@@ -8,18 +8,19 @@
 import Foundation
 
 public protocol BuildPhaseExtractor {
-    func extract<T: PBX.BuildPhase>(context: Context, targetName: String) -> T?
+    associatedtype BuildPhase = PBX.BuildPhase
+    func extract(context: Context, targetName: String) -> BuildPhase?
 }
 
-public struct BuildPhaseExtractorImpl: BuildPhaseExtractor {
-    public func extract<T: PBX.BuildPhase>(context: Context, targetName: String) -> T? {
+extension BuildPhaseExtractor {
+    public func extract(context: Context, targetName: String) -> BuildPhase? {
         return context
             .objects
             .values
             .compactMap { $0 as? PBX.NativeTarget }
             .first { $0.name == targetName }?
             .buildPhases
-            .compactMap { $0 as? T }
+            .compactMap { $0 as? BuildPhase }
             .first
     }
 }
