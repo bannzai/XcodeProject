@@ -18,14 +18,17 @@ public protocol BuildFileAppender {
 
 public struct BuildFileAppenderImpl: BuildFileAppender {
     private let buildFileMaker: BuildFileMaker
+    private let extractor: BuildFileExtractor
     private let resourcesBuildPhaseExtractor: ResourcesBuildPhaseExtractor
     private let sourcesBuildPhaseExtractor: SourcesBuildPhaseExtractor
     public init(
         buildFileMaker: BuildFileMaker = BuildFileMakerImpl(),
+        extractor: BuildFileExtractor = BuildFileExtractorImpl(),
         resourcesBuildPhaseExtractor: ResourcesBuildPhaseExtractor = ResourcesBuildPhaseExtractorImpl(),
         sourcesBuildPhaseExtractor: SourcesBuildPhaseExtractor = SourcesBuildPhaseExtractorImpl()
         ) {
         self.buildFileMaker = buildFileMaker
+        self.extractor = extractor
         self.resourcesBuildPhaseExtractor = resourcesBuildPhaseExtractor
         self.sourcesBuildPhaseExtractor = sourcesBuildPhaseExtractor
     }
@@ -36,6 +39,10 @@ public struct BuildFileAppenderImpl: BuildFileAppender {
         targetName: String,
         fileName: String
         ) -> PBX.BuildFile {
+        if let buildFile = extractor.extract(context: context, fileName: fileName) {
+            return buildFile
+        }
+        
         let buildFile = buildFileMaker.make(context: context, fileRefId: fileRefID)
         
         appendToBuildPhase: do {
