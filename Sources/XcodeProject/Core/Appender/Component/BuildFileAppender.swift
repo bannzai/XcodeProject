@@ -49,10 +49,12 @@ public struct BuildFileAppenderImpl: BuildFileAppender {
         let buildFile = makeBuildFile(context: context, fileRefId: fileRefID)
         let lastKnownType = LastKnownFile(fileName: fileName)
         switch lastKnownType.type {
-        case .resourceFile, .markdown, .text:
+        case .resourceFile, .text:
             resourceBuildPhaseAppender.append(context: context, buildFile: buildFile, target: target)
         case .sourceCode:
             sourceBuildPhaseAppender.append(context: context, buildFile: buildFile, target: target)
+        case _:
+            fatalError("Unexpected file format")
         }
         
         return buildFile
