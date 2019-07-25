@@ -150,6 +150,13 @@ extension /* prefix */ PBX {
         // convenience accessor
         open var subGroups: [Group] { return children.ofType(PBX.Group.self) }
         open var fileRefs: [PBX.FileReference] { return children.ofType(PBX.FileReference.self) }
+        
+        public func addFile(name: String) {
+            children.append(
+                FileReferenceMakerImpl()
+                    .make(context: context, fileName: name)
+            )
+        }
     }
     
     open class VariantGroup: PBX.Group {
