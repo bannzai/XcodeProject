@@ -18,16 +18,16 @@ public protocol BuildFileAppender {
 
 public struct BuildFileAppenderImpl: BuildFileAppender {
     private let buildFileMaker: BuildFileMaker
-    private let resourceBuildPhaseAppender: BuildPhaseAppender
-    private let sourceBuildPhaseAppender: BuildPhaseAppender
+    private let resourcesBuildPhaseExtractor: ResourcesBuildPhaseExtractor
+    private let sourcesBuildPhaseExtractor: SourcesBuildPhaseExtractor
     public init(
         buildFileMaker: BuildFileMaker = BuildFileMakerImpl(),
-        resourceBuildPhaseAppender: BuildPhaseAppender = ResourceBuildPhaseAppenderImpl(),
-        sourceBuildPhaseAppender: BuildPhaseAppender = SourceBuildPhaseAppenderImpl()
+        resourcesBuildPhaseExtractor: ResourcesBuildPhaseExtractor = ResourcesBuildPhaseExtractorImpl(),
+        sourcesBuildPhaseExtractor: SourcesBuildPhaseExtractor = SourcesBuildPhaseExtractorImpl()
         ) {
         self.buildFileMaker = buildFileMaker
-        self.resourceBuildPhaseAppender = resourceBuildPhaseAppender
-        self.sourceBuildPhaseAppender = sourceBuildPhaseAppender
+        self.resourcesBuildPhaseExtractor = resourcesBuildPhaseExtractor
+        self.sourcesBuildPhaseExtractor = sourcesBuildPhaseExtractor
     }
     
     @discardableResult public func append(
@@ -36,27 +36,25 @@ public struct BuildFileAppenderImpl: BuildFileAppender {
         targetName: String,
         fileName: String
         ) -> PBX.BuildFile {
-        guard let target = context
-            .objects
-            .values
-            .compactMap ({ $0 as? PBX.NativeTarget })
-            .filter ({ $0.name == targetName })
-            .first
-            else {
-                fatalError(assertionMessage(description: "Unexpected target name \(targetName)"))
-        }
-        
         let buildFile = buildFileMaker.make(context: context, fileRefId: fileRefID)
-        let lastKnownType = KnownFileExtension(fileName: fileName)
-        switch lastKnownType.type {
-        case .resourceFile, .text:
-            resourceBuildPhaseAppender.append(context: context, buildFile: buildFile, target: target)
-        case .sourceCode:
-            sourceBuildPhaseAppender.append(context: context, buildFile: buildFile, target: target)
-        case _:
-            fatalError("Unexpected file format")
+        
+        appendToBuildPhase: do {
+            let lastKnownType = KnownFileExtension(fileName: fileName)
+            switch lastKnownType.type {
+            case .resourceFile, .text:
+                if let buildPhase = resourcesBuildPhaseExtractor.extract(context: context, targetName: targetName) {
+                    buildPhase.files.append(buildFile)
+                }
+            case .sourceCode:
+                if let buildPhase = sourcesBuildPhaseExtractor.extract(context: context, targetName: targetName) {
+                    buildPhase.files.append(buildFile)
+                }
+            case _:
+                fatalError("Unexpected file format")
+            }
         }
         
         return buildFile
+        
     }
 }
