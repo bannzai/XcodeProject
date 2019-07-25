@@ -18,9 +18,16 @@ let package = Package(
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
         // Targets can depend on other targets in this package, and on products in packages which this package depends on.
-        .target(
+        Target.target(
             name: "XcodeProjectCore",
-            dependencies: ["Swdifft"]),
+            dependencies: ["Swdifft"],
+            exclude: [
+                "Sources/XcodeProjectCore/Appender/Component/Tests", 
+                "Sources/XcodeProjectCore/Xcode/Tests",
+                "Sources/XcodeProjectCore/Serializer/Tests",
+                "Sources/XcodeProjectCore/Parser/Tests",
+                "Sources/XcodeProjectCore/Extractor/Tests",
+        ]),
         Target.testTarget(
             name: "XcodeProjectAppenderComponentTests",
             dependencies: ["XcodeProjectCore", "Swdifft"],
