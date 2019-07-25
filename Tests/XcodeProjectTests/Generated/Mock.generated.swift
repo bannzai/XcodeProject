@@ -159,6 +159,28 @@ class PBXRawMapListFormatterMock: PBXRawMapListFormatter {
     }
 
 }
+class ResourcesBuildPhaseExtractorMock: ResourcesBuildPhaseExtractor {
+    var methodCalledStack: [String] = []
+
+
+    //MARK: - extract
+
+    var extractContextTargetNameCallsCount = 0
+    var extractContextTargetNameCalled: Bool {
+        return extractContextTargetNameCallsCount > 0
+    }
+    var extractContextTargetNameReceivedArguments: (context: Context, targetName: String)?
+    var extractContextTargetNameReturnValue: PBX.ResourcesBuildPhase?
+    var extractContextTargetNameClosure: ((Context, String) -> PBX.ResourcesBuildPhase?)?
+
+    func extract(context: Context, targetName: String) -> PBX.ResourcesBuildPhase? {
+        methodCalledStack.append("extract(context:targetName:)")
+        extractContextTargetNameCallsCount += 1
+        extractContextTargetNameReceivedArguments = (context: context, targetName: targetName)
+        return extractContextTargetNameClosure.map({ $0(context, targetName) }) ?? extractContextTargetNameReturnValue
+    }
+
+}
 class SectionFormatterMock: SectionFormatter {
     var methodCalledStack: [String] = []
 
@@ -206,6 +228,28 @@ class SectionRowFormatterMock: SectionRowFormatter {
 class SerializeFormatterMock: SerializeFormatter {
     var methodCalledStack: [String] = []
 
+
+}
+class SourcesBuildPhaseExtractorMock: SourcesBuildPhaseExtractor {
+    var methodCalledStack: [String] = []
+
+
+    //MARK: - extract
+
+    var extractContextTargetNameCallsCount = 0
+    var extractContextTargetNameCalled: Bool {
+        return extractContextTargetNameCallsCount > 0
+    }
+    var extractContextTargetNameReceivedArguments: (context: Context, targetName: String)?
+    var extractContextTargetNameReturnValue: PBX.SourcesBuildPhase?
+    var extractContextTargetNameClosure: ((Context, String) -> PBX.SourcesBuildPhase?)?
+
+    func extract(context: Context, targetName: String) -> PBX.SourcesBuildPhase? {
+        methodCalledStack.append("extract(context:targetName:)")
+        extractContextTargetNameCallsCount += 1
+        extractContextTargetNameReceivedArguments = (context: context, targetName: targetName)
+        return extractContextTargetNameClosure.map({ $0(context, targetName) }) ?? extractContextTargetNameReturnValue
+    }
 
 }
 class StringGeneratorMock: StringGenerator {
