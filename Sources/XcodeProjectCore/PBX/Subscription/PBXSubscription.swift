@@ -31,6 +31,12 @@ extension Sequence where Element: PBX.Target {
     }
 }
 
+extension Sequence where Element: PBX.BuildFile {
+    public subscript(fileName fileName: String) -> Element? {
+        return filter { $0.fileRef.path == fileName }.first
+    }
+}
+
 extension Sequence where Element: PBX.Group {
     public subscript(fullPath fullPath: String) -> Element? {
         return filter { $0.fullPath == fullPath }.first

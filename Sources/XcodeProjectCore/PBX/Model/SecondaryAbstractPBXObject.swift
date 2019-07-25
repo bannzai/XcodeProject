@@ -42,6 +42,44 @@ extension PBX {
         open var buildConfigurationList: XC.ConfigurationList { return self.extractObject(for: "buildConfigurationList") }
         open var name: String { return self.extractString(for: "name") }
         open var productName: String { return self.extractString(for:"productName") }
-        open var buildPhases: [BuildPhase] { return self.extractObjects(for: "buildPhases") }
+        lazy var _buildPhases: [BuildPhase] = self.extractObjects(for: "buildPhases")
+        public var buildPhases: [BuildPhase] {
+            get { return _buildPhases}
+            set {
+                _buildPhases = newValue
+                _buildPhases.forEach { buildPhase in
+                    let isAlreadyExists = context.objects.map { $0.key }.contains(buildPhase.id)
+                    if isAlreadyExists {
+                        return
+                    }
+                    context.objects[buildPhase.id] = buildPhase
+                }
+            }
+        }
+        
+        public func appendSourceBuildFile(fileName: String) {
+            guard let fileRef = buildPhases.flatMap ({ $0.files })[fileName: fileName]?.fileRef else {
+                fatalError("Not exists fileRef for name of \(fileName)")
+            }
+            let buildPhase = BuildPhaseMakerImpl()
+                .makeSourcesBuildPhase(context: context)
+            buildPhase.files.append(
+                BuildFileMakerImpl()
+                    .make(context: context, fileRefId: fileRef.id)
+            )
+            buildPhases.append(buildPhase)
+        }
+        public func appendResourceBuildFile(fileName: String) {
+            guard let fileRef = buildPhases.flatMap ({ $0.files })[fileName: fileName]?.fileRef else {
+                fatalError("Not exists fileRef for name of \(fileName)")
+            }
+            let buildPhase = BuildPhaseMakerImpl()
+                .makeResourcesBuildPhase(context: context)
+            buildPhase.files.append(
+                BuildFileMakerImpl()
+                    .make(context: context, fileRefId: fileRef.id)
+            )
+            buildPhases.append(buildPhase)
+        }
     }
 }

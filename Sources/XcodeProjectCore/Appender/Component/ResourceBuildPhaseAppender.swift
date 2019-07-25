@@ -8,13 +8,13 @@
 import Foundation
 
 public struct ResourceBuildPhaseAppenderImpl: BuildPhaseAppender {
-    private let hashIDGenerator: StringGenerator
+    private let maker: BuildPhaseMaker
     private let extractor: ResourcesBuildPhaseExtractor
     public init(
-        hashIDGenerator: StringGenerator = PBXObjectHashIDGenerator(),
+        maker: BuildPhaseMaker = BuildPhaseMakerImpl(),
         extractor: ResourcesBuildPhaseExtractor = ResourcesBuildPhaseExtractorImpl()
         ) {
-        self.hashIDGenerator = hashIDGenerator
+        self.maker = maker
         self.extractor = extractor
     }
     
@@ -22,22 +22,9 @@ public struct ResourceBuildPhaseAppenderImpl: BuildPhaseAppender {
         if let buildPhase = extractor.extract(context: context, targetName: targetName) {
             return buildPhase
         }
-        let isa = ObjectType.PBXResourcesBuildPhase.rawValue
-        let pair: PBXRawMapType = [
-            "isa": isa,
-            "buildActionMask": Int32.max,
-            "files": [],
-            "runOnlyForDeploymentPostprocessing": 0
-        ]
         
-        let buildPhaseId = hashIDGenerator.generate()
-        let buildPhase = PBX.ResourcesBuildPhase(
-            id: buildPhaseId,
-            dictionary: pair,
-            isa: isa,
-            context: context
-        )
-        context.objects[buildPhaseId] = buildPhase
+        let buildPhase = maker.makeResourcesBuildPhase(context: context)
+        context.objects[buildPhase.id] = buildPhase
         return buildPhase
     }
 }
