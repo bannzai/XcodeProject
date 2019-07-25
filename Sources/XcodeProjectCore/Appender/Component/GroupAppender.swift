@@ -16,13 +16,13 @@ public protocol GroupAppender {
 }
 
 public struct GroupAppenderImpl: GroupAppender {
-    private let hashIDGenerator: StringGenerator
+    private let maker: GroupMaker
     private let groupExtractor: GroupExtractor
     public init(
-        hashIDGenerator: StringGenerator = PBXObjectHashIDGenerator(),
+        maker: GroupMaker = GroupMakerImpl(),
         groupExtractor: GroupExtractor = GroupExtractorImpl()
         ) {
-        self.hashIDGenerator = hashIDGenerator
+        self.maker = maker
         self.groupExtractor = groupExtractor
     }
     
@@ -44,23 +44,8 @@ public struct GroupAppenderImpl: GroupAppender {
             fatalError("unexpected not exists last value")
         }
         
-        let isa = ObjectType.PBXGroup.rawValue
-        let pair: PBXRawMapType = [
-            "isa": isa,
-            "children": childrenIDs,
-            "path": pathName,
-            "sourceTree": "<group>"
-        ]
-        
-        let uuid = hashIDGenerator.generate()
-        let group = PBX.Group(
-            id: uuid,
-            dictionary: pair,
-            isa: isa,
-            context: context
-        )
-        
-        context.objects[uuid] = group
+        let group = maker.make(context: context, childrenIds: childrenIDs, pathName: pathName)
+        context.objects[group.id] = group
         
         defer {
             // FIXME:
@@ -76,7 +61,7 @@ public struct GroupAppenderImpl: GroupAppender {
         next: do {
             return append(
                 context: context,
-                childrenIDs: [uuid],
+                childrenIDs: [group.id],
                 path: Array(nextPathComponent).joined(separator: "/")
             )
         }

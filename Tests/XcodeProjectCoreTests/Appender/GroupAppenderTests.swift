@@ -11,10 +11,7 @@ import XCTest
 class GroupAppenderTests: XCTestCase {
 
     func make() -> GroupAppender {
-        return GroupAppenderImpl(
-            hashIDGenerator: PBXObjectHashIDGenerator(),
-            groupExtractor: groupExtractor
-        )
+        return GroupAppenderImpl()
     }
     
     var groupExtractor: GroupExtractor!
