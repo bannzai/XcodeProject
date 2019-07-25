@@ -131,7 +131,7 @@ extension /* prefix */ PBX {
         }
         
         lazy var _children: [Reference] = self.extractObjects(for: "children")
-        open var children: [Reference] {
+        public var children: [Reference] {
             get { return _children }
             set {
                 _children = newValue
@@ -148,16 +148,8 @@ extension /* prefix */ PBX {
         open var fullPath: String = ""
         
         // convenience accessor
-        open var subGroups: [Group] { return self.makeSubGroups() }
-        open var fileRefs: [PBX.FileReference] { return self.makeFileRefs() }
-        
-        func makeSubGroups() -> [Group] {
-            return self.children.ofType(PBX.Group.self)
-        }
-        
-        func makeFileRefs() -> [PBX.FileReference] {
-            return self.children.ofType(PBX.FileReference.self)
-        }
+        open var subGroups: [Group] { return children.ofType(PBX.Group.self) }
+        open var fileRefs: [PBX.FileReference] { return children.ofType(PBX.FileReference.self) }
     }
     
     open class VariantGroup: PBX.Group {
