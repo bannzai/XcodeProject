@@ -46,7 +46,12 @@ class XcodeProjectTests: XCTestCase {
             XCTAssertNotEqual(content1, content2)
             
             XCTContext.runActivity(named: "And reversed", block: { _ in
+                let serializer3 = XcodeProjectSerializer()
+                let content3 = serializer3.serialize(project: projectForResverse)
                 try! projectForResverse.write()
+                
+                XCTAssertEqual(content1, content3)
+                XCTAssertNotEqual(content2, content3)
             })
         })
     }
