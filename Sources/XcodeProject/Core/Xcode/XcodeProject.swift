@@ -20,6 +20,10 @@ public class XcodeProject {
         return context.objects
     }
     
+    public var mainGroup: PBX.Group {
+        return context.mainGroup
+    }
+    
     private let fileReferenceAppender: FileReferenceAppender
     private let groupAppender: GroupAppender
     private let bulidFileAppender: BuildFileAppender
