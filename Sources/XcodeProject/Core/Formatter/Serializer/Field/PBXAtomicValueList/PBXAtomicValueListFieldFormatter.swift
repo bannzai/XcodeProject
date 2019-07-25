@@ -10,23 +10,20 @@ import Foundation
 public typealias PBXAtomicValueListFieldFormatterInfomation = (key: PBXRawKeyType, value: [PBXRawAtomicValueType], isa: ObjectType)
 
 public protocol PBXAtomicValueListFieldFormatter: AutoMockable {
-    func format(of info: PBXAtomicValueListFieldFormatterInfomation, for level: Int) -> String
+    func format(context: Context, of info: PBXAtomicValueListFieldFormatterInfomation, for level: Int) -> String
 }
 
 public struct PBXAtomicValueListFieldFormatterImpl: SerializeFormatter, PBXAtomicValueListFieldFormatter {
-    public let project: XcodeProject
     private let singlelineFormatter: PBXAtomicValueListFieldFormatterComponent
     private let multilineFormatter: PBXAtomicValueListFieldFormatterComponent
     public init(
-        project: XcodeProject,
-        singlelineFormatter: PBXAtomicValueListFieldFormatterComponent,
-        multilineFormatter: PBXAtomicValueListFieldFormatterComponent
+        singlelineFormatter: PBXAtomicValueListFieldFormatterComponent = SinglelinePBXAtomicValueListFieldFormatter(),
+        multilineFormatter: PBXAtomicValueListFieldFormatterComponent = MultiplelinePBXAtomicValueListFieldFormatter()
         ) {
-        self.project = project
         self.singlelineFormatter = singlelineFormatter
         self.multilineFormatter = multilineFormatter
     }
-    public func format(of info: PBXAtomicValueListFieldFormatterInfomation, for level: Int) -> String {
+    public func format(context: Context, of info: PBXAtomicValueListFieldFormatterInfomation, for level: Int) -> String {
         let key = try! escape(with: info.key)
 
         if key == "isa" {
@@ -36,14 +33,14 @@ public struct PBXAtomicValueListFieldFormatterImpl: SerializeFormatter, PBXAtomi
         let objectIds = info.value
         switch isMultiLine(info.isa) {
         case false:
-            return singlelineFormatter.format(of: (key: key, objectIds: objectIds.map { $0.pbxValue() }), level: level)
+            return singlelineFormatter.format(context: context, of: (key: key, objectIds: objectIds.map { $0.pbxValue() }), level: level)
         case true:
-            return multilineFormatter.format(of: (key: key, objectIds: objectIds.map { $0.pbxValue() }), level: level)
+            return multilineFormatter.format(context: context, of: (key: key, objectIds: objectIds.map { $0.pbxValue() }), level: level)
         }
     }
 }
 
 public protocol PBXAtomicValueListFieldFormatterComponent: AutoMockable {
-    func format(of info: (key: String, objectIds: [PBXObjectIDType]), level: Int) -> String
+    func format(context: Context, of info: (key: String, objectIds: [PBXObjectIDType]), level: Int) -> String
 }
 

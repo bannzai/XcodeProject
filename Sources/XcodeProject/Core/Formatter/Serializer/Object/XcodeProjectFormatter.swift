@@ -8,21 +8,21 @@
 import Foundation
 
 public protocol XcodeProjectFormatter {
-    func format(with project: XcodeProject) -> String
+    func format(project: XcodeProject) -> String
 }
 
 public struct XcodeProjectFormatterImpl: XcodeProjectFormatter {
     private let objectRowFormatter: ObjectRowFormatter
     private let otherRowFormatter: TopRowFormatter
     public init(
-        objectRowFormatter: ObjectRowFormatter,
-        otherRowFormatter: TopRowFormatter
+        objectRowFormatter: ObjectRowFormatter = ObjectRowFormatterImpl(),
+        otherRowFormatter: TopRowFormatter = TopRowFormatterImpl()
         ) {
         self.objectRowFormatter = objectRowFormatter
         self.otherRowFormatter = otherRowFormatter
     }
     
-    public func format(with project: XcodeProject) -> String {
+    public func format(project: XcodeProject) -> String {
         let content = project.context.allPBX
             .sorted { $0.0 < $1.0 }
             .reduce("") { (lines, pair: (key: String, _: Any)) in
@@ -30,7 +30,7 @@ public struct XcodeProjectFormatterImpl: XcodeProjectFormatter {
                 case "objects":
                     return lines + objectRowFormatter.format(context: project.context)
                 case _:
-                    return lines + otherRowFormatter.format(key: pair.key)
+                    return lines + otherRowFormatter.format(context: project.context, key: pair.key)
                 }
                 
         }

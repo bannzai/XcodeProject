@@ -8,23 +8,20 @@
 import Foundation
 
 public protocol Serializer {
-    func serialize() -> String
+    func serialize(project: XcodeProject) -> String
 }
 
 public struct XcodeProjectSerializer {
-    private let project: XcodeProject
     private let xcodeProjectFormatter: XcodeProjectFormatter
     public init(
-        project: XcodeProject,
-        xcodeProjectFormatter: XcodeProjectFormatter
+        xcodeProjectFormatter: XcodeProjectFormatter = XcodeProjectFormatterImpl()
         ) {
-        self.project = project
         self.xcodeProjectFormatter = xcodeProjectFormatter
     }
 }
 
 extension XcodeProjectSerializer: Serializer {
-    public func serialize() -> String {
-        return xcodeProjectFormatter.format(with: project)
+    public func serialize(project: XcodeProject) -> String {
+        return xcodeProjectFormatter.format(project: project)
     }
 }

@@ -11,6 +11,7 @@ public typealias PBXRawMapListFormatterInformation = (key: PBXRawKeyType, value:
 
 public protocol PBXRawMapListFormatter: SerializeFormatter {
     func format(
+        context: Context,
         of info: PBXRawMapListFormatterInformation,
         in level: Int,
         next nextFormatter: FieldFormatter
@@ -18,12 +19,11 @@ public protocol PBXRawMapListFormatter: SerializeFormatter {
 }
 
 public struct PBXRawMapListFormatterImpl: PBXRawMapListFormatter {
-    public let project: XcodeProject
-    public init(project: XcodeProject) {
-        self.project = project
+    public init() {
     }
     
     public func format(
+        context: Context,
         of info: PBXRawMapListFormatterInformation,
         in level: Int,
         next nextFormatter: FieldFormatter
@@ -37,7 +37,7 @@ public struct PBXRawMapListFormatterImpl: PBXRawMapListFormatter {
                     .sorted { $0.0 < $1.0 }
                     .map { key, value in
                         return """
-                        \(indent(level + 2))\(nextFormatter.format(of: (key: key, value: value, isa: info.isa), for: level + 1))
+                        \(indent(level + 2))\(nextFormatter.format(context: context, of: (key: key, value: value, isa: info.isa), for: level + 1))
                         """
                     }
                     .joined(separator: newLine)

@@ -14,7 +14,7 @@ public protocol ObjectRowFormatter {
 
 public struct ObjectRowFormatterImpl: ObjectRowFormatter {
     private let sectionFormatter: SectionFormatter
-    public init(sectionFormatter: SectionFormatter) {
+    public init(sectionFormatter: SectionFormatter = SectionFormatterImpl()) {
        self.sectionFormatter = sectionFormatter
     }
     
@@ -30,7 +30,7 @@ public struct ObjectRowFormatterImpl: ObjectRowFormatter {
                 return (ObjectType(for: isa), groupedObject[isa]!)
             }
             .map { isa, objects -> String in
-                return sectionFormatter.format(isa: isa, objects: objects)
+                return sectionFormatter.format(context: context, isa: isa, objects: objects)
             }
             .joined(separator: newLine)
         return """

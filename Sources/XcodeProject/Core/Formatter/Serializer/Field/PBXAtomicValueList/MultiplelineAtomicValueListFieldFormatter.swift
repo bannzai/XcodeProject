@@ -8,12 +8,11 @@
 import Foundation
 
 public struct MultiplelinePBXAtomicValueListFieldFormatter: SerializeFormatter, PBXAtomicValueListFieldFormatterComponent {
-    public let project: XcodeProject
-    public init(project: XcodeProject) {
-        self.project = project
+    public init() {
+        
     }
     
-    public func format(of info: (key: String, objectIds: [PBXObjectIDType]), level: Int) -> String {
+    public func format(context: Context, of info: (key: String, objectIds: [PBXObjectIDType]), level: Int) -> String {
         let key = info.key
         let objectIds = info.objectIds
         
@@ -26,7 +25,7 @@ public struct MultiplelinePBXAtomicValueListFieldFormatter: SerializeFormatter, 
         case false:
             let content = objectIds
                 .map { objectID in
-                    "\(indent(level + 1))\(try! escape(with: objectID))\(wrapComment(for: try! escape(with: objectID))),"
+                    "\(indent(level + 1))\(try! escape(with: objectID))\(wrapComment(context: context, for: try! escape(with: objectID))),"
                 }
                 .joined(separator: newLine)
             return """

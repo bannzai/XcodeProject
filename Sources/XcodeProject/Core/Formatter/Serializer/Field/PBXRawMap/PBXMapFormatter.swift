@@ -11,6 +11,7 @@ public typealias PBXRawMapFormatterInformation = (key: PBXRawKeyType, value: PBX
 
 public protocol PBXRawMapFormatter: AutoMockable {
     func format(
+        context: Context,
         of info: PBXRawMapFormatterInformation,
         in level: Int,
         next nextFormatter: FieldFormatter
@@ -18,12 +19,12 @@ public protocol PBXRawMapFormatter: AutoMockable {
 }
 
 public struct PBXRawMapFormatterImpl: SerializeFormatter, PBXRawMapFormatter {
-    public let project: XcodeProject
-    public init(project: XcodeProject) {
-        self.project = project
+    public init() {
+        
     }
     
     public func format(
+        context: Context,
         of info: PBXRawMapFormatterInformation,
         in level: Int,
         next nextFormatter: FieldFormatter
@@ -35,7 +36,7 @@ public struct PBXRawMapFormatterImpl: SerializeFormatter, PBXRawMapFormatter {
             .sorted { $0.0 < $1.0 }
             .compactMap { key, value in
                 return """
-                \(indent(level + 1))\(nextFormatter.format(of: (key: key, value: value, isa: info.isa), for: level + 1))
+                \(indent(level + 1))\(nextFormatter.format(context: context, of: (key: key, value: value, isa: info.isa), for: level + 1))
                 """
             }
             .joined(separator: newLine)

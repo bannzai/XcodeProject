@@ -9,27 +9,24 @@ import Foundation
 
 public typealias SectionRowFormatterInformation = (object: PBX.Object, isa: ObjectType)
 public protocol SectionRowFormatter: SerializeFormatter {
-    func format(of info: SectionRowFormatterInformation) -> String
+    func format(context: Context, of info: SectionRowFormatterInformation) -> String
 }
 
 public struct SectionRowFormatterImpl: SectionRowFormatter {
-    public let project: XcodeProject
     private let fieldFormatter: FieldFormatter
     public init(
-        project: XcodeProject,
-        fieldFormatter: FieldFormatter
+        fieldFormatter: FieldFormatter = FieldListFormatterImpl()
         ) {
-        self.project = project
         self.fieldFormatter = fieldFormatter
     }
     
-    public func format(of info: SectionRowFormatterInformation) -> String {
+    public func format(context: Context, of info: SectionRowFormatterInformation) -> String {
         let (object, isa) = info
         
         let headLevel = 2
         let nestedLevel = 3
         let isMultiline = isMultiLine(isa)
-        let comment = wrapComment(for: object.id)
+        let comment = wrapComment(context: context, for: object.id)
         let isaValue = "isa = \(isa.rawValue);"
         
         let objectPair = object.objectDictionary
@@ -40,7 +37,7 @@ public struct SectionRowFormatterImpl: SectionRowFormatter {
                     return nil
                 }
                 
-                let content = fieldFormatter.format(of: (key: key, value: value, isa: isa), for: nestedLevel)
+                let content = fieldFormatter.format(context: context, of: (key: key, value: value, isa: isa), for: nestedLevel)
                 if content.isEmpty {
                     return nil
                 }

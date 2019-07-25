@@ -8,18 +8,17 @@
 import Foundation
 
 public protocol TopRowFormatter {
-    func format(key: PBXRawKeyType) -> String
+    func format(context: Context, key: PBXRawKeyType) -> String
 }
 
 public struct TopRowFormatterImpl: SerializeFormatter, TopRowFormatter {
-    public let project: XcodeProject
-    public init(project: XcodeProject) {
-        self.project = project
+    public init() {
+        
     }
     
-    public func format(key: PBXRawKeyType) -> String {
-        let comment = wrapComment(for: key)
-        let row = "\(key) = \(project.context.allPBX[key]!)\(comment);"
+    public func format(context: Context, key: PBXRawKeyType) -> String {
+        let comment = wrapComment(context: context, for: key)
+        let row = "\(key) = \(context.allPBX[key]!)\(comment);"
         let content = row
             .components(separatedBy: newLine)
             .map { r in

@@ -12,12 +12,14 @@ public protocol Writer {
 }
 
 public struct FileWriter: Writer {
-    private let serializer: XcodeProjectSerializer
-    public init(serializer: XcodeProjectSerializer) {
+    private let serializer: Serializer
+    
+    public init(serializer: Serializer) {
         self.serializer = serializer
     }
+    
     public func write(xcodeProject: XcodeProject) throws {
-        try serializer.serialize().write(
+        try serializer.serialize(project: xcodeProject).write(
             to: xcodeProject.context.xcodeprojectUrl,
             atomically: true,
             encoding: .utf8

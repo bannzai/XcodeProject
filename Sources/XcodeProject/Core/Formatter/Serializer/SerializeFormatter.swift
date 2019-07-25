@@ -8,7 +8,7 @@
 import Foundation
 
 public protocol SerializeFormatter: AutoMockable {
-    var project: XcodeProject { get }
+    
 }
 
 // MARK: - Serializer formatter helper functions
@@ -66,16 +66,16 @@ extension SerializeFormatter {
     }
     
     
-    func commentValue(for hashId: String) -> String {
+    func commentValue(context: Context, for hashId: String) -> String {
         if hashId == "rootObject" {
             return "Project object"
         }
         
-        if project.rootID == hashId {
+        if context.rootID == hashId {
             return "Project object"
         }
         
-        guard let object = project.context.objects[hashId] else {
+        guard let object = context.objects[hashId] else {
             return ""
         }
         
@@ -102,31 +102,33 @@ extension SerializeFormatter {
             return "PBXContainerItemProxy"
         case is PBX.TargetDependency:
             return "PBXTargetDependency"
-        case let o as PBX.BuildFile where buildPhaseByFileId()[hashId] != nil:
-            let buildPhase = buildPhaseByFileId()[hashId]!
-            let group = commentValue(for: buildPhase.id)
-            let fileRef = commentValue(for: o.fileRef.id)
-            return  "\(fileRef) in \(group)"
-        case is XC.ConfigurationList where targetsByConfigId()[hashId] != nil:
-            let target = targetsByConfigId()[hashId]!
-            return "Build configuration list for \(target.isa) \"\(target.name)\""
+        case let o as PBX.BuildFile:
+            if let buildPhase = buildPhaseByFileId(context: context)[hashId] {
+                let group = commentValue(context: context, for: buildPhase.id)
+                let fileRef = commentValue(context: context, for: o.fileRef.id)
+                return  "\(fileRef) in \(group)"
+            }
+            return ""
         case is XC.ConfigurationList:
-            return "Build configuration list for PBXProject \"\(project.context.extractProjectName())\""
+            if let target = targetsByConfigId(context: context)[hashId] {
+                return "Build configuration list for \(target.isa) \"\(target.name)\""
+            }
+            return "Build configuration list for PBXProject \"\(context.extractProjectName())\""
         default:
             return ""
         }
     }
     
-    func wrapComment(for isa: String) -> String {
-        let comment = commentValue(for: isa)
+    func wrapComment(context: Context, for isa: String) -> String {
+        let comment = commentValue(context: context, for: isa)
         if comment.isEmpty {
             return ""
         }
         return " /* \(comment) */"
     }
     
-    func buildPhaseByFileId() -> [String: PBX.BuildPhase]  {
-        let buildPhases = self.project.context.objects
+    func buildPhaseByFileId(context: Context) -> [String: PBX.BuildPhase]  {
+        let buildPhases = context.objects
             .values
             .compactMap { $0 as? PBX.BuildPhase }
         
@@ -141,9 +143,9 @@ extension SerializeFormatter {
     }
     
     
-    func targetsByConfigId() -> [String: PBX.NativeTarget] {
+    func targetsByConfigId(context: Context) -> [String: PBX.NativeTarget] {
         var dictionary: [String: PBX.NativeTarget] = [:]
-        for target in project.context.extractPBXProject().targets {
+        for target in context.extractPBXProject().targets {
             dictionary[target.buildConfigurationList.id] = target
         }
         

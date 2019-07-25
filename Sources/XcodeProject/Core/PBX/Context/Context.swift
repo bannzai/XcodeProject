@@ -15,6 +15,7 @@ public protocol Context: class {
     var fullFilePaths: PathType { get }
     var xcodeprojectUrl: URL { get }
     var allPBX: PBXRawMapType { get }
+    var rootID: String { get }
     
     func extractPBXProject() -> PBX.Project
     func extractProjectName() -> String
@@ -28,6 +29,9 @@ class InternalContext: Context {
     var fullFilePaths: PathType = [:]
     var allPBX: PBXRawMapType
     let xcodeprojectUrl: URL
+    var rootID: String {
+        return allPBX["rootObject"] as! String
+    }
 
     init(
         allPBX: PBXRawMapType,

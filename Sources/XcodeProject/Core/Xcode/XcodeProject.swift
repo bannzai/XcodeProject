@@ -13,7 +13,11 @@ public class XcodeProject {
     let context: Context
     
     public var rootID: String {
-        return context.allPBX["rootObject"] as! String
+        return context.rootID
+    }
+    
+    public var objects: [String: PBX.Object] {
+        return context.objects
     }
     
     private let fileReferenceAppender: FileReferenceAppender
@@ -22,6 +26,7 @@ public class XcodeProject {
     public init(
         xcodeprojectURL: URL,
         parser: ContextParser = PBXProjectContextParser(),
+        fileWriter: Writer = FileWriter(serializer: XcodeProjectSerializer()),
         fileReferenceAppender: FileReferenceAppender = FileReferenceAppenderImpl(
             hashIDGenerator: PBXObjectHashIDGenerator(),
             fileRefExtractor: FileRefExtractorImpl(groupExtractor: GroupExtractorImpl()),
@@ -59,5 +64,12 @@ extension XcodeProject {
         }
         let fileRef = fileReferenceAppender.append(context: context, filePath: filePath)
         bulidFileAppender.append(context: context, fileRefID: fileRef.id, targetName: targetName, fileName: fileRef.path!)
+    }
+}
+
+// MARK: - Write
+extension XcodeProject {
+    public func write() throws {
+        
     }
 }

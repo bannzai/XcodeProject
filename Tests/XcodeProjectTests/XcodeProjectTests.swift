@@ -14,6 +14,10 @@ func isDirectory(_ dirName: String) -> Bool {
 
 
 class XcodeProjectTests: XCTestCase {
+    func testWrite() {
+        
+    }
+    
     func testAppendFilePathToTargetName() {
         XCTContext.runActivity(named: "When append file is not exist", block: { _ in
             XCTContext.runActivity(named: "and directory is not exists", block: { (_) in
