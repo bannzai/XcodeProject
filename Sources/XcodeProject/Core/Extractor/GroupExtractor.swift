@@ -15,11 +15,22 @@ public struct GroupExtractorImpl: GroupExtractor {
     public init() { }
     
     public func extract(context: Context, path: String) -> PBX.Group? {
-        return context
-            .objects
-            .values
-            .compactMap { $0 as? PBX.Group }
-            .filter { $0.fullPath == path }
-            .last
+        switch path.isEmpty {
+        case true:
+            return context
+                .objects
+                .values
+                .compactMap { $0 as? PBX.Group }
+                .filter { $0.fullPath.isEmpty }
+                .filter { $0.name == nil }
+                .last
+        case false:
+            return context
+                .objects
+                .values
+                .compactMap { $0 as? PBX.Group }
+                .filter { $0.fullPath == path }
+                .last
+        }
     }
 }
