@@ -8,5 +8,5 @@
 import Foundation
 
 public protocol BuildPhaseAppender {
-    @discardableResult func append(context: Context, buildFile: PBX.BuildFile, target: PBX.NativeTarget) -> PBX.BuildPhase
+    @discardableResult func append(context: Context, target: PBX.NativeTarget) -> PBX.BuildPhase
 }

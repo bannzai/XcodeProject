@@ -18,32 +18,27 @@ public struct SourceBuildPhaseAppenderImpl: BuildPhaseAppender {
         self.extractor = extractor
     }
     
-    @discardableResult public func append(context: Context, buildFile: PBX.BuildFile, target: PBX.NativeTarget) -> PBX.BuildPhase {
-        let sourcesBuildPhase = extractor.extract(context: context, targetName: target.name)
-        switch sourcesBuildPhase {
-        case .some(let sourcesBuildPhase):
-            sourcesBuildPhase.files.append(buildFile)
+    @discardableResult public func append(context: Context, target: PBX.NativeTarget) -> PBX.BuildPhase {
+        if let sourcesBuildPhase = extractor.extract(context: context, targetName: target.name) {
             return sourcesBuildPhase
-        case .none:
-            let isa = ObjectType.PBXSourcesBuildPhase.rawValue
-            let pair: PBXRawMapType = [
-                "isa": isa,
-                "buildActionMask": Int32.max,
-                "files": [
-                    buildFile.id
-                ],
-                "runOnlyForDeploymentPostprocessing": 0
-            ]
-            
-            let buildPhaseId = hashIDGenerator.generate()
-            let sourceBuildPhase = PBX.SourcesBuildPhase(
-                id: buildPhaseId,
-                dictionary: pair,
-                isa: isa,
-                context: context
-            )
-            context.objects[buildPhaseId] = sourceBuildPhase
-            return sourceBuildPhase
         }
+        
+        let isa = ObjectType.PBXSourcesBuildPhase.rawValue
+        let pair: PBXRawMapType = [
+            "isa": isa,
+            "buildActionMask": Int32.max,
+            "files": [],
+            "runOnlyForDeploymentPostprocessing": 0
+        ]
+        
+        let buildPhaseId = hashIDGenerator.generate()
+        let sourceBuildPhase = PBX.SourcesBuildPhase(
+            id: buildPhaseId,
+            dictionary: pair,
+            isa: isa,
+            context: context
+        )
+        context.objects[buildPhaseId] = sourceBuildPhase
+        return sourceBuildPhase
     }
 }

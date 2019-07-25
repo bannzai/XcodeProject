@@ -18,32 +18,26 @@ public struct ResourceBuildPhaseAppenderImpl: BuildPhaseAppender {
         self.extractor = extractor
     }
     
-    @discardableResult public func append(context: Context, buildFile: PBX.BuildFile, target: PBX.NativeTarget) -> PBX.BuildPhase {
-        let buildPhase = extractor.extract(context: context, targetName: target.name)
-        switch buildPhase {
-        case .some(let buildPhase):
-            buildPhase.files.append(buildFile)
-            return buildPhase
-        case .none:
-            let isa = ObjectType.PBXResourcesBuildPhase.rawValue
-            let pair: PBXRawMapType = [
-                "isa": isa,
-                "buildActionMask": Int32.max,
-                "files": [
-                    buildFile.id
-                ],
-                "runOnlyForDeploymentPostprocessing": 0
-            ]
-            
-            let buildPhaseId = hashIDGenerator.generate()
-            let buildPhase = PBX.ResourcesBuildPhase(
-                id: buildPhaseId,
-                dictionary: pair,
-                isa: isa,
-                context: context
-            )
-            context.objects[buildPhaseId] = buildPhase
+    @discardableResult public func append(context: Context, target: PBX.NativeTarget) -> PBX.BuildPhase {
+        if let buildPhase = extractor.extract(context: context, targetName: target.name) {
             return buildPhase
         }
+        let isa = ObjectType.PBXResourcesBuildPhase.rawValue
+        let pair: PBXRawMapType = [
+            "isa": isa,
+            "buildActionMask": Int32.max,
+            "files": [],
+            "runOnlyForDeploymentPostprocessing": 0
+        ]
+        
+        let buildPhaseId = hashIDGenerator.generate()
+        let buildPhase = PBX.ResourcesBuildPhase(
+            id: buildPhaseId,
+            dictionary: pair,
+            isa: isa,
+            context: context
+        )
+        context.objects[buildPhaseId] = buildPhase
+        return buildPhase
     }
 }
