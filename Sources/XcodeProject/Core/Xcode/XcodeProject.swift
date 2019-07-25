@@ -68,7 +68,8 @@ extension XcodeProject {
         guard let fileName = fileRef.path else {
             fatalError(assertionMessage(description: "Unexpected pattern for file path is nil after appended file reference: \(fileRef), filePath: \(filePath), targetName: \(targetName)"))
         }
-        let buildFile = bulidFileAppender.append(context: context, fileRefID: fileRef.id, targetName: targetName, fileName: fileRef.path!)
+        
+        bulidFileAppender.append(context: context, fileRefID: fileRef.id, targetName: targetName, fileName: fileRef.path!)
         
         let lastKnownType = KnownFileExtension(fileName: fileName)
         switch lastKnownType.type {
