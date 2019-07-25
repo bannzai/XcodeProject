@@ -21,9 +21,9 @@ public struct BuildFileAppenderImpl: BuildFileAppender {
     private let resourceBuildPhaseAppender: BuildPhaseAppender
     private let sourceBuildPhaseAppender: BuildPhaseAppender
     public init(
-        hashIDGenerator: StringGenerator,
-        resourceBuildPhaseAppender: BuildPhaseAppender,
-        sourceBuildPhaseAppender: BuildPhaseAppender
+        hashIDGenerator: StringGenerator = PBXObjectHashIDGenerator(),
+        resourceBuildPhaseAppender: BuildPhaseAppender = ResourceBuildPhaseAppenderImpl(),
+        sourceBuildPhaseAppender: BuildPhaseAppender = SourceBuildPhaseAppenderImpl()
         ) {
         self.hashIDGenerator = hashIDGenerator
         self.resourceBuildPhaseAppender = resourceBuildPhaseAppender

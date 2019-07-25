@@ -16,9 +16,9 @@ public struct FileReferenceAppenderImpl: FileReferenceAppender {
     private let fileRefExtractor: FileRefExtractor
     private let groupExtractor: GroupExtractor
     public init(
-        hashIDGenerator: StringGenerator,
-        fileRefExtractor: FileRefExtractor,
-        groupExtractor: GroupExtractor
+        hashIDGenerator: StringGenerator = PBXObjectHashIDGenerator(),
+        fileRefExtractor: FileRefExtractor = FileRefExtractorImpl(),
+        groupExtractor: GroupExtractor = GroupExtractorImpl()
         ) {
         self.hashIDGenerator = hashIDGenerator
         self.fileRefExtractor = fileRefExtractor

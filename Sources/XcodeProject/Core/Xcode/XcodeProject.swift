@@ -23,27 +23,18 @@ public class XcodeProject {
     private let fileReferenceAppender: FileReferenceAppender
     private let groupAppender: GroupAppender
     private let bulidFileAppender: BuildFileAppender
+    private let fileWriter: Writer
     public init(
         xcodeprojectURL: URL,
         parser: ContextParser = PBXProjectContextParser(),
-        fileWriter: Writer = FileWriter(serializer: XcodeProjectSerializer()),
-        fileReferenceAppender: FileReferenceAppender = FileReferenceAppenderImpl(
-            hashIDGenerator: PBXObjectHashIDGenerator(),
-            fileRefExtractor: FileRefExtractorImpl(groupExtractor: GroupExtractorImpl()),
-            groupExtractor: GroupExtractorImpl()
-        ),
-        groupAppender: GroupAppender = GroupAppenderImpl(
-            hashIDGenerator: PBXObjectHashIDGenerator(),
-            groupExtractor: GroupExtractorImpl()
-        ),
-        bulidFileAppender: BuildFileAppenderImpl = BuildFileAppenderImpl(
-            hashIDGenerator: PBXObjectHashIDGenerator(),
-            resourceBuildPhaseAppender: ResourceBuildPhaseAppenderImpl(hashIDGenerator: PBXObjectHashIDGenerator()),
-            sourceBuildPhaseAppender: SourceBuildPhaseAppenderImpl(hashIDGenerator: PBXObjectHashIDGenerator())
-        ),
+        fileWriter: Writer = FileWriter(),
+        fileReferenceAppender: FileReferenceAppender = FileReferenceAppenderImpl(),
+        groupAppender: GroupAppender = GroupAppenderImpl(),
+        bulidFileAppender: BuildFileAppenderImpl = BuildFileAppenderImpl(),
         hashIDGenerator: StringGenerator = PBXObjectHashIDGenerator()
         ) throws {
         context = try parser.parse(xcodeprojectUrl: xcodeprojectURL)
+        self.fileWriter = fileWriter
         self.fileReferenceAppender = fileReferenceAppender
         self.groupAppender = groupAppender
         self.bulidFileAppender = bulidFileAppender
@@ -70,6 +61,6 @@ extension XcodeProject {
 // MARK: - Write
 extension XcodeProject {
     public func write() throws {
-        
+       try fileWriter.write(xcodeProject: self)
     }
 }

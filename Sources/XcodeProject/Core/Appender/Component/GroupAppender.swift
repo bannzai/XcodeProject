@@ -19,8 +19,8 @@ public struct GroupAppenderImpl: GroupAppender {
     private let hashIDGenerator: StringGenerator
     private let groupExtractor: GroupExtractor
     public init(
-        hashIDGenerator: StringGenerator,
-        groupExtractor: GroupExtractor
+        hashIDGenerator: StringGenerator = PBXObjectHashIDGenerator(),
+        groupExtractor: GroupExtractor = GroupExtractorImpl()
         ) {
         self.hashIDGenerator = hashIDGenerator
         self.groupExtractor = groupExtractor

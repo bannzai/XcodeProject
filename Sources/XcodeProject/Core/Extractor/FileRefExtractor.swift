@@ -14,7 +14,7 @@ public protocol FileRefExtractor {
 public struct FileRefExtractorImpl: FileRefExtractor {
     private let groupExtractor: GroupExtractor
     public init(
-        groupExtractor: GroupExtractor
+        groupExtractor: GroupExtractor = GroupExtractorImpl()
         ) {
         self.groupExtractor = groupExtractor
     }

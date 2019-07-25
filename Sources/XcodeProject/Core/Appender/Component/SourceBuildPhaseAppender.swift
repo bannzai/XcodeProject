@@ -10,7 +10,7 @@ import Foundation
 public struct SourceBuildPhaseAppenderImpl: BuildPhaseAppender {
     private let hashIDGenerator: StringGenerator
     public init(
-        hashIDGenerator: StringGenerator
+        hashIDGenerator: StringGenerator = PBXObjectHashIDGenerator()
         ) {
         self.hashIDGenerator = hashIDGenerator
     }

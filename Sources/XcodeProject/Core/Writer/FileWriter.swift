@@ -14,7 +14,7 @@ public protocol Writer {
 public struct FileWriter: Writer {
     private let serializer: Serializer
     
-    public init(serializer: Serializer) {
+    public init(serializer: Serializer = XcodeProjectSerializer()) {
         self.serializer = serializer
     }
     
