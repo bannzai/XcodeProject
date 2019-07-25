@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		33467EBA22E6C5B700897582 /* FileReference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33467EB922E6C5B700897582 /* FileReference.swift */; };
+		33467EDB22E9513E00897582 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33467EDA22E9513E00897582 /* Config.swift */; };
 		BA4268041F89EB7F001FA700 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA4268031F89EB7F001FA700 /* AppDelegate.swift */; };
 		BA4268061F89EB7F001FA700 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA4268051F89EB7F001FA700 /* ViewController.swift */; };
 		BA4268091F89EB7F001FA700 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BA4268071F89EB7F001FA700 /* Main.storyboard */; };
@@ -43,6 +44,7 @@
 
 /* Begin PBXFileReference section */
 		33467EB922E6C5B700897582 /* FileReference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileReference.swift; sourceTree = "<group>"; };
+		33467EDA22E9513E00897582 /* Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
 		33BD753222D4E09700092308 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		33BD753322D4E12600092308 /* Podfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; };
 		BA4268001F89EB7F001FA700 /* iOSTestProject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iOSTestProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -97,6 +99,7 @@
 		BA4267F71F89EB7F001FA700 = {
 			isa = PBXGroup;
 			children = (
+				33467EDA22E9513E00897582 /* Config.swift */,
 				33BD753222D4E09700092308 /* README.md */,
 				33BD753322D4E12600092308 /* Podfile */,
 				BA4268021F89EB7F001FA700 /* iOSTestProject */,
@@ -349,6 +352,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BA4268061F89EB7F001FA700 /* ViewController.swift in Sources */,
+				33467EDB22E9513E00897582 /* Config.swift in Sources */,
 				33467EBA22E6C5B700897582 /* FileReference.swift in Sources */,
 				BA4268041F89EB7F001FA700 /* AppDelegate.swift in Sources */,
 			);
