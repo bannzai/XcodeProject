@@ -21,6 +21,26 @@ let package = Package(
         .target(
             name: "XcodeProjectCore",
             dependencies: ["Swdifft"]),
+        Target.testTarget(
+            name: "XcodeProjectAppenderComponentTests",
+            dependencies: ["XcodeProjectCore", "Swdifft"],
+            path: "Sources/XcodeProjectCore/Appender/Component/Tests"),
+        Target.testTarget(
+            name: "XcodeProjectCoreXcodeProjectTests",
+            dependencies: ["XcodeProjectCore", "Swdifft"],
+            path: "Sources/XcodeProjectCore/Xcode/Tests"),
+        Target.testTarget(
+            name: "XcodeProjectSerializerTests",
+            dependencies: ["XcodeProjectCore", "Swdifft"],
+            path: "Sources/XcodeProjectCore/Serializer/Tests"),
+        Target.testTarget(
+            name: "XcodeProjectParserTests",
+            dependencies: ["XcodeProjectCore", "Swdifft"],
+            path: "Sources/XcodeProjectCore/Parser/Tests"),
+        Target.testTarget(
+            name: "XcodeProjectExtractorTests",
+            dependencies: ["XcodeProjectCore", "Swdifft"],
+            path: "Sources/XcodeProjectCore/Extractor/Tests"),
         .testTarget(
             name: "XcodeProjectCoreTests",
             dependencies: ["XcodeProjectCore", "Swdifft"]),
