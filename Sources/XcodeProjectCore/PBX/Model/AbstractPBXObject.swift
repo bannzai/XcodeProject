@@ -14,7 +14,7 @@ extension PBX {
         public let id: String
         public let dictionary: PBXRawMapType
         public let isa: ObjectType
-        public let context: Context
+        public weak var context: Context!
         
         // FIXME:
         open var objectDictionary: PBXRawMapType {
