@@ -52,12 +52,3 @@ func makeXcodeProject() -> XcodeProject {
         fatalError()
     }
 }
-
-extension Context {
-    var grouped: [String: [PBX.Object]] {
-        return self.objects
-            .values
-            .toArray()
-            .groupBy { $0.isa.rawValue }
-    }
-}
