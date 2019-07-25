@@ -14,6 +14,43 @@ func isDirectory(_ dirName: String) -> Bool {
 
 
 class XcodeProjectTests: XCTestCase {
+    
+    func test_overwrite_check() {
+        XCTContext.runActivity(named: "When it is no edit", block: { _ in
+            // Overwrite
+            let project1 = makeXcodeProject()
+            let serializer1 = XcodeProjectSerializer()
+            let content1 = serializer1.serialize(project: project1)
+            try! project1.write()
+            
+            let project2 = makeXcodeProject()
+            let serializer2 = XcodeProjectSerializer()
+            let content2 = serializer2.serialize(project: project2)
+            
+            XCTAssertEqual(content1, content2)
+        })
+        XCTContext.runActivity(named: "When it is edited", block: { _ in
+            // Overwrite
+            let project1 = makeXcodeProject()
+            // Resverse
+            let projectForResverse = makeXcodeProject()
+            let serializer1 = XcodeProjectSerializer()
+            let content1 = serializer1.serialize(project: project1)
+            let maker1 = FileReferenceMakerImpl()
+            project1.objects.values.compactMap { $0 as? PBX.Group }.filter { $0.fullPath == "iOSTestProject" }.first!.children.append(maker1.make(context: project1.context, fileName: "aaaa.swift"))
+            try! project1.write()
+            
+            let project2 = makeXcodeProject()
+            let serializer2 = XcodeProjectSerializer()
+            let content2 = serializer2.serialize(project: project2)
+            XCTAssertNotEqual(content1, content2)
+            
+            XCTContext.runActivity(named: "And reversed", block: { _ in
+                try! projectForResverse.write()
+            })
+        })
+    }
+
     func test_edting_xcode_project() {
         XCTContext.runActivity(named: "Append file to iOSTestProject/. It is append same references and added original context `objects`.", block: { _ in
             let project = makeXcodeProject()
