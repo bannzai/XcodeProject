@@ -10,20 +10,7 @@
 import Foundation
 
 public class XcodeProject {
-    let context: Context
-    
-    public var rootID: String {
-        return context.rootID
-    }
-    
-    public var objects: [String: PBX.Object] {
-        return context.objects
-    }
-    
-    public var mainGroup: PBX.Group {
-        return context.mainGroup
-    }
-    
+    internal let context: Context
     private let fileReferenceAppender: FileReferenceAppender
     private let groupAppender: GroupAppender
     private let bulidFileAppender: BuildFileAppender
@@ -48,6 +35,37 @@ public class XcodeProject {
         self.resourcesBuildPhaseAppender = resourcesBuildPhaseAppender
         self.sourcesBuildPhaseAppender = sourcesBuildPhaseAppender
         self.bulidFileAppender = bulidFileAppender
+    }
+}
+
+// MARK: Convenience Accessors
+extension XcodeProject {
+    public var rootID: String {
+        return context.rootID
+    }
+    public var objects: [String: PBX.Object] {
+        return context.objects
+    }
+    public var mainGroup: PBX.Group {
+        return context.mainGroup
+    }
+    private func list<T: PBX.Object>() -> [T] {
+        return objects.values.toArray().ofType(T.self)
+    }
+    public var fileRefs: [PBX.Group] {
+        return list()
+    }
+    public var groups: [PBX.Group] {
+        return list()
+    }
+    public var buildFiles: [PBX.BuildFile] {
+        return list()
+    }
+    public var buildPhases: [PBX.BuildPhase] {
+        return list()
+    }
+    public var targets: [PBX.Group] {
+        return list()
     }
 }
 
