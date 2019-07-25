@@ -53,7 +53,7 @@ public class XcodeProject {
 
 // MARK: - Append
 extension XcodeProject {
-    public func append(filePath: PBXRawPathType, targetName: String) {
+    public func appendFile(filePath: PBXRawPathType, targetName: String) {
         let groupPathNames = Array(filePath
             .components(separatedBy: "/")
             .filter { !$0.isEmpty }
