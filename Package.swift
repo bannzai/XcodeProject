@@ -18,36 +18,9 @@ let package = Package(
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
         // Targets can depend on other targets in this package, and on products in packages which this package depends on.
-        Target.target(
+        .target(
             name: "XcodeProjectCore",
-            dependencies: ["Swdifft"],
-            exclude: [
-                "Sources/XcodeProjectCore/Appender/Component/Tests", 
-                "Sources/XcodeProjectCore/Xcode/Tests",
-                "Sources/XcodeProjectCore/Serializer/Tests",
-                "Sources/XcodeProjectCore/Parser/Tests",
-                "Sources/XcodeProjectCore/Extractor/Tests",
-        ]),
-        Target.testTarget(
-            name: "XcodeProjectAppenderComponentTests",
-            dependencies: ["XcodeProjectCore", "Swdifft"],
-            path: "Sources/XcodeProjectCore/Appender/Component/Tests"),
-        Target.testTarget(
-            name: "XcodeProjectCoreXcodeProjectTests",
-            dependencies: ["XcodeProjectCore", "Swdifft"],
-            path: "Sources/XcodeProjectCore/Xcode/Tests"),
-        Target.testTarget(
-            name: "XcodeProjectSerializerTests",
-            dependencies: ["XcodeProjectCore", "Swdifft"],
-            path: "Sources/XcodeProjectCore/Serializer/Tests"),
-        Target.testTarget(
-            name: "XcodeProjectParserTests",
-            dependencies: ["XcodeProjectCore", "Swdifft"],
-            path: "Sources/XcodeProjectCore/Parser/Tests"),
-        Target.testTarget(
-            name: "XcodeProjectExtractorTests",
-            dependencies: ["XcodeProjectCore", "Swdifft"],
-            path: "Sources/XcodeProjectCore/Extractor/Tests"),
+            dependencies: ["Swdifft"]),
         .testTarget(
             name: "XcodeProjectCoreTests",
             dependencies: ["XcodeProjectCore", "Swdifft"]),
