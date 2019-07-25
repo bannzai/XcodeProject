@@ -12,7 +12,7 @@ class SectionFormatterTests: XCTestCase {
     func make() -> SectionFormatter {
         return SectionFormatterImpl(
             rowFormatter: SectionRowFormatterImpl(
-                fieldFormatter: makeFieldFormatter()
+                fieldFormatter: FieldListFormatterImpl()
             )
         )
     }

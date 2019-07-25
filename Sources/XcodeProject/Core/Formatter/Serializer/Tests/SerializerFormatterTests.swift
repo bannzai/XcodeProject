@@ -11,7 +11,7 @@ import XCTest
 class SerializerFormatterTests: XCTestCase {
     
     func make() -> FieldListFormatterImpl {
-        return makeFieldFormatter()
+        return FieldListFormatterImpl()
     }
     
     func testEscape() {

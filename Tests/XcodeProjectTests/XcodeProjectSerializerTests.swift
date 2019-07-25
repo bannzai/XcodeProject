@@ -11,14 +11,15 @@ import Swdifft
 
 class XcodeProjectSerializerTests: XCTestCase {
     func make() -> XcodeProjectSerializer {
-        return makeSerializer()
+        return XcodeProjectSerializer()
     }
     
     func testSerialize() {
         do {
+            let project = makeXcodeProject()
             let originalContent = try String(contentsOf: xcodeProjectUrl(), encoding: String.Encoding.utf8)
             let serialization = make()
-            let generateString = serialization.serialize()
+            let generateString = serialization.serialize(project: project)
             
             print(generateString)
             print(originalContent)

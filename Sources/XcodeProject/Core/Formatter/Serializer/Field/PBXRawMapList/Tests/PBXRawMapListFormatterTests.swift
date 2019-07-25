@@ -10,7 +10,7 @@ import XCTest
 
 class PBXRawMapListFormatterTests: XCTestCase{
     func make() -> (FieldFormatter, PBXRawMapListFormatterImpl) {
-        let nextFormatter = makeFieldFormatter()
+        let nextFormatter = FieldListFormatterImpl()
         return (nextFormatter, PBXRawMapListFormatterImpl())
     }
     
