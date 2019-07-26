@@ -1,5 +1,8 @@
 
-add-file-nested: 
+reverse:
+	git checkout -- iOSTestProject.xcodeproj
+
+add-file: 
 	../.build/x86_64-apple-macosx/debug/xcp --add-file Group2/bbbb.swift iOSTestProject.xcodeproj/project.pbxproj iOSTestProject --overwrite
 
 add-group: 
