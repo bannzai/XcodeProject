@@ -161,6 +161,22 @@ extension /* prefix */ PBX {
         public func appendGroup(name: String) {
             children.append(GroupMakerImpl().make(context: context, pathName: name))
         }
+        
+        @discardableResult public func removeFile(fileName: String) -> PBX.FileReference? {
+            guard let fileRef = FileRefExtractorImpl().extract(context: context, groupPath: fullPath, fileName: fileName) else {
+                fatalError("Could not find file reference for filename of \(fileName)")
+            }
+            
+            let index = children.firstIndex { $0.id == fileRef.id }
+            switch index {
+            case .none:
+                assertionFailure(assertionMessage(description: "Maybe should exists index"))
+            case .some(let index):
+                children.remove(at: index)
+            }
+            
+            return fileRef
+        }
     }
     
     open class VariantGroup: PBX.Group {

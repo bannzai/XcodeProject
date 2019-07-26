@@ -92,19 +92,11 @@ extension XcodeProject {
         let groupPath = groupPathNames.joined(separator: "/")
         let removedGroup = removeGroup(path: groupPath)
         
-        guard let fileRef = FileRefExtractorImpl().extract(context: context, groupPath: groupPath, fileName: fileName) else {
+        guard let removedFileRef = removedGroup?.removeFile(fileName: fileName) else {
             fatalError("Could not find file reference for filename of \(fileName)")
         }
-        
-        let index = removedGroup?.children.firstIndex { $0.id == fileRef.id }
-        switch index {
-        case .none:
-            assertionFailure(assertionMessage(description: "Maybe should exists index"))
-        case .some(let index):
-            removedGroup?.children.remove(at: index)
-        }
 
-        return fileRef
+        return removedFileRef
     }
     
     @discardableResult public func removeGroup(path: PBXRawPathType) -> PBX.Group? {
