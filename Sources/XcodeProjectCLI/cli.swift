@@ -49,8 +49,8 @@ public struct CLI {
     
     public func execute() {
         command(
-            Option<String>("add-file", default: "", description: "Add file to project.pbxproj."),
-            Option<String>("add-group", default: "", description: "Add file to project.pbxproj."),
+            Option<String>("add-file", default: "", description: "Add file to project.pbxproj. The file must exists."),
+            Option<String>("add-group", default: "", description: "Add group to project.pbxproj. The directory of group must exists."),
             Flag("overwrite", default: false, flag: nil, description: "Overwrite project.pbxproj default is false."),
             Argument<String>("pbxproj", description: "Path to project.pbxproj."),
             Argument<String>("target", description: "Target name for editing project.pbxproj")
