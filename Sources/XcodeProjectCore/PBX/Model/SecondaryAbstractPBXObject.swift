@@ -29,17 +29,13 @@ extension PBX {
                 defer {
                     _files = newValue
                 }
-                let differences = _files
-                    .enumerated()
-                    .filter  { (index, _file) in !newValue.contains { n in n.id == _file.id } }
-                
-                differences.forEach { difference in
-                    switch _files.contains (where: { $0.id == difference.element.id }) {
-                    case true:
-                        context.objects[difference.element.id] = nil
-                    case false:
-                        context.objects[difference.element.id] = difference.element
-                    }
+                let appendDiff = diffing(lhs: newValue, rhs: _files)
+                appendDiff.forEach { difference in
+                    context.objects[difference.element.id] = difference.element
+                }
+                let removeDiff = diffing(lhs: _files, rhs: newValue)
+                removeDiff.forEach { difference in
+                    context.objects[difference.element.id] = nil
                 }
             }
         }
