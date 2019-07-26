@@ -33,7 +33,7 @@ let package = Package(
             dependencies: ["Swdifft"]),
         .target(
             name: "OchaExample",
-            dependencies: ["XcodeProjectCore", "Ocha"]),
+            dependencies: ["XcodeProjectCore", "Ocha", "SwiftCLI", "Commander"]),
         .testTarget(
             name: "XcodeProjectCoreTests",
             dependencies: ["XcodeProjectCore", "Swdifft"]),
