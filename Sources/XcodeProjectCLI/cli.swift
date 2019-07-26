@@ -49,8 +49,8 @@ public struct CLI {
     
     public func execute() {
         command(
-            Argument<String>("add-file", description: "Add file to project.pbxproj."),
-            Argument<String>("add-group", description: "Add file to project.pbxproj."),
+            Option<String>("add-file", default: "", description: "Add file to project.pbxproj."),
+            Option<String>("add-group", default: "", description: "Add file to project.pbxproj."),
             Flag("overwrite", default: false, flag: nil, description: "Overwrite project.pbxproj default is false."),
             Option<String>("pbxproj", default: "", description: "Path to project.pbxproj."),
             Option<String>("target", default: "", description: "Target name for editing project.pbxproj")
@@ -64,7 +64,7 @@ public struct CLI {
                 throw CLIErrorType.requirementOption("--target")
             }
             if addFileName.isEmpty && addGroupPath.isEmpty {
-                throw CLIErrorType.shouldExclusiveArgument("add-file", "add-group")
+                throw CLIErrorType.shouldExclusiveArgument("--add-file", "--add-group")
             }
             
             switch addGroupPath.isEmpty {
