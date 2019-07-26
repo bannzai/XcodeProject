@@ -26,36 +26,57 @@ class GroupAppenderTests: XCTestCase {
                 let xcodeproject = makeXcodeProject()
                 let appender = make()
                 let originalObjects = xcodeproject.context.objects
+                let originalSubGroupsForMainGroup = xcodeproject.mainGroup.subGroups
                 
-                XCTAssertEqual(originalObjects.keys.count, xcodeproject.context.objects.keys.count)
-                XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.Group }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.Group }.count)
+                from: do {
+                    XCTAssertEqual(originalObjects.keys.count, xcodeproject.context.objects.keys.count)
+                    XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.Group }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.Group }.count)
+                    XCTAssertEqual(originalSubGroupsForMainGroup.count, xcodeproject.mainGroup.subGroups.count)
+                }
                 appender.append(context: xcodeproject.context, childrenIDs: [], path: "Hoge")
-                XCTAssertEqual(originalObjects.keys.count + 1, xcodeproject.context.objects.keys.count)
-                XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.Group }.count + 1, xcodeproject.context.objects.values.compactMap { $0 as? PBX.Group }.count)
+                to: do {
+                    XCTAssertEqual(originalObjects.keys.count + 1, xcodeproject.context.objects.keys.count)
+                    XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.Group }.count + 1, xcodeproject.context.objects.values.compactMap { $0 as? PBX.Group }.count)
+                    XCTAssertEqual(originalSubGroupsForMainGroup.count + 1, xcodeproject.mainGroup.subGroups.count)
+                }
             })
             XCTContext.runActivity(named: "And nested directory", block: { _ in
                 groupExtractor = GroupExtractorImpl()
                 let xcodeproject = makeXcodeProject()
                 let appender = make()
                 let originalObjects = xcodeproject.context.objects
+                let originalSubGroupsForMainGroup = xcodeproject.mainGroup.subGroups
                 
-                XCTAssertEqual(originalObjects.keys.count, xcodeproject.context.objects.keys.count)
-                XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.Group }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.Group }.count)
+                from: do {
+                    XCTAssertEqual(originalObjects.keys.count, xcodeproject.context.objects.keys.count)
+                    XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.Group }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.Group }.count)
+                    XCTAssertEqual(originalSubGroupsForMainGroup.count, xcodeproject.mainGroup.subGroups.count)
+                }
                 appender.append(context: xcodeproject.context, childrenIDs: [], path: "Hoge/Fuga")
-                XCTAssertEqual(originalObjects.keys.count + 2, xcodeproject.context.objects.keys.count)
-                XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.Group }.count + 2, xcodeproject.context.objects.values.compactMap { $0 as? PBX.Group }.count)
+                to: do {
+                    XCTAssertEqual(originalObjects.keys.count + 2, xcodeproject.context.objects.keys.count)
+                    XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.Group }.count + 2, xcodeproject.context.objects.values.compactMap { $0 as? PBX.Group }.count)
+                    XCTAssertEqual(originalSubGroupsForMainGroup.count + 1, xcodeproject.mainGroup.subGroups.count)
+                }
             })
             XCTContext.runActivity(named: "And top level directory is exist, but lower directory is not exists", block: { _ in
                 groupExtractor = GroupExtractorImpl()
                 let xcodeproject = makeXcodeProject()
                 let appender = make()
                 let originalObjects = xcodeproject.context.objects
+                let originalSubGroupsForMainGroup = xcodeproject.mainGroup.subGroups
                 
-                XCTAssertEqual(originalObjects.keys.count, xcodeproject.context.objects.keys.count)
-                XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.Group }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.Group }.count)
+                from: do {
+                    XCTAssertEqual(originalObjects.keys.count, xcodeproject.context.objects.keys.count)
+                    XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.Group }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.Group }.count)
+                    XCTAssertEqual(originalSubGroupsForMainGroup.count, xcodeproject.mainGroup.subGroups.count)
+                }
                 appender.append(context: xcodeproject.context, childrenIDs: [], path: "iOSTestProject/Fuga")
-                XCTAssertEqual(originalObjects.keys.count + 1, xcodeproject.context.objects.keys.count)
-                XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.Group }.count + 1, xcodeproject.context.objects.values.compactMap { $0 as? PBX.Group }.count)
+                to: do {
+                    XCTAssertEqual(originalObjects.keys.count + 1, xcodeproject.context.objects.keys.count)
+                    XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.Group }.count + 1, xcodeproject.context.objects.values.compactMap { $0 as? PBX.Group }.count)
+                    XCTAssertEqual(originalSubGroupsForMainGroup.count, xcodeproject.mainGroup.subGroups.count)
+                }
             })
         })
         
@@ -68,11 +89,15 @@ class GroupAppenderTests: XCTestCase {
                 
                 let group = groupExtractor.extract(context: xcodeproject.context, path: "iOSTestProject")
                 
-                XCTAssertEqual(originalObjects.keys.count, xcodeproject.context.objects.keys.count)
-                XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.Group }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.Group }.count)
+                from: do {
+                    XCTAssertEqual(originalObjects.keys.count, xcodeproject.context.objects.keys.count)
+                    XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.Group }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.Group }.count)
+                }
                 let result = appender.append(context: xcodeproject.context, childrenIDs: ["aaa"], path: "iOSTestProject")
-                XCTAssertEqual(originalObjects.keys.count, xcodeproject.context.objects.keys.count)
-                XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.Group }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.Group }.count)
+                to: do {
+                    XCTAssertEqual(originalObjects.keys.count, xcodeproject.context.objects.keys.count)
+                    XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.Group }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.Group }.count)
+                }
                 
                 XCTAssertEqual(result.id, "BA4268021F89EB7F001FA700")
                 XCTAssertEqual(result.id, group!.id)
@@ -86,11 +111,15 @@ class GroupAppenderTests: XCTestCase {
                 
                 let group = groupExtractor.extract(context: xcodeproject.context, path: "iOSTestProject/Group")
                 
-                XCTAssertEqual(originalObjects.keys.count, xcodeproject.context.objects.keys.count)
-                XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.Group }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.Group }.count)
+                from: do {
+                    XCTAssertEqual(originalObjects.keys.count, xcodeproject.context.objects.keys.count)
+                    XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.Group }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.Group }.count)
+                }
                 let result = appender.append(context: xcodeproject.context, childrenIDs: ["aaa"], path: "iOSTestProject/Group")
-                XCTAssertEqual(originalObjects.keys.count, xcodeproject.context.objects.keys.count)
-                XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.Group }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.Group }.count)
+                to: do {
+                    XCTAssertEqual(originalObjects.keys.count, xcodeproject.context.objects.keys.count)
+                    XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.Group }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.Group }.count)
+                }
                 
                 XCTAssertEqual(result.id, "33467EB722E6C5AE00897582")
                 XCTAssertEqual(result.id, group!.id)

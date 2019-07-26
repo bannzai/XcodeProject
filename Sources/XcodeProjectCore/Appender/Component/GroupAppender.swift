@@ -47,13 +47,13 @@ public struct GroupAppenderImpl: GroupAppender {
         let group = maker.make(context: context, childrenIds: childrenIDs, pathName: pathName)
         context.objects[group.id] = group
         
-
         let nextPathComponent = groupPathNames.dropLast().joined(separator: "/")
         // FIXME: Integrate reset Group full paths
         context.createGroupPath(with: group, parentPath: nextPathComponent)
         
         let isEnd = nextPathComponent.isEmpty
         if isEnd {
+            context.mainGroup.children.append(group)
             return group
         }
         
