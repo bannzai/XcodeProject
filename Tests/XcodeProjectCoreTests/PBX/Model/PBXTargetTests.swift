@@ -63,7 +63,9 @@ class PBXTargetTests: XCTestCase {
                 XCTAssertNotNil(project.context.buildPhases[fileName: "aaa.xib"])
             }
         })
-        
+    }
+    
+    func testRemove() {
         XCTContext.runActivity(named: "When remove source code file ", block: { _ in
             let project = makeXcodeProject()
             let target = project.targets[name: "iOSTestProject"]!
@@ -82,7 +84,7 @@ class PBXTargetTests: XCTestCase {
             }
             
             target.removeToSourceBuildFile(fileName: "AppDelegate.swift")
-
+            
             to: do {
                 XCTAssertEqual(subjectForBuldPhase(originalBuildPhases), subjectForBuldPhase(target.buildPhases))
                 XCTAssertEqual(originalCount - 1, subjectForBuildFile(target.buildPhases))
