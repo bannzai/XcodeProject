@@ -89,32 +89,42 @@ extension XcodeProject {
             .filter { !$0.isEmpty }
             .dropLast()
         )
+        let groupPath = groupPathNames.joined(separator: "/")
+        let removedGroup = removeGroup(path: groupPath)
         
-        let groupPaths = groupPathNames.reversed().reduce(into: [String]()) { (groupPaths, path) in
-            let last = groupPaths.last
-            switch last {
-            case .none:
-                groupPaths.append(path)
-            case .some(let last):
-                groupPaths.append(path)
-                groupPaths.append(last + path)
-            }
+        guard let fileRef = FileRefExtractorImpl().extract(context: context, groupPath: groupPath, fileName: fileName) else {
+            fatalError("Could not find file reference for filename of \(fileName)")
         }
-        groupPathNames.forEach {
-            removeGroup(path: $0, targetName: targetName)
+        
+        let index = removedGroup?.children.firstIndex { $0.id == fileRef.id }
+        switch index {
+        case .none:
+            assertionFailure(assertionMessage(description: "Maybe should exists index"))
+        case .some(let index):
+            removedGroup?.children.remove(at: index)
         }
-
-        let fileRef = fileReferenceAppender.append(context: context, filePath: path)
-        
-
-        bulidFileAppender.append(context: context, fileRefID: fileRef.id, targetName: targetName, fileName: fileRef.path!)
-        
 
         return fileRef
     }
     
-    @discardableResult public func removeGroup(path: PBXRawPathType, targetName: String) -> PBX.Group? {
-        return path.isEmpty ? nil : groupAppender.append(context: context, childrenIDs: [], path: path)
+    @discardableResult public func removeGroup(path: PBXRawPathType) -> PBX.Group? {
+        if path.isEmpty {
+            return nil
+        }
+        
+        let target = GroupExtractorImpl().extract(context: context, path: path)
+        LOOP:
+            for group in groups {
+                let index = group.subGroups.firstIndex { subGroup in subGroup === target }
+                switch index {
+                case .none:
+                    continue
+                case .some(let index):
+                    group.children.remove(at: index)
+                    break LOOP
+                }
+        }
+        return target
     }
 }
 
