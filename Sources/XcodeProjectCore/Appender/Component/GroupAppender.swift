@@ -17,13 +17,13 @@ public protocol GroupAppender {
 
 public struct GroupAppenderImpl: GroupAppender {
     private let maker: GroupMaker
-    private let groupExtractor: GroupExtractor
+    private let extractor: GroupExtractor
     public init(
         maker: GroupMaker = GroupMakerImpl(),
-        groupExtractor: GroupExtractor = GroupExtractorImpl()
+        extractor: GroupExtractor = GroupExtractorImpl()
         ) {
         self.maker = maker
-        self.groupExtractor = groupExtractor
+        self.extractor = extractor
     }
     
     @discardableResult public func append(
@@ -35,7 +35,7 @@ public struct GroupAppenderImpl: GroupAppender {
             fatalError("Unexpected for path is empty")
         }
         
-        if let alreadyExistsGroup = groupExtractor.extract(context: context, path: path) {
+        if let alreadyExistsGroup = extractor.extract(context: context, path: path) {
             return alreadyExistsGroup
         }
 
@@ -47,11 +47,8 @@ public struct GroupAppenderImpl: GroupAppender {
         let group = maker.make(context: context, childrenIds: childrenIDs, pathName: pathName)
         context.objects[group.id] = group
         
-        defer {
-            // FIXME:
-            context.resetGroupFullPaths()
-        }
-        
+        context.resetGroupFullPaths()
+
         let nextPathComponent = groupPathNames.dropLast()
         let isEnd = nextPathComponent.isEmpty
         if isEnd {
