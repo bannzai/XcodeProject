@@ -69,7 +69,7 @@ public struct CLI {
             
             switch addGroupPath.isEmpty {
             case false:
-                print("♻️ Append \(addGroupPath) to \(targetName).")
+                print("♻️  Append \(addGroupPath) to \(targetName).")
                 xcodeproject.appendGroup(path: addGroupPath, targetName: targetName)
                 break
             case true:
@@ -78,7 +78,7 @@ public struct CLI {
             
             switch addFileName.isEmpty {
             case false:
-                print("♻️ Append \(addFileName) to \(targetName).")
+                print("♻️  Append \(addFileName) to \(targetName).")
                 xcodeproject.appendFile(path: addFileName, targetName: targetName)
                 break
             case true:
@@ -86,7 +86,7 @@ public struct CLI {
             }
             
             if isOverwrite {
-                print("📝️ Overwrite \(pbxprojPath).")
+                print("📝 Overwrite \(pbxprojPath).")
                 try xcodeproject.write()
             }
         }.run(version.description)
