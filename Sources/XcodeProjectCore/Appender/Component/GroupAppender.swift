@@ -47,9 +47,11 @@ public struct GroupAppenderImpl: GroupAppender {
         let group = maker.make(context: context, childrenIds: childrenIDs, pathName: pathName)
         context.objects[group.id] = group
         
-        context.resetGroupFullPaths()
 
-        let nextPathComponent = groupPathNames.dropLast()
+        let nextPathComponent = groupPathNames.dropLast().joined(separator: "/")
+        // FIXME: Integrate reset Group full paths
+        context.createGroupPath(with: group, parentPath: nextPathComponent)
+        
         let isEnd = nextPathComponent.isEmpty
         if isEnd {
             return group
@@ -59,7 +61,7 @@ public struct GroupAppenderImpl: GroupAppender {
             return append(
                 context: context,
                 childrenIDs: [group.id],
-                path: Array(nextPathComponent).joined(separator: "/")
+                path: nextPathComponent
             )
         }
     }

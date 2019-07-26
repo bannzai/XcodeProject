@@ -19,6 +19,8 @@ public protocol Context: class {
     func extractPBXProject() -> PBX.Project
     func extractProjectName() -> String
     func resetGroupFullPaths()
+    // FIXME: Integrate reset Group full paths
+    func createGroupPath(with group: PBX.Group, parentPath: String) 
 
     func object<T: PBX.Object>(for key: String) -> T
 }
