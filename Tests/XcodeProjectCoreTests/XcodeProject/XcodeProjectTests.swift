@@ -320,7 +320,7 @@ class XcodeProjectTests: XCTestCase {
                         XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.BuildFile }.count - 1, xcodeproject.context.objects.values.compactMap { $0 as? PBX.BuildFile }.count)
                     }
                 })
-                XCTContext.runActivity(named: "when under the iOSTestProject/Group. It expect Group directory removed", block: { _ in
+                XCTContext.runActivity(named: "when under the iOSTestProject/Group. It will to empty for iOSTestProject/Group. But not remove it.", block: { _ in
                     let xcodeproject = makeXcodeProject()
                     let originalObjects = xcodeproject.context.objects
                     
@@ -334,8 +334,8 @@ class XcodeProjectTests: XCTestCase {
                     xcodeproject.removeFile(path: "iOSTestProject/Group/FileReference.swift", targetName: "iOSTestProject")
                     
                     to: do {
-                        XCTAssertEqual(originalObjects.keys.count - 3, xcodeproject.context.objects.keys.count)
-                        XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.Group }.count - 1, xcodeproject.context.objects.values.compactMap { $0 as? PBX.Group }.count)
+                        XCTAssertEqual(originalObjects.keys.count - 2, xcodeproject.context.objects.keys.count)
+                        XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.Group }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.Group }.count)
                         XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.FileReference }.count - 1, xcodeproject.context.objects.values.compactMap { $0 as? PBX.FileReference }.count)
                         XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.BuildFile }.count - 1, xcodeproject.context.objects.values.compactMap { $0 as? PBX.BuildFile }.count)
                     }

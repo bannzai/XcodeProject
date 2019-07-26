@@ -92,17 +92,10 @@ extension XcodeProject {
         let groupPath = groupPathNames.joined(separator: "/")
         
         let targetGroup = GroupExtractorImpl().extract(context: context, path: groupPath) ?? context.mainGroup
-        let willRemoveFileRef = FileRefExtractorImpl().extract(context: context, groupPath: groupPath, fileName: fileName)
-        
         guard let removedFileRef = targetGroup.removeFile(fileName: fileName) else {
             fatalError("Could not find file reference for filename of \(fileName)")
         }
-        
-        let canRemoveGroup = targetGroup.children.filter { $0 !== willRemoveFileRef }.count <= 0
-        if canRemoveGroup {
-            removeGroup(path: groupPath)
-        }
-        
+
         return removedFileRef
     }
     
