@@ -1,3 +1,6 @@
+import Foundation
+import Commander
+import XcodeProjectCore
 
 public struct Version: CustomStringConvertible {
     public let major: Int
@@ -20,6 +23,24 @@ public struct Version: CustomStringConvertible {
 }
 
 
+public enum CLIErrorType: Error, CustomStringConvertible {
+    case requirementOption(String)
+    case shouldExclusiveArgument(String, String)
+    
+    public var description: String {
+        switch self {
+        case .requirementOption(let option):
+            return "Should speciify option for \(option)"
+        case .shouldExclusiveArgument(let a, let b):
+            return "Could not use \(a) and \(b) at the same time."
+        }
+    }
+    
+    public var localizedDescription: String {
+        return description
+    }
+}
+
 public struct CLI {
     public let version: Version
     public init(version: Version) {
@@ -27,6 +48,44 @@ public struct CLI {
     }
     
     public func execute() {
-        
+        command(
+            Argument<String>("add-file", description: "Add file to project.pbxproj."),
+            Argument<String>("add-group", description: "Add file to project.pbxproj."),
+            Flag("overwrite", default: false, flag: nil, description: "Overwrite project.pbxproj default is false."),
+            Option<String>("pbxproj", default: "", description: "Path to project.pbxproj."),
+            Option<String>("target", default: "", description: "Target name for editing project.pbxproj")
+        ) { (addFileName, addGroupPath, isOverwrite, pbxprojPath, targetName) in
+            let xcodeproject = try XcodeProject(xcodeprojectURL: URL(fileURLWithPath: pbxprojPath))
+            
+            if pbxprojPath.isEmpty {
+                throw CLIErrorType.requirementOption("--pbxproj")
+            }
+            if targetName.isEmpty {
+                throw CLIErrorType.requirementOption("--target")
+            }
+            if !addFileName.isEmpty && !addGroupPath.isEmpty {
+                throw CLIErrorType.shouldExclusiveArgument("add-file", "add-group")
+            }
+            
+            switch addGroupPath.isEmpty {
+            case false:
+                xcodeproject.appendGroup(path: addGroupPath, targetName: targetName)
+                break
+            case true:
+                break
+            }
+            
+            switch addFileName.isEmpty {
+            case false:
+                xcodeproject.appendFile(path: addFileName, targetName: targetName)
+                break
+            case true:
+                break
+            }
+            
+            if isOverwrite {
+                try xcodeproject.write()
+            }
+        }.run(version.description)
     }
 }
