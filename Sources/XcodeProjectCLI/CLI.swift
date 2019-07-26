@@ -53,10 +53,10 @@ public struct CLI {
             Option<String>("add-group", default: "", description: "Add group to project.pbxproj with relative directory path. The directory of group must exists."),
             Option<String>("remove-file", default: "", description: "Remove file to project.pbxproj with relative file path. The file must exists."),
             Option<String>("remove-group", default: "", description: "Remove file to project.pbxproj with relative file path. The file must exists."),
-            Flag("overwrite", default: false, flag: nil, description: "Overwrite project.pbxproj default is false."),
+            Flag("print", default: false, flag: nil, description: "Printing result for changed project.pbxproj. When print is true not overwrite project.pbxproj. Default is false."),
             Argument<String>("pbxproj", description: "Path to project.pbxproj."),
             Argument<String>("target", description: "Target name for editing project.pbxproj")
-        ) { (addFilePath, addGroupPath, removeFilePath, removeGroupPath, isOverwrite, pbxprojPath, targetName) in
+        ) { (addFilePath, addGroupPath, removeFilePath, removeGroupPath, isPrint, pbxprojPath, targetName) in
             let xcodeproject = try XcodeProject(xcodeprojectURL: URL(fileURLWithPath: pbxprojPath))
             
             if pbxprojPath.isEmpty {
@@ -108,7 +108,11 @@ public struct CLI {
                 break
             }
             
-            if isOverwrite {
+            switch isPrint {
+            case true:
+                let output = XcodeProjectSerializer().serialize(project: xcodeproject)
+                print(output)
+            case false:
                 print("📝 Overwrite \(pbxprojPath).")
                 try xcodeproject.write()
             }
