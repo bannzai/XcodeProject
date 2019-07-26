@@ -52,8 +52,8 @@ public struct CLI {
             Option<String>("add-file", default: "", description: "Add file to project.pbxproj."),
             Option<String>("add-group", default: "", description: "Add file to project.pbxproj."),
             Flag("overwrite", default: false, flag: nil, description: "Overwrite project.pbxproj default is false."),
-            Option<String>("pbxproj", default: "", description: "Path to project.pbxproj."),
-            Option<String>("target", default: "", description: "Target name for editing project.pbxproj")
+            Argument<String>("pbxproj", description: "Path to project.pbxproj."),
+            Argument<String>("target", description: "Target name for editing project.pbxproj")
         ) { (addFileName, addGroupPath, isOverwrite, pbxprojPath, targetName) in
             let xcodeproject = try XcodeProject(xcodeprojectURL: URL(fileURLWithPath: pbxprojPath))
             
