@@ -71,7 +71,7 @@ class XcodeProjectTests: XCTestCase {
                 XCTAssertTrue(project.fileRefs.map { $0.id }.contains("ABC"))
             }
         })
-        XCTContext.runActivity(named: "Append Buld File configuration to target of iOSTestProject/. It is append same references and added original context `objects`.", block: { _ in
+        XCTContext.runActivity(named: "Append buld file to target of iOSTestProject/. It is append same references and added original context `objects`.", block: { _ in
             let project = makeXcodeProject()
             let originalObjects = project.context.objects
             let mockIDGenerator = StringGeneratorMock()
