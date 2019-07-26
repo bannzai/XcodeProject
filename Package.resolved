@@ -9,6 +9,24 @@
           "revision": "e92c79b9da9d2f87b3bfc6411eccf936b72db51e",
           "version": "1.0.3"
         }
+      },
+      {
+        "package": "SwiftCLI",
+        "repositoryURL": "https://github.com/jakeheis/SwiftCLI.git",
+        "state": {
+          "branch": null,
+          "revision": "5318c37d3cacc8780f50b87a8840a6774320ebdf",
+          "version": "5.2.2"
+        }
+      },
+      {
+        "package": "SwiftShell",
+        "repositoryURL": "https://github.com/kareman/SwiftShell.git",
+        "state": {
+          "branch": null,
+          "revision": "2614f86520e66e19328f11b00dabd474209e82f7",
+          "version": "5.0.0"
+        }
       }
     ]
   },
