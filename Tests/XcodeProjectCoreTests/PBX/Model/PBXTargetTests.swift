@@ -10,23 +10,54 @@ import XCTest
 
 class PBXTargetTests: XCTestCase {
     func testAppendFile() {
-        let project = makeXcodeProject()
-        let target = project.targets[name: "iOSTestProject"]!
-        let originalBuildPhases = target.buildPhases
-        let subjectForBuildPhases: ([PBX.BuildPhase]) -> Int = {
-            $0.compactMap { $0 as? PBX.SourcesBuildPhase }.count
-        }
-        from: do {
-            XCTAssertEqual(originalBuildPhases.count, target.buildPhases.count)
-            XCTAssertEqual(subjectForBuildPhases(originalBuildPhases), subjectForBuildPhases(project.targets[name: "iOSTestProject"]!.buildPhases))
-        }
-
-        project.groups.first?.appendFile(name: "aaa.swift")
-        target.appendSourceBuildFile(fileName: "aaa.swift")
+        XCTContext.runActivity(named: "When source code fie", block: { _ in
+            let project = makeXcodeProject()
+            let target = project.targets[name: "iOSTestProject"]!
+            let originalBuildPhases = target.buildPhases
+            let subjectForBuildFile: ([PBX.BuildPhase]) -> Int = {
+                $0.compactMap { $0 as? PBX.SourcesBuildPhase }.first?.files.count ?? 0
+            }
+            let subjectForBuldPhase: ([PBX.BuildPhase]) -> Int = {
+                $0.compactMap { $0 as? PBX.SourcesBuildPhase }.count
+            }
+            let originalCount = subjectForBuildFile(originalBuildPhases)
+            from: do {
+                XCTAssertEqual(subjectForBuldPhase(originalBuildPhases), subjectForBuldPhase(target.buildPhases))
+                XCTAssertEqual(originalCount, subjectForBuildFile(target.buildPhases))
+            }
+            
+            project.groups.first?.appendFile(name: "aaa.swift")
+            target.appendToSourceBuildFile(fileName: "aaa.swift")
+            
+            to: do {
+                XCTAssertEqual(subjectForBuldPhase(originalBuildPhases), subjectForBuldPhase(target.buildPhases))
+                XCTAssertEqual(originalCount + 1, subjectForBuildFile(target.buildPhases))
+            }
+        })
         
-        to: do {
-            XCTAssertEqual(originalBuildPhases.count + 1, target.buildPhases.count)
-            XCTAssertEqual(subjectForBuildPhases(originalBuildPhases) + 1, subjectForBuildPhases(project.targets[name: "iOSTestProject"]!.buildPhases))
-        }
+        XCTContext.runActivity(named: "When resource code fie", block: { _ in
+            let project = makeXcodeProject()
+            let target = project.targets[name: "iOSTestProject"]!
+            let originalBuildPhases = target.buildPhases
+            let subjectForBuildFile: ([PBX.BuildPhase]) -> Int = {
+                $0.compactMap { $0 as? PBX.ResourcesBuildPhase }.first?.files.count ?? 0
+            }
+            let subjectForBuldPhase: ([PBX.BuildPhase]) -> Int = {
+                $0.compactMap { $0 as? PBX.ResourcesBuildPhase }.count
+            }
+            let originalCount = subjectForBuildFile(originalBuildPhases)
+            from: do {
+                XCTAssertEqual(subjectForBuldPhase(originalBuildPhases), subjectForBuldPhase(target.buildPhases))
+                XCTAssertEqual(originalCount, subjectForBuildFile(target.buildPhases))
+            }
+            
+            project.groups.first?.appendFile(name: "aaa.xib")
+            target.appendToResourceBuildFile(fileName: "aaa.xib")
+            
+            to: do {
+                XCTAssertEqual(subjectForBuldPhase(originalBuildPhases), subjectForBuldPhase(target.buildPhases))
+                XCTAssertEqual(originalCount + 1, subjectForBuildFile(target.buildPhases))
+            }
+        })
     }
 }

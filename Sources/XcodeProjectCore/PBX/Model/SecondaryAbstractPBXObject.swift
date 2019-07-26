@@ -57,29 +57,36 @@ extension PBX {
             }
         }
         
-        public func appendSourceBuildFile(fileName: String) {
+        public func appendToSourceBuildFile(fileName: String) {
             guard let fileRef = context.fileRefs[nameOrPath: fileName] else {
                 fatalError("Not exists fileRef for name of \(fileName)")
             }
-            let buildPhase = BuildPhaseMakerImpl()
-                .makeSourcesBuildPhase(context: context)
-            buildPhase.files.append(
-                BuildFileMakerImpl()
-                    .make(context: context, fileRefId: fileRef.id)
+            guard case .sourceCode = KnownFileExtension(fileName: fileName).type else {
+                fatalError("Unexpected extensnion \(fileName). It allow .sourceCode type. ")
+            }
+            BuildFileAppenderImpl()
+                .append(
+                    context: context,
+                    fileRefID: fileRef.id,
+                    targetName: name,
+                    fileName: fileName
             )
-            buildPhases.append(buildPhase)
         }
-        public func appendResourceBuildFile(fileName: String) {
+        
+        public func appendToResourceBuildFile(fileName: String) {
             guard let fileRef = context.fileRefs[nameOrPath: fileName] else {
                 fatalError("Not exists fileRef for name of \(fileName)")
             }
-            let buildPhase = BuildPhaseMakerImpl()
-                .makeResourcesBuildPhase(context: context)
-            buildPhase.files.append(
-                BuildFileMakerImpl()
-                    .make(context: context, fileRefId: fileRef.id)
+            guard case .resourceFile = KnownFileExtension(fileName: fileName).type else {
+                fatalError("Unexpected extensnion \(fileName). It allow .resource type. ")
+            }
+            BuildFileAppenderImpl()
+                .append(
+                    context: context,
+                    fileRefID: fileRef.id,
+                    targetName: name,
+                    fileName: fileName
             )
-            buildPhases.append(buildPhase)
         }
     }
 }
