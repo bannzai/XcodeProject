@@ -16,7 +16,7 @@ let package = Package(
         // Dependencies declare other packages that this package depends on.
          .package(url: "https://github.com/bannzai/Swdifft.git", from: Version(1, 0, 3)),
          .package(url: "https://github.com/jakeheis/SwiftCLI.git", .exact("5.2.2")),
-         .package(url: "https://github.com/kareman/SwiftShell.git", .exact("5.0.0")),
+         .package(url: "https://github.com/kylef/Commander.git", from: Version(0, 8, 0))
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
@@ -26,7 +26,7 @@ let package = Package(
             dependencies: ["XcodeProjectCLI"]),
         .target(
             name: "XcodeProjectCLI",
-            dependencies: ["XcodeProjectCore", "SwiftCLI", "SwiftShell"]),
+            dependencies: ["XcodeProjectCore", "SwiftCLI", "Commander"]),
         .target(
             name: "XcodeProjectCore",
             dependencies: ["Swdifft"]),
