@@ -65,10 +65,10 @@ public struct CLI {
             if targetName.isEmpty {
                 throw CLIErrorType.requirementOption("--target")
             }
-            if addFilePath.isEmpty && addGroupPath.isEmpty {
+            if !addFilePath.isEmpty && !addGroupPath.isEmpty {
                 throw CLIErrorType.shouldExclusiveArgument("--add-file", "--add-group")
             }
-            if removeFilePath.isEmpty && removeGroupPath.isEmpty {
+            if !removeFilePath.isEmpty && !removeGroupPath.isEmpty {
                 throw CLIErrorType.shouldExclusiveArgument("--remove-file", "--remove-group")
             }
             
