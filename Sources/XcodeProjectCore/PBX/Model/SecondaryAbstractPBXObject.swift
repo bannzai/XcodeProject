@@ -104,6 +104,28 @@ extension PBX {
             )
         }
         
+        public func removeToSourceBuildFile(fileName: String) {
+            guard let fileRef = context.fileRefs[nameOrPath: fileName] else {
+                fatalError("Not exists fileRef for name of \(fileName)")
+            }
+            guard case .sourceCode = KnownFileExtension(fileName: fileName).type else {
+                fatalError("Unexpected extensnion \(fileName). It allow .resource type. ")
+            }
+            
+            context
+                .buildPhases
+                .forEach { buildPhase in
+                    let fileIndex = buildPhase.files.firstIndex { $0.id == fileRef.id }
+                    
+                    switch fileIndex {
+                    case .none:
+                        return
+                    case .some(let fileIndex):
+                        buildPhase.files.remove(at: fileIndex)
+                        return
+                    }
+            }
+        }
         public func removeToResourceBuildFile(fileName: String) {
             guard let fileRef = context.fileRefs[nameOrPath: fileName] else {
                 fatalError("Not exists fileRef for name of \(fileName)")
@@ -111,15 +133,20 @@ extension PBX {
             guard case .resourceFile = KnownFileExtension(fileName: fileName).type else {
                 fatalError("Unexpected extensnion \(fileName). It allow .resource type. ")
             }
+            
             context
                 .buildPhases
-            BuildFileAppenderImpl()
-                .append(
-                    context: context,
-                    fileRefID: fileRef.id,
-                    targetName: name,
-                    fileName: fileName
-            )
+                .forEach { buildPhase in
+                    let fileIndex = buildPhase.files.firstIndex { $0.id == fileRef.id }
+                    
+                    switch fileIndex {
+                    case .none:
+                        return
+                    case .some(let fileIndex):
+                        buildPhase.files.remove(at: fileIndex)
+                        return
+                    }
+            }
         }
     }
 }
