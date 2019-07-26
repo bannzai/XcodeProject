@@ -41,9 +41,6 @@ extension SerializeFormatter {
     }
 
     func escape(with target: String) throws -> String {
-        if target.contains("echo") {
-            print(target)
-        }
         let regexes: [String: NSRegularExpression] = [
             "\\\"": try! NSRegularExpression(pattern: "\"", options: []),
             "\\n": try! NSRegularExpression(pattern: "\n", options: []),
