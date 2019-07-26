@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		33467EBA22E6C5B700897582 /* FileReference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33467EB922E6C5B700897582 /* FileReference.swift */; };
+		33467EDB22E9513E00897582 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33467EDA22E9513E00897582 /* Config.swift */; };
+		3393D46922EB050800550D19 /* TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3393D46722EB050800550D19 /* TableViewCell.swift */; };
+		3393D46A22EB050800550D19 /* TableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3393D46822EB050800550D19 /* TableViewCell.xib */; };
 		BA4268041F89EB7F001FA700 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA4268031F89EB7F001FA700 /* AppDelegate.swift */; };
 		BA4268061F89EB7F001FA700 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA4268051F89EB7F001FA700 /* ViewController.swift */; };
 		BA4268091F89EB7F001FA700 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BA4268071F89EB7F001FA700 /* Main.storyboard */; };
@@ -31,9 +35,22 @@
 			remoteGlobalIDString = BA4267FF1F89EB7F001FA700;
 			remoteInfo = iOSTestProject;
 		};
+		BAD04C0322E35F62008ADCAD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BAD04BFF22E35F61008ADCAD /* ReferenceProject.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = BAD04BF422E35F4E008ADCAD;
+			remoteInfo = ReferenceProject;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		33467EB922E6C5B700897582 /* FileReference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileReference.swift; sourceTree = "<group>"; };
+		33467EDA22E9513E00897582 /* Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
+		3393D46722EB050800550D19 /* TableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewCell.swift; sourceTree = "<group>"; };
+		3393D46822EB050800550D19 /* TableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TableViewCell.xib; sourceTree = "<group>"; };
+		33BD753222D4E09700092308 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
+		33BD753322D4E12600092308 /* Podfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; };
 		BA4268001F89EB7F001FA700 /* iOSTestProject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iOSTestProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BA4268031F89EB7F001FA700 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BA4268051F89EB7F001FA700 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -47,6 +64,7 @@
 		BA42681F1F89EB7F001FA700 /* iOSTestProjectUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iOSTestProjectUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BA4268231F89EB7F001FA700 /* iOSTestProjectUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSTestProjectUITests.swift; sourceTree = "<group>"; };
 		BA4268251F89EB7F001FA700 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BAD04BFF22E35F61008ADCAD /* ReferenceProject.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ReferenceProject.xcodeproj; path = Framework/ReferenceProject/ReferenceProject.xcodeproj; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -74,9 +92,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		33467EB722E6C5AE00897582 /* Group */ = {
+			isa = PBXGroup;
+			children = (
+				33467EB922E6C5B700897582 /* FileReference.swift */,
+			);
+			path = Group;
+			sourceTree = "<group>";
+		};
 		BA4267F71F89EB7F001FA700 = {
 			isa = PBXGroup;
 			children = (
+				33467EDA22E9513E00897582 /* Config.swift */,
+				33BD753222D4E09700092308 /* README.md */,
+				33BD753322D4E12600092308 /* Podfile */,
 				BA4268021F89EB7F001FA700 /* iOSTestProject */,
 				BA4268171F89EB7F001FA700 /* iOSTestProjectTests */,
 				BA4268221F89EB7F001FA700 /* iOSTestProjectUITests */,
@@ -97,12 +126,16 @@
 		BA4268021F89EB7F001FA700 /* iOSTestProject */ = {
 			isa = PBXGroup;
 			children = (
+				33467EB722E6C5AE00897582 /* Group */,
+				BAD04BFF22E35F61008ADCAD /* ReferenceProject.xcodeproj */,
 				BA4268031F89EB7F001FA700 /* AppDelegate.swift */,
 				BA4268051F89EB7F001FA700 /* ViewController.swift */,
 				BA4268071F89EB7F001FA700 /* Main.storyboard */,
 				BA42680A1F89EB7F001FA700 /* Assets.xcassets */,
 				BA42680C1F89EB7F001FA700 /* LaunchScreen.storyboard */,
 				BA42680F1F89EB7F001FA700 /* Info.plist */,
+				3393D46722EB050800550D19 /* TableViewCell.swift */,
+				3393D46822EB050800550D19 /* TableViewCell.xib */,
 			);
 			path = iOSTestProject;
 			sourceTree = "<group>";
@@ -125,6 +158,14 @@
 			path = iOSTestProjectUITests;
 			sourceTree = "<group>";
 		};
+		BAD04C0022E35F61008ADCAD /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				BAD04C0422E35F62008ADCAD /* ReferenceProject.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -135,6 +176,8 @@
 				BA4267FC1F89EB7F001FA700 /* Sources */,
 				BA4267FD1F89EB7F001FA700 /* Frameworks */,
 				BA4267FE1F89EB7F001FA700 /* Resources */,
+				33D083C322DE32F300ED246F /* Single Line Script */,
+				33D083C422DE339D00ED246F /* Multiple Line Script */,
 			);
 			buildRules = (
 			);
@@ -218,6 +261,12 @@
 			mainGroup = BA4267F71F89EB7F001FA700;
 			productRefGroup = BA4268011F89EB7F001FA700 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = BAD04C0022E35F61008ADCAD /* Products */;
+					ProjectRef = BAD04BFF22E35F61008ADCAD /* ReferenceProject.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				BA4267FF1F89EB7F001FA700 /* iOSTestProject */,
@@ -227,12 +276,23 @@
 		};
 /* End PBXProject section */
 
+/* Begin PBXReferenceProxy section */
+		BAD04C0422E35F62008ADCAD /* ReferenceProject.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = ReferenceProject.framework;
+			remoteRef = BAD04C0322E35F62008ADCAD /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
 /* Begin PBXResourcesBuildPhase section */
 		BA4267FE1F89EB7F001FA700 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				BA42680E1F89EB7F001FA700 /* LaunchScreen.storyboard in Resources */,
+				3393D46A22EB050800550D19 /* TableViewCell.xib in Resources */,
 				BA42680B1F89EB7F001FA700 /* Assets.xcassets in Resources */,
 				BA4268091F89EB7F001FA700 /* Main.storyboard in Resources */,
 			);
@@ -254,12 +314,54 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		33D083C322DE32F300ED246F /* Single Line Script */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Single Line Script";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\necho \"Script\"\n";
+		};
+		33D083C422DE339D00ED246F /* Multiple Line Script */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Multiple Line Script";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\necho \"Script1\"\necho \"Script2\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		BA4267FC1F89EB7F001FA700 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3393D46922EB050800550D19 /* TableViewCell.swift in Sources */,
 				BA4268061F89EB7F001FA700 /* ViewController.swift in Sources */,
+				33467EDB22E9513E00897582 /* Config.swift in Sources */,
+				33467EBA22E6C5B700897582 /* FileReference.swift in Sources */,
 				BA4268041F89EB7F001FA700 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
