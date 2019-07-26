@@ -66,6 +66,61 @@ extension XcodeProject {
     }
 }
 
+// MARK: - Remove
+extension XcodeProject {
+    // TODO: Prepare Remover
+    @discardableResult public func removeFile(path: PBXRawPathType, targetName: String) -> PBX.FileReference {
+        guard let fileName = path.components(separatedBy: "/").last else {
+            fatalError(assertionMessage(description: "Unexpected pattern for file path: \(path)"))
+        }
+        
+        let lastKnownType = KnownFileExtension(fileName: fileName)
+        switch lastKnownType.type {
+        case .resourceFile:
+            let buildFile = targets[name: targetName]?.buildPhases.compactMap { $0 as? PBX.ResourcesBuildPhase }.first?.files[fileName: fileName]
+            if let builFile = buildFile {
+                
+            }
+        case .sourceCode:
+            sourcesBuildPhaseAppender.append(context: context, targetName: targetName)
+        case _:
+            break
+        }
+        
+        let groupPathNames = Array(path
+            .components(separatedBy: "/")
+            .filter { !$0.isEmpty }
+            .dropLast()
+        )
+        
+        let groupPaths = groupPathNames.reversed().reduce(into: [String]()) { (groupPaths, path) in
+            let last = groupPaths.last
+            switch last {
+            case .none:
+                groupPaths.append(path)
+            case .some(let last):
+                groupPaths.append(path)
+                groupPaths.append(last + path)
+            }
+        }
+        groupPathNames.forEach {
+            removeGroup(path: $0, targetName: targetName)
+        }
+
+        let fileRef = fileReferenceAppender.append(context: context, filePath: path)
+        
+
+        bulidFileAppender.append(context: context, fileRefID: fileRef.id, targetName: targetName, fileName: fileRef.path!)
+        
+
+        return fileRef
+    }
+    
+    @discardableResult public func removeGroup(path: PBXRawPathType, targetName: String) -> PBX.Group? {
+        return path.isEmpty ? nil : groupAppender.append(context: context, childrenIDs: [], path: path)
+    }
+}
+
 // MARK: - Append
 extension XcodeProject {
     @discardableResult public func appendFile(path: PBXRawPathType, targetName: String) -> PBX.FileReference {
@@ -87,7 +142,7 @@ extension XcodeProject {
         
         let lastKnownType = KnownFileExtension(fileName: fileName)
         switch lastKnownType.type {
-        case .resourceFile, .text:
+        case .resourceFile:
             resourcesBuildPhaseAppender.append(context: context, targetName: targetName)
         case .sourceCode:
             sourcesBuildPhaseAppender.append(context: context, targetName: targetName)

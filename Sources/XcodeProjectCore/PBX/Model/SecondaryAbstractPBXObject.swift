@@ -96,5 +96,23 @@ extension PBX {
                     fileName: fileName
             )
         }
+        
+        public func removeToResourceBuildFile(fileName: String) {
+            guard let fileRef = context.fileRefs[nameOrPath: fileName] else {
+                fatalError("Not exists fileRef for name of \(fileName)")
+            }
+            guard case .resourceFile = KnownFileExtension(fileName: fileName).type else {
+                fatalError("Unexpected extensnion \(fileName). It allow .resource type. ")
+            }
+            context
+                .buildPhases
+            BuildFileAppenderImpl()
+                .append(
+                    context: context,
+                    fileRefID: fileRef.id,
+                    targetName: name,
+                    fileName: fileName
+            )
+        }
     }
 }
