@@ -114,14 +114,15 @@ extension PBX {
             
             context
                 .buildPhases
+                .compactMap { $0 as? PBX.SourcesBuildPhase }
                 .forEach { buildPhase in
-                    let fileIndex = buildPhase.files.firstIndex { $0.id == fileRef.id }
+                    let fileIndex = buildPhase.files.firstIndex { $0.fileRef.id == fileRef.id }
                     
                     switch fileIndex {
                     case .none:
                         return
                     case .some(let fileIndex):
-                        buildPhase.files.remove(at: fileIndex)
+                         buildPhase.files.remove(at: fileIndex)
                         return
                     }
             }
@@ -136,9 +137,10 @@ extension PBX {
             
             context
                 .buildPhases
+                .compactMap { $0 as? PBX.ResourcesBuildPhase }
                 .forEach { buildPhase in
-                    let fileIndex = buildPhase.files.firstIndex { $0.id == fileRef.id }
-                    
+                    let fileIndex = buildPhase.files.firstIndex { $0.fileRef.id == fileRef.id }
+
                     switch fileIndex {
                     case .none:
                         return
