@@ -8,6 +8,7 @@ let package = Package(
     products: [
         // Products define the executables and libraries produced by a package, and make them visible to other packages.
         .executable(name: "xcp", targets: ["XcodeProject"]),
+        .executable(name: "OchaExample", targets: ["OchaExample"]),
         .library(
             name: "XcodeProjectCore",
             targets: ["XcodeProjectCore"]),
