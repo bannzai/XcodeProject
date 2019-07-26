@@ -49,12 +49,14 @@ public struct CLI {
     
     public func execute() {
         command(
-            Option<String>("add-file", default: "", description: "Add file to project.pbxproj. The file must exists."),
-            Option<String>("add-group", default: "", description: "Add group to project.pbxproj. The directory of group must exists."),
+            Option<String>("add-file", default: "", description: "Add file to project.pbxproj with relative file path. The file must exists."),
+            Option<String>("add-group", default: "", description: "Add group to project.pbxproj with relative directory path. The directory of group must exists."),
+            Option<String>("remove-file", default: "", description: "Remove file to project.pbxproj with relative file path. The file must exists."),
+            Option<String>("remove-group", default: "", description: "Remove file to project.pbxproj with relative file path. The file must exists."),
             Flag("overwrite", default: false, flag: nil, description: "Overwrite project.pbxproj default is false."),
             Argument<String>("pbxproj", description: "Path to project.pbxproj."),
             Argument<String>("target", description: "Target name for editing project.pbxproj")
-        ) { (addFileName, addGroupPath, isOverwrite, pbxprojPath, targetName) in
+        ) { (addFilePath, addGroupPath, removeFilePath, removeGroupPath, isOverwrite, pbxprojPath, targetName) in
             let xcodeproject = try XcodeProject(xcodeprojectURL: URL(fileURLWithPath: pbxprojPath))
             
             if pbxprojPath.isEmpty {
@@ -63,10 +65,31 @@ public struct CLI {
             if targetName.isEmpty {
                 throw CLIErrorType.requirementOption("--target")
             }
-            if addFileName.isEmpty && addGroupPath.isEmpty {
+            if addFilePath.isEmpty && addGroupPath.isEmpty {
                 throw CLIErrorType.shouldExclusiveArgument("--add-file", "--add-group")
             }
+            if removeFilePath.isEmpty && removeGroupPath.isEmpty {
+                throw CLIErrorType.shouldExclusiveArgument("--remove-file", "--remove-group")
+            }
             
+            switch removeFilePath.isEmpty {
+            case false:
+                print("🗑️  Remove \(removeFilePath) to \(targetName).")
+                xcodeproject.removeFile(path: removeFilePath, targetName: targetName)
+                break
+            case true:
+                break
+            }
+            
+            switch removeGroupPath.isEmpty {
+            case false:
+                print("🗑️  Remove \(removeGroupPath) to \(targetName).")
+                xcodeproject.removeGroup(path: removeGroupPath)
+                break
+            case true:
+                break
+            }
+
             switch addGroupPath.isEmpty {
             case false:
                 print("♻️  Append \(addGroupPath) to \(targetName).")
@@ -76,10 +99,10 @@ public struct CLI {
                 break
             }
             
-            switch addFileName.isEmpty {
+            switch addFilePath.isEmpty {
             case false:
-                print("♻️  Append \(addFileName) to \(targetName).")
-                xcodeproject.appendFile(path: addFileName, targetName: targetName)
+                print("♻️  Append \(addFilePath) to \(targetName).")
+                xcodeproject.appendFile(path: addFilePath, targetName: targetName)
                 break
             case true:
                 break
