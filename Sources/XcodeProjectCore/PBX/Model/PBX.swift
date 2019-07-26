@@ -134,13 +134,16 @@ extension /* prefix */ PBX {
         public var children: [Reference] {
             get { return _children }
             set {
-                _children = newValue
-                _children.forEach { child in
-                    let isAlreadyExists = context.objects.map { $0.key }.contains(child.id)
-                    if isAlreadyExists {
-                        return
-                    }
-                    context.objects[child.id] = child
+                defer {
+                    _children = newValue
+                }
+                let appendDiff = diffing(lhs: newValue, rhs: _children)
+                appendDiff.forEach { difference in
+                    context.objects[difference.element.id] = difference.element
+                }
+                let removeDiff = diffing(lhs: _children, rhs: newValue)
+                removeDiff.forEach { difference in
+                    context.objects[difference.element.id] = nil
                 }
             }
         }

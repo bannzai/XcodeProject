@@ -107,7 +107,7 @@ extension XcodeProject {
         let target = GroupExtractorImpl().extract(context: context, path: path)
         LOOP:
             for group in groups {
-                let index = group.subGroups.firstIndex { subGroup in subGroup === target }
+                let index = group.children.firstIndex { subGroup in subGroup === target }
                 switch index {
                 case .none:
                     continue

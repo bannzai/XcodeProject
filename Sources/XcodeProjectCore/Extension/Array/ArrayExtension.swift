@@ -25,3 +25,10 @@ extension Array {
         }
     }
 }
+
+
+func diffing<T: PBX.Object>(lhs: [T], rhs: [T]) -> [(offset: Int, element: T)] {
+    return lhs
+        .enumerated()
+        .filter  { (index, l) in rhs.allSatisfy { r in l.id != r.id } }
+}
