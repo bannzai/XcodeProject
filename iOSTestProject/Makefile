@@ -11,3 +11,5 @@ add-group:
 remove-file:
 	../.build/x86_64-apple-macosx/debug/xcp --remove-file iOSTestProject/AppDelegate.swift iOSTestProject.xcodeproj/project.pbxproj iOSTestProject --overwrite
 
+remove-group:
+	../.build/x86_64-apple-macosx/debug/xcp --remove-group iOSTestProject iOSTestProject.xcodeproj/project.pbxproj iOSTestProject --overwrite
