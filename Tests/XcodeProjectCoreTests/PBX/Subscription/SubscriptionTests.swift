@@ -47,6 +47,16 @@ class SubscriptionTests: XCTestCase {
             let object = project.targets[name: "iOSTestProject"]
             XCTAssertNotNil(object)
         })
+        XCTContext.runActivity(named: "For PBX.BuildPhase [fileName:]", block: { _ in
+            let project = makeXcodeProject()
+            let object = project.buildPhases[fileName: "AppDelegate.swift"]
+            XCTAssertNotNil(object)
+        })
+        XCTContext.runActivity(named: "For PBX.BuildFile [fileName:]", block: { _ in
+            let project = makeXcodeProject()
+            let object = project.buildFiles[fileName: "AppDelegate.swift"]
+            XCTAssertNotNil(object)
+        })
         XCTContext.runActivity(named: "For PBX.Group [fullPath:]", block: { _ in
             let project = makeXcodeProject()
             let object = project.groups[fullPath: "iOSTestProject/Group"]
