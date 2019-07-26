@@ -26,13 +26,20 @@ extension PBX {
         public var files: [BuildFile] {
             get { return _files }
             set {
-                _files = newValue
-                _files.forEach { file in
-                    let isAlreadyExists = context.objects.map { $0.key }.contains(file.id)
-                    if isAlreadyExists {
-                        return
+                defer {
+                    _files = newValue
+                }
+                let differences = _files
+                    .enumerated()
+                    .filter  { (index, _file) in !newValue.contains { n in n.id == _file.id } }
+                
+                differences.forEach { difference in
+                    switch _files.contains (where: { $0.id == difference.element.id }) {
+                    case true:
+                        context.objects[difference.element.id] = nil
+                    case false:
+                        context.objects[difference.element.id] = difference.element
                     }
-                    context.objects[file.id] = file
                 }
             }
         }
