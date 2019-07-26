@@ -11,7 +11,7 @@ import Foundation
 public typealias PathType = [PBXObjectIDType: PathComponent]
 // TODO: Confirm Iteratable, Collection
 public protocol Context: class {
-    var objects: [String: PBX.Object] { get set }
+    var objects: WeakDictionary<String, PBX.Object> { get set }
     var fullFilePaths: PathType { get }
     var xcodeprojectUrl: URL { get }
     var allPBX: PBXRawMapType { get }
@@ -54,7 +54,7 @@ extension Context {
 }
 
 class InternalContext: Context {
-    var objects: [String: PBX.Object] = [:]
+    var objects: WeakDictionary<String, PBX.Object> = [:]
     var fullFilePaths: PathType = [:]
     var allPBX: PBXRawMapType
     let xcodeprojectUrl: URL
