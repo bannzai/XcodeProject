@@ -1,4 +1,6 @@
 
+build:
+	swift build
 
 mint:
 	mint bootstrap --link
