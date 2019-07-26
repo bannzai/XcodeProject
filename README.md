@@ -1,6 +1,6 @@
 # XcodeProject
-*XcodeProject* is a library for Xcode utility for read structure and it can be overwrite for`project.pbxproj.
-And *XcodeProject* package has executable library about append and remove files and directory to your xcode project on CLI named by *xcp*.
+**XcodeProject** is a library for Xcode utility for read structure and it can be overwrite for`project.pbxproj.  
+And **XcodeProject** package has executable library about append and remove files and directory to your xcode project on CLI named by **xcp**.
 
 ## About XcodeProject Library 
 ### Usage XcodeProject Core Function.
@@ -32,7 +32,7 @@ xcodeproject.removeFile(path: "Config.swift", targetName: "iOSProject")
 
 If you want overwrite `project.pbxproj`, You can call `xcodeproject.write()` method.  
 
-```
+```swift
 // Overwrite in pbxproj.
 try xcodeproject.write()
 ```
