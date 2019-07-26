@@ -102,7 +102,7 @@ class XcodeProjectTests: XCTestCase {
                 XCTContext.runActivity(named: "when under the Hoge/. Hoge is not exists", block: { _ in
                     let xcodeproject = makeXcodeProject()
                     let originalObjects = xcodeproject.context.objects
-                    
+
                     from: do {
                         XCTAssertEqual(originalObjects.keys.count, xcodeproject.context.objects.keys.count)
                         XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.Group }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.Group }.count)
@@ -144,7 +144,7 @@ class XcodeProjectTests: XCTestCase {
                 XCTContext.runActivity(named: "when root directory", block: { _ in
                     let xcodeproject = makeXcodeProject()
                     let originalObjects = xcodeproject.context.objects
-                    
+
                     from: do {
                         XCTAssertEqual(originalObjects.keys.count, xcodeproject.context.objects.keys.count)
                         XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.Group }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.Group }.count)
@@ -164,12 +164,14 @@ class XcodeProjectTests: XCTestCase {
                 XCTContext.runActivity(named: "when under the iOSTestProject/", block: { _ in
                     let xcodeproject = makeXcodeProject()
                     let originalObjects = xcodeproject.context.objects
-                    
+                    let originalSubGroups = xcodeproject.groups[path: "iOSTestProject"]!.subGroups
+
                     from: do {
                         XCTAssertEqual(originalObjects.keys.count, xcodeproject.context.objects.keys.count)
                         XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.Group }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.Group }.count)
                         XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.FileReference }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.FileReference }.count)
                         XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.BuildFile }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.BuildFile }.count)
+                        XCTAssertEqual(originalSubGroups.count, xcodeproject.context.groups[path: "iOSTestProject"]!.subGroups.count)
                     }
                     
                     xcodeproject.appendFile(path: "iOSTestProject/aaaa.swift", targetName: "iOSTestProject")
@@ -179,6 +181,7 @@ class XcodeProjectTests: XCTestCase {
                         XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.Group }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.Group }.count)
                         XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.FileReference }.count + 1, xcodeproject.context.objects.values.compactMap { $0 as? PBX.FileReference }.count)
                         XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.BuildFile }.count + 1, xcodeproject.context.objects.values.compactMap { $0 as? PBX.BuildFile }.count)
+                        XCTAssertEqual(originalSubGroups.count, xcodeproject.context.groups[path: "iOSTestProject"]!.subGroups.count)
                     }
                 })
                 XCTContext.runActivity(named: "when under the iOSTestProject/Group", block: { _ in
