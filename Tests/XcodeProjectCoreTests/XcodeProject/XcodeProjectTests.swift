@@ -102,21 +102,25 @@ class XcodeProjectTests: XCTestCase {
                 XCTContext.runActivity(named: "when under the Hoge/. Hoge is not exists", block: { _ in
                     let xcodeproject = makeXcodeProject()
                     let originalObjects = xcodeproject.context.objects
+                    let originalGroupsCount = xcodeproject.groups.count
 
                     from: do {
                         XCTAssertEqual(originalObjects.keys.count, xcodeproject.context.objects.keys.count)
                         XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.Group }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.Group }.count)
                         XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.FileReference }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.FileReference }.count)
                         XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.BuildFile }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.BuildFile }.count)
+                        XCTAssertEqual(originalGroupsCount, xcodeproject.groups.count)
                     }
                     
-                    xcodeproject.appendFile(path: "Hoge/aaaa.swift", targetName: "iOSTestProject")
+                    xcodeproject.appendFile(path: "Hoge/bbbb.swift", targetName: "iOSTestProject")
                     
                     to: do {
                         XCTAssertEqual(originalObjects.keys.count + 3, xcodeproject.context.objects.keys.count)
                         XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.Group }.count + 1, xcodeproject.context.objects.values.compactMap { $0 as? PBX.Group }.count)
                         XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.FileReference }.count + 1, xcodeproject.context.objects.values.compactMap { $0 as? PBX.FileReference }.count)
                         XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.BuildFile }.count + 1, xcodeproject.context.objects.values.compactMap { $0 as? PBX.BuildFile }.count)
+                        XCTAssertEqual(originalGroupsCount + 1, xcodeproject.groups.count)
+                        XCTAssertEqual(xcodeproject.groups[path: "Hoge"]!.children.count, 1)
                     }
                 })
                 XCTContext.runActivity(named: "when under the Hoge/Fuga. Hoge and Fuga is not exists", block: { _ in

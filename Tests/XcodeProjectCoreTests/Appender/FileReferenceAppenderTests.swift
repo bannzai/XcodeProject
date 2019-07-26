@@ -52,6 +52,21 @@ class FileReferenceAppenderTests: XCTestCase {
                     XCTAssertEqual(originalSubGroups.count, xcodeproject.groups[path: "iOSTestProject"]!.subGroups.count)
                 }
             })
+            XCTContext.runActivity(named: "To append Group2/ direcotroy. Group2 is not exists", block: { _ in
+                let xcodeproject = makeXcodeProject()
+                let appender = make()
+                let originalObjects = xcodeproject.context.objects
+
+                from: do {
+                    XCTAssertEqual(originalObjects.keys.count, xcodeproject.context.objects.keys.count)
+                    XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.FileReference }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.FileReference }.count)
+                }
+                appender.append(context: xcodeproject.context, filePath: "Groups2/bbbbb.swift")
+                to: do {
+                    XCTAssertEqual(originalObjects.keys.count + 1, xcodeproject.context.objects.keys.count)
+                    XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.FileReference }.count + 1, xcodeproject.context.objects.values.compactMap { $0 as? PBX.FileReference }.count)
+                }
+            })
 
         })
         

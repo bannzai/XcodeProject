@@ -29,7 +29,7 @@ class GroupAppenderTests: XCTestCase {
                 
                 XCTAssertEqual(originalObjects.keys.count, xcodeproject.context.objects.keys.count)
                 XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.Group }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.Group }.count)
-                appender.append(context: xcodeproject.context, childrenIDs: ["aaa"], path: "Hoge")
+                appender.append(context: xcodeproject.context, childrenIDs: [], path: "Hoge")
                 XCTAssertEqual(originalObjects.keys.count + 1, xcodeproject.context.objects.keys.count)
                 XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.Group }.count + 1, xcodeproject.context.objects.values.compactMap { $0 as? PBX.Group }.count)
             })
@@ -41,7 +41,7 @@ class GroupAppenderTests: XCTestCase {
                 
                 XCTAssertEqual(originalObjects.keys.count, xcodeproject.context.objects.keys.count)
                 XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.Group }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.Group }.count)
-                appender.append(context: xcodeproject.context, childrenIDs: ["aaa"], path: "Hoge/Fuga")
+                appender.append(context: xcodeproject.context, childrenIDs: [], path: "Hoge/Fuga")
                 XCTAssertEqual(originalObjects.keys.count + 2, xcodeproject.context.objects.keys.count)
                 XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.Group }.count + 2, xcodeproject.context.objects.values.compactMap { $0 as? PBX.Group }.count)
             })
@@ -53,7 +53,7 @@ class GroupAppenderTests: XCTestCase {
                 
                 XCTAssertEqual(originalObjects.keys.count, xcodeproject.context.objects.keys.count)
                 XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.Group }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.Group }.count)
-                appender.append(context: xcodeproject.context, childrenIDs: ["aaa"], path: "iOSTestProject/Fuga")
+                appender.append(context: xcodeproject.context, childrenIDs: [], path: "iOSTestProject/Fuga")
                 XCTAssertEqual(originalObjects.keys.count + 1, xcodeproject.context.objects.keys.count)
                 XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.Group }.count + 1, xcodeproject.context.objects.values.compactMap { $0 as? PBX.Group }.count)
             })
