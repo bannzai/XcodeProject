@@ -36,6 +36,14 @@ extension PBX {
                 }
             }
         }
+        
+        public func appendFile(fileName: String) {
+            guard let fileRef = context.fileRefs[nameOrPath: fileName] else {
+                fatalError("Not exists fileRef for name of \(fileName)")
+            }
+            let buildFile = BuildFileMakerImpl().make(context: context, fileRefId: fileRef.id)
+            files.append(buildFile)
+        }
     }
     
     open class Target: ProjectItem {

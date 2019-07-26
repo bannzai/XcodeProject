@@ -157,6 +157,10 @@ extension /* prefix */ PBX {
                     .make(context: context, fileName: name)
             )
         }
+
+        public func appendGroup(name: String) {
+            children.append(GroupMakerImpl().make(context: context, pathName: name))
+        }
     }
     
     open class VariantGroup: PBX.Group {
