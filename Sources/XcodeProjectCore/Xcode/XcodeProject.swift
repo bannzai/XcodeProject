@@ -77,12 +77,9 @@ extension XcodeProject {
         let lastKnownType = KnownFileExtension(fileName: fileName)
         switch lastKnownType.type {
         case .resourceFile:
-            let buildFile = targets[name: targetName]?.buildPhases.compactMap { $0 as? PBX.ResourcesBuildPhase }.first?.files[fileName: fileName]
-            if let builFile = buildFile {
-                
-            }
+            targets[name: targetName]?.removeToResourceBuildFile(fileName: fileName)
         case .sourceCode:
-            sourcesBuildPhaseAppender.append(context: context, targetName: targetName)
+            targets[name: targetName]?.removeToSourceBuildFile(fileName: fileName)
         case _:
             break
         }
