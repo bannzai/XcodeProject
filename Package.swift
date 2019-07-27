@@ -8,6 +8,7 @@ let package = Package(
     products: [
         // Products define the executables and libraries produced by a package, and make them visible to other packages.
         .executable(name: "xcp", targets: ["XcodeProject"]),
+        .executable(name: "OchaExample", targets: ["OchaExample"]),
         .library(
             name: "XcodeProjectCore",
             targets: ["XcodeProjectCore"]),
@@ -15,8 +16,8 @@ let package = Package(
     dependencies: [
         // Dependencies declare other packages that this package depends on.
          .package(url: "https://github.com/bannzai/Swdifft.git", from: Version(1, 0, 3)),
-         .package(url: "https://github.com/jakeheis/SwiftCLI.git", .exact("5.2.2")),
-         .package(url: "https://github.com/kylef/Commander.git", from: Version(0, 8, 0))
+         .package(url: "https://github.com/kylef/Commander.git", from: Version(0, 8, 0)),
+         .package(url: "https://github.com/bannzai/Ocha.git", from: Version(1, 1, 0)),
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
@@ -26,10 +27,13 @@ let package = Package(
             dependencies: ["XcodeProjectCLI"]),
         .target(
             name: "XcodeProjectCLI",
-            dependencies: ["XcodeProjectCore", "SwiftCLI", "Commander"]),
+            dependencies: ["XcodeProjectCore", "Commander"]),
         .target(
             name: "XcodeProjectCore",
             dependencies: ["Swdifft"]),
+        .target(
+            name: "OchaExample",
+            dependencies: ["XcodeProjectCore", "Ocha", "Commander"]),
         .testTarget(
             name: "XcodeProjectCoreTests",
             dependencies: ["XcodeProjectCore", "Swdifft"]),
