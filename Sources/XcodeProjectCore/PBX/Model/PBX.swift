@@ -154,15 +154,19 @@ extension /* prefix */ PBX {
         open var subGroups: [Group] { return children.ofType(PBX.Group.self) }
         open var fileRefs: [PBX.FileReference] { return children.ofType(PBX.FileReference.self) }
         
-        public func appendFile(name: String) {
+        @discardableResult public func appendFile(name: String) -> PBX.FileReference {
+            let fileReference = FileReferenceMakerImpl()
+                .make(context: context, fileName: name)
             children.append(
-                FileReferenceMakerImpl()
-                    .make(context: context, fileName: name)
+                fileReference
             )
+            return fileReference
         }
 
-        public func appendGroup(name: String) {
-            children.append(GroupMakerImpl().make(context: context, pathName: name))
+        public func appendGroup(name: String) -> PBX.Group  {
+            let group = GroupMakerImpl().make(context: context, pathName: name)
+            children.append(group)
+            return group
         }
         
         @discardableResult public func removeFile(fileName: String) -> PBX.FileReference? {
