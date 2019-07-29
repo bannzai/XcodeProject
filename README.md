@@ -3,8 +3,8 @@
 And **XcodeProject** package has executable library about append and remove files and directory to your xcode project on CLI named by **xcp**.
 
 ## About XcodeProject Library 
-### Usage XcodeProject Core Function.
 
+### Usage XcodeProject Core Function.
 Instanciate `XcodeProject` class.  `XcodeProject` is necessary edit for `project.pbxproj`.
 
 ```swift
@@ -38,7 +38,14 @@ try xcodeproject.write()
 ```
 
 ## Command Line Tool 
+### Install
+Using mint.
+```bash
+$ mint install bannzai/XcodeProject
+```
+
 ### Usage
+
 #### Add file
 xcp --add-file <FILE_PATH> <BUILD_TARGET_NAME>  
 
