@@ -35,7 +35,8 @@ class PBXGroupTests: XCTestCase {
             XCTAssertNotNil(project.context.fileRefs[path: "AppDelegate.swift"])
         }
         
-        group.removeFile(fileName: "AppDelegate.swift")
+        let file = group.removeFile(fileName: "AppDelegate.swift")
+        XCTAssertEqual(file?.path, "AppDelegate.swift")
         
         to: do {
             XCTAssertEqual(originalChildren.count - 1, group.children.count)
