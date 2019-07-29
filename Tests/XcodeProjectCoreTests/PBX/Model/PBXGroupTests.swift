@@ -17,7 +17,9 @@ class PBXGroupTests: XCTestCase {
             XCTAssertEqual(originalChildren.count, group.children.count)
             XCTAssertNil(project.context.fileRefs[path: "aaaa.swift"])
         }
-        group.appendFile(name: "aaaa.swift")
+        let file = group.appendFile(name: "aaaa.swift")
+        XCTAssertEqual(file.path, "aaaa.swift")
+        
         to: do {
             XCTAssertEqual(originalChildren.count + 1, group.children.count)
             XCTAssertNotNil(project.context.fileRefs[path: "aaaa.swift"])
