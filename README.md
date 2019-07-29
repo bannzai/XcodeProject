@@ -41,7 +41,7 @@ try xcodeproject.write()
 ### Install
 Using mint.
 ```bash
-$ mint install bannzai/Teapot
+$ mint install bannzai/XcodeProject
 ```
 
 ### Usage
