@@ -68,14 +68,14 @@ extension PBX {
             }
         }
         
-        public func appendToSourceBuildFile(fileName: String) {
+        @discardableResult public func appendToSourceBuildFile(fileName: String) -> PBX.BuildFile {
             guard let fileRef = context.fileRefs[nameOrPath: fileName] else {
                 fatalError("Not exists fileRef for name of \(fileName)")
             }
             guard case .sourceCode = KnownFileExtension(fileName: fileName).type else {
                 fatalError("Unexpected extensnion \(fileName). It allow .sourceCode type. ")
             }
-            BuildFileAppenderImpl()
+            return BuildFileAppenderImpl()
                 .append(
                     context: context,
                     fileRefID: fileRef.id,
@@ -84,14 +84,14 @@ extension PBX {
             )
         }
         
-        public func appendToResourceBuildFile(fileName: String) {
+        @discardableResult public func appendToResourceBuildFile(fileName: String) -> PBX.BuildFile {
             guard let fileRef = context.fileRefs[nameOrPath: fileName] else {
                 fatalError("Not exists fileRef for name of \(fileName)")
             }
             guard case .resourceFile = KnownFileExtension(fileName: fileName).type else {
                 fatalError("Unexpected extensnion \(fileName). It allow .resource type. ")
             }
-            BuildFileAppenderImpl()
+            return BuildFileAppenderImpl()
                 .append(
                     context: context,
                     fileRefID: fileRef.id,
