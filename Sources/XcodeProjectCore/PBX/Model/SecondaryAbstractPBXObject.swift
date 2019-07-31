@@ -68,36 +68,38 @@ extension PBX {
             }
         }
         
-        @discardableResult public func appendToSourceBuildFile(fileName: String) -> PBX.BuildFile {
+        @discardableResult public func appendToSourceBuildFile(fileName: String) -> PBX.FileReference {
             guard let fileRef = context.fileRefs[nameOrPath: fileName] else {
                 fatalError("Not exists fileRef for name of \(fileName)")
             }
             guard case .sourceCode = KnownFileExtension(fileName: fileName).type else {
                 fatalError("Unexpected extensnion \(fileName). It allow .sourceCode type. ")
             }
-            return BuildFileAppenderImpl()
+            BuildFileAppenderImpl()
                 .append(
                     context: context,
                     fileRefID: fileRef.id,
                     targetName: name,
                     fileName: fileName
             )
+            return fileRef
         }
         
-        @discardableResult public func appendToResourceBuildFile(fileName: String) -> PBX.BuildFile {
+        @discardableResult public func appendToResourceBuildFile(fileName: String) -> PBX.FileReference {
             guard let fileRef = context.fileRefs[nameOrPath: fileName] else {
                 fatalError("Not exists fileRef for name of \(fileName)")
             }
             guard case .resourceFile = KnownFileExtension(fileName: fileName).type else {
                 fatalError("Unexpected extensnion \(fileName). It allow .resource type. ")
             }
-            return BuildFileAppenderImpl()
+            BuildFileAppenderImpl()
                 .append(
                     context: context,
                     fileRefID: fileRef.id,
                     targetName: name,
                     fileName: fileName
             )
+            return fileRef
         }
         
         public func removeToSourceBuildFile(fileName: String) {
