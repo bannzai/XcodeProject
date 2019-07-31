@@ -102,7 +102,7 @@ extension PBX {
             return fileRef
         }
         
-        public func removeToSourceBuildFile(fileName: String) {
+        @discardableResult public func removeToSourceBuildFile(fileName: String) -> PBX.FileReference {
             guard let fileRef = context.fileRefs[nameOrPath: fileName] else {
                 fatalError("Not exists fileRef for name of \(fileName)")
             }
@@ -120,12 +120,15 @@ extension PBX {
                     case .none:
                         return
                     case .some(let fileIndex):
-                         buildPhase.files.remove(at: fileIndex)
+                        buildPhase.files.remove(at: fileIndex)
                         return
                     }
             }
+            
+            return fileRef
         }
-        public func removeToResourceBuildFile(fileName: String) {
+        
+        @discardableResult public func removeToResourceBuildFile(fileName: String) -> PBX.FileReference {
             guard let fileRef = context.fileRefs[nameOrPath: fileName] else {
                 fatalError("Not exists fileRef for name of \(fileName)")
             }
@@ -147,6 +150,8 @@ extension PBX {
                         return
                     }
             }
+            
+            return fileRef
         }
     }
 }
