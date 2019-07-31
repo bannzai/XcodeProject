@@ -27,13 +27,14 @@ class PBXTargetTests: XCTestCase {
                 XCTAssertNil(project.context.buildPhases[fileName: "aaa.swift"])
             }
             
-            project.groups.first?.appendFile(name: "aaa.swift")
-            target.appendToSourceBuildFile(fileName: "aaa.swift")
+            let appended = project.groups.first?.appendFile(name: "aaa.swift")
+            let result = target.appendToSourceBuildFile(fileName: "aaa.swift")
             
             to: do {
                 XCTAssertEqual(subjectForBuldPhase(originalBuildPhases), subjectForBuldPhase(target.buildPhases))
                 XCTAssertEqual(originalCount + 1, subjectForBuildFile(target.buildPhases))
                 XCTAssertNotNil(project.context.buildPhases[fileName: "aaa.swift"])
+                XCTAssertTrue(appended === result)
             }
         })
         
@@ -54,13 +55,14 @@ class PBXTargetTests: XCTestCase {
                 XCTAssertNil(project.context.buildPhases[fileName: "aaa.xib"])
             }
             
-            project.groups.first?.appendFile(name: "aaa.xib")
-            target.appendToResourceBuildFile(fileName: "aaa.xib")
+            let appended = project.groups.first?.appendFile(name: "aaa.xib")
+            let result = target.appendToResourceBuildFile(fileName: "aaa.xib")
             
             to: do {
                 XCTAssertEqual(subjectForBuldPhase(originalBuildPhases), subjectForBuldPhase(target.buildPhases))
                 XCTAssertEqual(originalCount + 1, subjectForBuildFile(target.buildPhases))
                 XCTAssertNotNil(project.context.buildPhases[fileName: "aaa.xib"])
+                XCTAssertTrue(appended === result)
             }
         })
     }
