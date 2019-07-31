@@ -85,12 +85,13 @@ class PBXTargetTests: XCTestCase {
                 XCTAssertNotNil(project.context.buildPhases[fileName: "AppDelegate.swift"])
             }
             
-            target.removeToSourceBuildFile(fileName: "AppDelegate.swift")
+            let result = target.removeToSourceBuildFile(fileName: "AppDelegate.swift")
             
             to: do {
                 XCTAssertEqual(subjectForBuldPhase(originalBuildPhases), subjectForBuldPhase(target.buildPhases))
                 XCTAssertEqual(originalCount - 1, subjectForBuildFile(target.buildPhases))
                 XCTAssertNil(project.context.buildPhases[fileName: "AppDelegate.swift"])
+                XCTAssertEqual(result.path, "AppDelegate.swift")
             }
         })
         
@@ -111,12 +112,13 @@ class PBXTargetTests: XCTestCase {
                 XCTAssertNotNil(project.context.buildPhases[fileName: "TableViewCell.xib"])
             }
             
-            target.removeToResourceBuildFile(fileName: "TableViewCell.xib")
+            let result = target.removeToResourceBuildFile(fileName: "TableViewCell.xib")
             
             to: do {
                 XCTAssertEqual(subjectForBuldPhase(originalBuildPhases), subjectForBuldPhase(target.buildPhases))
                 XCTAssertEqual(originalCount - 1, subjectForBuildFile(target.buildPhases))
                 XCTAssertNil(project.context.buildPhases[fileName: "TableViewCell.xib"])
+                XCTAssertEqual(result.path, "TableViewCell.xib")
             }
         })
     }
