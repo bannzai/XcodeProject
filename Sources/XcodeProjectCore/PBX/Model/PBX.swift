@@ -112,20 +112,8 @@ extension /* prefix */ PBX {
     
     open class FileReference: Reference {
         // convenience accessor
-        open var fullPath: PathComponent {
-            return self.generateFullPath()
-        }
-        
-        fileprivate func generateFullPath() -> PathComponent {
-            guard let path = context.fullFilePaths[self.id] else {
-                fatalError(assertionMessage(description:
-                    "unexpected id: \(id)",
-                    "and fullFilePaths: \(context.fullFilePaths)"
-                    )
-                )
-            }
-            return path
-        }
+        open weak var parentGroup: PBX.Group?
+        open var fullPath: String = ""
     }
     
     open class Group: Reference {

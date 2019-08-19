@@ -21,7 +21,7 @@ public protocol Context: class {
     func extractProjectName() -> String
     func resetGroupFullPaths()
     // FIXME: Integrate reset Group full paths
-    func createGroupPath(with group: PBX.Group, parentPath: String) 
+    func createGroupFullPaths(for group: PBX.Group, parentPath: String)
 
     func object<T: PBX.Object>(for key: String) -> T
 }
@@ -114,7 +114,7 @@ class InternalContext: Context {
         let project = extractPBXProject()
         fullFilePaths.removeAll()
         
-        createGroupPath(with: project.mainGroup, parentPath: "")
+        createGroupFullPaths(for: project.mainGroup, parentPath: "")
     }
 }
 
@@ -152,9 +152,9 @@ private extension InternalContext {
 
 // TODO: Move to PBX.Project
 extension InternalContext {
-    func createGroupPath(with group: PBX.Group, parentPath: String) {
+    func createGroupFullPaths(for group: PBX.Group, parentPath: String) {
         defer {
-            group.subGroups.forEach { createGroupPath(with: $0, parentPath: group.fullPath) }
+            group.subGroups.forEach { createGroupFullPaths(for: $0, parentPath: group.fullPath) }
         }
         guard let path = group.path else {
             return
@@ -165,6 +165,17 @@ extension InternalContext {
         case false:
             group.fullPath = parentPath + "/" + path
         }
+    }
+    
+    func createFileReferenceFullPaths(for reference: PBX.FileReference, parentGroup: PBX.Group?) {
+        reference.parentGroup = parentGroup
+        guard let group = parentGroup else {
+            return
+        }
+        guard let path = reference.path else {
+            fatalError("Unexpected file reference path is nil: \(reference)")
+        }
+        reference.fullPath = group.fullPath + "/" + path
     }
 }
 
