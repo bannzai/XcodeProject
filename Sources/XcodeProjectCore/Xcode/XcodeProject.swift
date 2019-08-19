@@ -198,6 +198,8 @@ extension XcodeProject {
                 try FileManager.default.moveItem(atPath: sourceFileReferenceFullPath, toPath: destinationFileReferenceFullPath)
             }
         }
+        
+        try write()
     }
 }
 
