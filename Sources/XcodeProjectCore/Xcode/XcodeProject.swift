@@ -160,7 +160,7 @@ extension XcodeProject {
 // MARK: - Lint
 extension XcodeProject {
     public func sync(from startDirectory: String? = nil) throws {
-        var list =  groups.filter { !$0.fullPath.isEmpty }
+        var list = groups.filter { !$0.fullPath.isEmpty }
         switch startDirectory {
         case .none:
             break
