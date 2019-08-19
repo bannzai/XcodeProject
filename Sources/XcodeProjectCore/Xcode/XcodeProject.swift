@@ -159,23 +159,29 @@ extension XcodeProject {
 
 // MARK: - Lint
 extension XcodeProject {
-    public func sync() throws {
-        try groups
-            .filter { !$0.fullPath.isEmpty }
-            .forEach { group in
-                if let name = group.name {
-                    group.name = nil
-                    group.path = name
-                    context.resetGroupFullPaths()
-                }
-                let path = context.xcodeprojectDirectoryURL.absoluteString + "/" + group.fullPath
-                var isDirectory = ObjCBool(false)
-                let isFileExists = FileManager.default.fileExists(atPath: path, isDirectory: &isDirectory)
-                let isNecessaryCreateDirectory = !isFileExists || !isDirectory.boolValue
-                if !isNecessaryCreateDirectory {
-                    return
-                }
-                try FileManager.default.createDirectory(at: URL(fileURLWithPath: path), withIntermediateDirectories: true, attributes: nil)
+    public func sync(from startDirectory: String? = nil) throws {
+        var list =  groups.filter { !$0.fullPath.isEmpty }
+        switch startDirectory {
+        case .none:
+            break
+        case .some(let startDirectory):
+            list = list.filter { return $0.fullPath.hasPrefix(startDirectory+"/") }
+        }
+                
+        try list.forEach { group in
+            if let name = group.name {
+                group.name = nil
+                group.path = name
+                context.resetGroupFullPaths()
+            }
+            let path = context.xcodeprojectDirectoryURL.absoluteString + "/" + group.fullPath
+            var isDirectory = ObjCBool(false)
+            let isFileExists = FileManager.default.fileExists(atPath: path, isDirectory: &isDirectory)
+            let isNecessaryCreateDirectory = !isFileExists || !isDirectory.boolValue
+            if !isNecessaryCreateDirectory {
+                return
+            }
+            try FileManager.default.createDirectory(at: URL(fileURLWithPath: path), withIntermediateDirectories: true, attributes: nil)
         }
     }
 }
