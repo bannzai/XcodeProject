@@ -167,30 +167,27 @@ extension XcodeProject {
             return context.xcodeprojectDirectoryURL.path + "/" + fileRef.fullPath
         }
         try groups.forEach { group in
-            if let name = group.name, group.path == nil {
-                group.name = nil
-                group.path = name
-                context.resetGroupFullPaths()
-            }
-            
-            let destinationDirectoryFullPath = directoryFullPath(group)
-            
-            var isDirectory = ObjCBool(false)
-            let isDestinationDirectoryPathExists = FileManager.default.fileExists(atPath: destinationDirectoryFullPath, isDirectory: &isDirectory)
-            let shouldCreateDirectory = !isDestinationDirectoryPathExists || !isDirectory.boolValue
-            if shouldCreateDirectory {
-                try FileManager.default.createDirectory(at: URL(fileURLWithPath: destinationDirectoryFullPath), withIntermediateDirectories: true, attributes: nil)
-            }
-        }
-        
-        try groups.flatMap { $0.fileRefs }.forEach { fileRef in
-            let sourceFileReferenceFullPath = fileReferenceFullPath(fileRef)
-            
-            let destinationFileReferenceFullPath = fileReferenceFullPath(fileRef)
-            
-            let shouldMoveFile = sourceFileReferenceFullPath != destinationFileReferenceFullPath
-            if shouldMoveFile {
-                try FileManager.default.moveItem(atPath: sourceFileReferenceFullPath, toPath: destinationFileReferenceFullPath)
+            try group.fileRefs.forEach { fileRef in
+                let sourceFileReferenceFullPath = fileReferenceFullPath(fileRef)
+                if let name = group.name, group.path == nil {
+                    group.name = nil
+                    group.path = name
+                    context.resetGroupFullPaths()
+                }
+                let destinationFileReferenceFullPath = fileReferenceFullPath(fileRef)
+                
+                let destinationDirectoryFullPath = directoryFullPath(group)
+                var isDirectory = ObjCBool(false)
+                let isDestinationDirectoryPathExists = FileManager.default.fileExists(atPath: destinationDirectoryFullPath, isDirectory: &isDirectory)
+                let shouldCreateDirectory = !isDestinationDirectoryPathExists || !isDirectory.boolValue
+                if shouldCreateDirectory {
+                    try FileManager.default.createDirectory(at: URL(fileURLWithPath: destinationDirectoryFullPath), withIntermediateDirectories: true, attributes: nil)
+                }
+                
+                let shouldMoveFile = sourceFileReferenceFullPath != destinationFileReferenceFullPath
+                if shouldMoveFile {
+                    try FileManager.default.moveItem(atPath: sourceFileReferenceFullPath, toPath: destinationFileReferenceFullPath)
+                }
             }
         }
 
