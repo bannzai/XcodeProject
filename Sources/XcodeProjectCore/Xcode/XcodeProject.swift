@@ -160,40 +160,33 @@ extension XcodeProject {
 // MARK: - Lint
 extension XcodeProject {
     public func sync(from startDirectory: String? = nil) throws {
-        let groups: [PBX.Group]
-        switch startDirectory {
-        case .none:
-            groups = self.groups
-        case .some(let startDirectory):
-            groups = self.groups.filter { return $0.fullPath.hasPrefix(startDirectory+"/") }
-        }
-        func directoryFullPath(_ fileRef: PBX.FileReference) -> String {
-            return context.xcodeprojectDirectoryURL.path + "/" + (fileRef.parentGroup?.fullPath ?? "")
+        func directoryFullPath(_ group: PBX.Group) -> String {
+            return context.xcodeprojectDirectoryURL.path + "/" + group.fullPath
         }
         func fileReferenceFullPath(_ fileRef: PBX.FileReference) -> String {
             return context.xcodeprojectDirectoryURL.path + "/" + fileRef.fullPath
         }
         try groups.forEach { group in
-            let references: [PBX.FileReference] = group.fileRefs
-            try references.forEach { fileRef in
+            if let name = group.name, group.path == nil {
+                group.name = nil
+                group.path = name
+                context.resetGroupFullPaths()
+            }
+            
+            let destinationDirectoryFullPath = directoryFullPath(group)
+            
+            var isDirectory = ObjCBool(false)
+            let isDestinationDirectoryPathExists = FileManager.default.fileExists(atPath: destinationDirectoryFullPath, isDirectory: &isDirectory)
+            let shouldCreateDirectory = !isDestinationDirectoryPathExists || !isDirectory.boolValue
+            if shouldCreateDirectory {
+                try FileManager.default.createDirectory(at: URL(fileURLWithPath: destinationDirectoryFullPath), withIntermediateDirectories: true, attributes: nil)
+            }
+
+            try group.fileRefs.forEach { fileRef in
                 let sourceFileReferenceFullPath = fileReferenceFullPath(fileRef)
-                
-                if let name = fileRef.name, fileRef.path == nil {
-                    fileRef.name = nil
-                    fileRef.path = name
-                    context.resetGroupFullPaths()
-                }
-                
+
                 let destinationFileReferenceFullPath = fileReferenceFullPath(fileRef)
-                let destinationDirectoryFullPath = directoryFullPath(fileRef)
-                var isDirectory = ObjCBool(false)
-                let isDestinationDirectoryPathExists = FileManager.default.fileExists(atPath: destinationDirectoryFullPath, isDirectory: &isDirectory)
-                
-                let shouldCreateDirectory = !isDestinationDirectoryPathExists || !isDirectory.boolValue
-                if shouldCreateDirectory {
-                    try FileManager.default.createDirectory(at: URL(fileURLWithPath: destinationDirectoryFullPath), withIntermediateDirectories: true, attributes: nil)
-                }
-                
+
                 let shouldMoveFile = sourceFileReferenceFullPath != destinationFileReferenceFullPath
                 if shouldMoveFile {
                     try FileManager.default.moveItem(atPath: sourceFileReferenceFullPath, toPath: destinationFileReferenceFullPath)
