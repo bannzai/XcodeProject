@@ -12,7 +12,6 @@ public typealias PathType = [PBXObjectIDType: PathComponent]
 // TODO: Confirm Iteratable, Collection
 public protocol Context: class {
     var objects: [String: PBX.Object] { get set }
-    var fullFilePaths: PathType { get }
     var xcodeprojectUrl: URL { get }
     var xcodeprojectDirectoryURL: URL { get }
     var allPBX: PBXRawMapType { get }
@@ -56,7 +55,6 @@ extension Context {
 
 class InternalContext: Context {
     var objects: [String: PBX.Object] = [:]
-    var fullFilePaths: PathType = [:]
     var allPBX: PBXRawMapType
     let xcodeprojectUrl: URL
     var xcodeprojectDirectoryURL: URL {
@@ -112,8 +110,7 @@ class InternalContext: Context {
     
     func resetGroupFullPaths() {
         let project = extractPBXProject()
-        fullFilePaths.removeAll()
-        
+
         createGroupFullPaths(for: project.mainGroup, parentPath: "")
     }
 }
