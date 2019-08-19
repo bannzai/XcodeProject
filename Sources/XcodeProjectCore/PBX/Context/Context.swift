@@ -59,22 +59,22 @@ class InternalContext: Context {
     var fullFilePaths: PathType = [:]
     var allPBX: PBXRawMapType
     let xcodeprojectUrl: URL
-    let xcodeprojectDirectoryURL: URL
+    var xcodeprojectDirectoryURL: URL {
+        let directory = xcodeprojectUrl
+            .path
+            .components(separatedBy: "/")
+            .dropLast() // drop project.pbxproj
+            .dropLast() // drop YOUR_PROJECT.xcodeproj
+            .joined(separator: "/")
+        return URL(fileURLWithPath: directory)
+    }
+
     init(
         allPBX: PBXRawMapType,
         xcodeProjectUrl: URL
         ) {
         self.allPBX = allPBX
         self.xcodeprojectUrl = xcodeProjectUrl
-        self.xcodeprojectDirectoryURL = URL(
-            fileURLWithPath: xcodeprojectUrl
-                .path
-                .components(separatedBy: "/")
-                .dropLast() // drop project.pbxproj
-                .dropLast() // drop YOUR_PROJECT.xcodeproj
-                .joined(separator: "/")
-        )
-        
         setup()
     }
     
