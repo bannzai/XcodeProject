@@ -169,7 +169,7 @@ extension XcodeProject {
         }
                 
         try list.forEach { group in
-            if let name = group.name {
+            if let name = group.name, group.path == nil {
                 group.name = nil
                 group.path = name
                 context.resetGroupFullPaths()
@@ -178,10 +178,9 @@ extension XcodeProject {
             var isDirectory = ObjCBool(false)
             let isFileExists = FileManager.default.fileExists(atPath: path, isDirectory: &isDirectory)
             let isNecessaryCreateDirectory = !isFileExists || !isDirectory.boolValue
-            if !isNecessaryCreateDirectory {
-                return
+            if isNecessaryCreateDirectory {
+                try FileManager.default.createDirectory(at: URL(fileURLWithPath: path), withIntermediateDirectories: true, attributes: nil)
             }
-            try FileManager.default.createDirectory(at: URL(fileURLWithPath: path), withIntermediateDirectories: true, attributes: nil)
         }
     }
 }
