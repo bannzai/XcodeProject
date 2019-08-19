@@ -184,7 +184,7 @@ extension XcodeProject {
                     return
                 }
                 let sourceFileReferenceFullPath = fileReferenceFullPath(fileRef)
-                if let name = group.name, group.path == nil {
+                if let name = group.name {
                     group.name = nil
                     group.path = name
                     context.resetGroupFullPaths()
@@ -203,9 +203,10 @@ extension XcodeProject {
                 let shouldMoveFile = sourceFileReferenceFullPath != destinationFileReferenceFullPath
                 if shouldMoveFile {
                     do {
-                    try FileManager.default.moveItem(atPath: sourceFileReferenceFullPath, toPath: destinationFileReferenceFullPath)
+                        try FileManager.default.moveItem(atPath: sourceFileReferenceFullPath, toPath: destinationFileReferenceFullPath)
                     } catch {
                         print(error.localizedDescription)
+                        exit(1)
                     }
                 }
             }
