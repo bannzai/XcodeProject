@@ -160,45 +160,48 @@ extension XcodeProject {
 // MARK: - Lint
 extension XcodeProject {
     public func sync(from startDirectory: String? = nil) throws {
-        let references: [PBX.FileReference]
+        let groups: [PBX.Group]
         switch startDirectory {
         case .none:
-            references = fileRefs
+            groups = self.groups
         case .some(let startDirectory):
-            references = fileRefs.filter { return $0.fullPath.hasPrefix(startDirectory+"/") }
+            groups = self.groups.filter { return $0.fullPath.hasPrefix(startDirectory+"/") }
         }
-        
-        func directoryFullPath(_ fileRef: PBX.FileReference) -> String {
-            return context.xcodeprojectDirectoryURL.absoluteString + "/" + (fileRef.parentGroup?.fullPath ?? "")
+        try groups.forEach { group in
+            let references: [PBX.FileReference] = group.fileRefs
+            
+            func directoryFullPath(_ fileRef: PBX.FileReference) -> String {
+                return context.xcodeprojectDirectoryURL.absoluteString + "/" + (fileRef.parentGroup?.fullPath ?? "")
+            }
+            func fileReferenceFullPath(_ fileRef: PBX.FileReference) -> String {
+                return context.xcodeprojectDirectoryURL.absoluteString + "/" + fileRef.fullPath
+            }
+            try references.forEach { fileRef in
+                let sourceFileReferenceFullPath = fileReferenceFullPath(fileRef)
+                
+                if let name = fileRef.name, fileRef.path == nil {
+                    fileRef.name = nil
+                    fileRef.path = name
+                    context.resetGroupFullPaths()
+                }
+                
+                let destinationFileReferenceFullPath = fileReferenceFullPath(fileRef)
+                let destinationDirectoryFullPath = directoryFullPath(fileRef)
+                var isDirectory = ObjCBool(false)
+                let isDestinationDirectoryPathExists = FileManager.default.fileExists(atPath: destinationDirectoryFullPath, isDirectory: &isDirectory)
+                
+                let shouldCreateDirectory = !isDestinationDirectoryPathExists || !isDirectory.boolValue
+                if shouldCreateDirectory {
+                    try FileManager.default.createDirectory(at: URL(fileURLWithPath: destinationDirectoryFullPath), withIntermediateDirectories: true, attributes: nil)
+                }
+                
+                let shouldMoveFile = sourceFileReferenceFullPath != destinationFileReferenceFullPath
+                if shouldMoveFile {
+                    try FileManager.default.moveItem(atPath: sourceFileReferenceFullPath, toPath: destinationFileReferenceFullPath)
+                }
+            }
         }
-        func fileReferenceFullPath(_ fileRef: PBX.FileReference) -> String {
-            return context.xcodeprojectDirectoryURL.absoluteString + "/" + fileRef.fullPath
-        }
-        try references.forEach { fileRef in
-            let sourceFileReferenceFullPath = fileReferenceFullPath(fileRef)
 
-            if let name = fileRef.name, fileRef.path == nil {
-                fileRef.name = nil
-                fileRef.path = name
-                context.resetGroupFullPaths()
-            }
-            
-            let destinationFileReferenceFullPath = fileReferenceFullPath(fileRef)
-            let destinationDirectoryFullPath = directoryFullPath(fileRef)
-            var isDirectory = ObjCBool(false)
-            let isDestinationDirectoryPathExists = FileManager.default.fileExists(atPath: destinationDirectoryFullPath, isDirectory: &isDirectory)
-            
-            let shouldCreateDirectory = !isDestinationDirectoryPathExists || !isDirectory.boolValue
-            if shouldCreateDirectory {
-                try FileManager.default.createDirectory(at: URL(fileURLWithPath: destinationDirectoryFullPath), withIntermediateDirectories: true, attributes: nil)
-            }
-            
-            let shouldMoveFile = sourceFileReferenceFullPath != destinationFileReferenceFullPath
-            if shouldMoveFile {
-                try FileManager.default.moveItem(atPath: sourceFileReferenceFullPath, toPath: destinationFileReferenceFullPath)
-            }
-        }
-        
         try write()
     }
 }
