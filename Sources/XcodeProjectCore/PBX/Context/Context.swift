@@ -155,6 +155,8 @@ extension InternalContext {
     func createGroupFullPaths(for group: PBX.Group, parentPath: String) {
         defer {
             group.subGroups.forEach { createGroupFullPaths(for: $0, parentPath: group.fullPath) }
+            // TODO: Separate function 
+            group.fileRefs.forEach { createFileReferenceFullPaths(for: $0, parentGroup: group) }
         }
         guard let path = group.path else {
             return
