@@ -14,6 +14,7 @@ public protocol Context: class {
     var objects: [String: PBX.Object] { get set }
     var fullFilePaths: PathType { get }
     var xcodeprojectUrl: URL { get }
+    var xcodeprojectDirectoryURL: URL { get }
     var allPBX: PBXRawMapType { get }
 
     func extractPBXProject() -> PBX.Project
@@ -58,6 +59,15 @@ class InternalContext: Context {
     var fullFilePaths: PathType = [:]
     var allPBX: PBXRawMapType
     let xcodeprojectUrl: URL
+    var xcodeprojectDirectoryURL: URL {
+        let directory = xcodeprojectUrl
+            .absoluteString
+            .components(separatedBy: "/")
+            .dropLast() // drop project.pbxproj
+            .dropLast() // drop YOUR_PROJECT.xcodeproj
+            .joined(separator: "/")
+        return URL(fileURLWithPath: directory)
+    }
 
     init(
         allPBX: PBXRawMapType,
