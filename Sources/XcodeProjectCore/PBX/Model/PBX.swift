@@ -86,8 +86,22 @@ extension /* prefix */ PBX {
     }
     
     open class Reference: ContainerItem {
-        open var name: String? { return self.extractStringIfExists(for: "name") }
-        open var path: String? { return self.extractStringIfExists(for: "path") }
+        private lazy var _name: String? = self.extractStringIfExists(for: "name")
+        open var name: String? {
+            get { return _name }
+            set {
+                _name = newValue
+                dictionary["name"] = _name
+            }
+        }
+        private lazy var _path: String? = self.extractStringIfExists(for: "path")
+        open var path: String? {
+            get { return _path }
+            set {
+                _path = newValue
+                dictionary["path"] = _path
+            }
+        }
         open var sourceTree: SourceTreeType { return SourceTreeType(for: self.extractString(for: "sourceTree")) }
     }
     
