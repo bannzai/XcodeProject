@@ -168,10 +168,10 @@ extension XcodeProject {
             groups = self.groups.filter { return $0.fullPath.hasPrefix(startDirectory+"/") }
         }
         func directoryFullPath(_ fileRef: PBX.FileReference) -> String {
-            return context.xcodeprojectDirectoryURL.absoluteString + "/" + (fileRef.parentGroup?.fullPath ?? "")
+            return context.xcodeprojectDirectoryURL.path + "/" + (fileRef.parentGroup?.fullPath ?? "")
         }
         func fileReferenceFullPath(_ fileRef: PBX.FileReference) -> String {
-            return context.xcodeprojectDirectoryURL.absoluteString + "/" + fileRef.fullPath
+            return context.xcodeprojectDirectoryURL.path + "/" + fileRef.fullPath
         }
         try groups.forEach { group in
             let references: [PBX.FileReference] = group.fileRefs

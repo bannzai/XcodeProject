@@ -68,7 +68,7 @@ class InternalContext: Context {
         self.xcodeprojectUrl = xcodeProjectUrl
         self.xcodeprojectDirectoryURL = URL(
             fileURLWithPath: xcodeprojectUrl
-                .absoluteString
+                .path
                 .components(separatedBy: "/")
                 .dropLast() // drop project.pbxproj
                 .dropLast() // drop YOUR_PROJECT.xcodeproj
