@@ -158,7 +158,7 @@ extension InternalContext {
         case (true, .some(let path)):
             group.fullPath = path
         case (true, .none):
-            return
+            break
         case (false, .some(let path)):
             group.fullPath = parentPath + "/" + path
         case (false, .none):
