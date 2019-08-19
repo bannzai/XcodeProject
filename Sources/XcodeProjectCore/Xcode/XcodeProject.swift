@@ -163,6 +163,11 @@ extension XcodeProject {
         try groups
             .filter { !$0.fullPath.isEmpty }
             .forEach { group in
+                if let name = group.name {
+                    group.name = nil
+                    group.path = name
+                    context.resetGroupFullPaths()
+                }
                 let path = context.xcodeprojectDirectoryURL.absoluteString + "/" + group.fullPath
                 var isDirectory = ObjCBool(false)
                 let isFileExists = FileManager.default.fileExists(atPath: path, isDirectory: &isDirectory)
