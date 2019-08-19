@@ -102,6 +102,10 @@ extension /* prefix */ PBX {
                 dictionary["path"] = _path
             }
         }
+        public var pathOrNameOrEmpty: String {
+            // Maybe either exists
+            return path ?? name ?? ""
+        }
         open var sourceTree: SourceTreeType { return SourceTreeType(for: self.extractString(for: "sourceTree")) }
     }
     
@@ -153,6 +157,7 @@ extension /* prefix */ PBX {
         open var fullPath: String = ""
         
         // convenience accessor
+        public weak var parentGroup: PBX.Group?
         open var subGroups: [Group] { return children.ofType(PBX.Group.self) }
         open var fileRefs: [PBX.FileReference] { return children.ofType(PBX.FileReference.self) }
         

@@ -166,8 +166,23 @@ extension XcodeProject {
         func fileReferenceFullPath(_ fileRef: PBX.FileReference) -> String {
             return context.xcodeprojectDirectoryURL.path + "/" + fileRef.fullPath
         }
+        let startDirectory = startDirectory ?? ""
         try groups.forEach { group in
             try group.fileRefs.forEach { fileRef in
+                var next = fileRef.parentGroup
+                var expectedFullPath = ""
+                while let parentGroup = next {
+                    switch expectedFullPath.isEmpty {
+                    case true:
+                        expectedFullPath += "/" + parentGroup.pathOrNameOrEmpty
+                    case false:
+                        expectedFullPath += parentGroup.pathOrNameOrEmpty
+                    }
+                    next = next?.parentGroup
+                }
+                if !expectedFullPath.contains(startDirectory) {
+                    return
+                }
                 let sourceFileReferenceFullPath = fileReferenceFullPath(fileRef)
                 if let name = group.name, group.path == nil {
                     group.name = nil
@@ -182,11 +197,16 @@ extension XcodeProject {
                 let shouldCreateDirectory = !isDestinationDirectoryPathExists || !isDirectory.boolValue
                 if shouldCreateDirectory {
                     try FileManager.default.createDirectory(at: URL(fileURLWithPath: destinationDirectoryFullPath), withIntermediateDirectories: true, attributes: nil)
+                    sleep(1)
                 }
                 
                 let shouldMoveFile = sourceFileReferenceFullPath != destinationFileReferenceFullPath
                 if shouldMoveFile {
+                    do {
                     try FileManager.default.moveItem(atPath: sourceFileReferenceFullPath, toPath: destinationFileReferenceFullPath)
+                    } catch {
+                        print(error.localizedDescription)
+                    }
                 }
             }
         }

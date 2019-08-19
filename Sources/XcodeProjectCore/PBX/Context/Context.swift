@@ -112,6 +112,10 @@ class InternalContext: Context {
         let project = extractPBXProject()
 
         createGroupFullPaths(for: project.mainGroup, parentPath: "")
+        configureParentGroup(group: mainGroup)
+        fileRefs.forEach {
+            createFileReferenceFullPaths(for: $0)
+        }
     }
 }
 
@@ -152,8 +156,6 @@ extension InternalContext {
     func createGroupFullPaths(for group: PBX.Group, parentPath: String) {
         defer {
             group.subGroups.forEach { createGroupFullPaths(for: $0, parentPath: group.fullPath) }
-            // TODO: Separate function
-            group.fileRefs.forEach { createFileReferenceFullPaths(for: $0, parentGroup: group) }
         }
         guard let path = group.path else {
             return
@@ -166,9 +168,19 @@ extension InternalContext {
         }
     }
     
-    func createFileReferenceFullPaths(for reference: PBX.FileReference, parentGroup: PBX.Group?) {
-        reference.parentGroup = parentGroup
-        guard let group = parentGroup else {
+    func configureParentGroup(group: PBX.Group) {
+        // TODO: set and prepare to PBX.Group.parentGroup
+        group.fileRefs.forEach {
+            $0.parentGroup = group
+        }
+        group.subGroups.forEach {
+            $0.parentGroup = group
+            configureParentGroup(group: $0)
+        }
+    }
+
+    func createFileReferenceFullPaths(for reference: PBX.FileReference) {
+        guard let group = reference.parentGroup else {
             return
         }
         guard let path = reference.path else {
