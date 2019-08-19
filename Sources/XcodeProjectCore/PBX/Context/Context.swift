@@ -59,22 +59,22 @@ class InternalContext: Context {
     var fullFilePaths: PathType = [:]
     var allPBX: PBXRawMapType
     let xcodeprojectUrl: URL
-    var xcodeprojectDirectoryURL: URL {
-        let directory = xcodeprojectUrl
-            .absoluteString
-            .components(separatedBy: "/")
-            .dropLast() // drop project.pbxproj
-            .dropLast() // drop YOUR_PROJECT.xcodeproj
-            .joined(separator: "/")
-        return URL(fileURLWithPath: directory)
-    }
-
+    let xcodeprojectDirectoryURL: URL
     init(
         allPBX: PBXRawMapType,
         xcodeProjectUrl: URL
         ) {
         self.allPBX = allPBX
         self.xcodeprojectUrl = xcodeProjectUrl
+        self.xcodeprojectDirectoryURL = URL(
+            fileURLWithPath: xcodeprojectUrl
+                .absoluteString
+                .components(separatedBy: "/")
+                .dropLast() // drop project.pbxproj
+                .dropLast() // drop YOUR_PROJECT.xcodeproj
+                .joined(separator: "/")
+        )
+        
         setup()
     }
     
@@ -155,7 +155,7 @@ extension InternalContext {
     func createGroupFullPaths(for group: PBX.Group, parentPath: String) {
         defer {
             group.subGroups.forEach { createGroupFullPaths(for: $0, parentPath: group.fullPath) }
-            // TODO: Separate function 
+            // TODO: Separate function
             group.fileRefs.forEach { createFileReferenceFullPaths(for: $0, parentGroup: group) }
         }
         guard let path = group.path else {
