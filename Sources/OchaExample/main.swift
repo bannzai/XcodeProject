@@ -36,7 +36,7 @@ command(
         }
         do {
             try events
-                .filter { $0.flag.== [itemCreated, .itemIsFile] }
+                .filter { $0.flag == [.itemCreated, .itemIsFile] }
                 .forEach { event in
                     print("🍵 Appended files \(event.path) 🍵")
                     xcodeproject.appendFile(path: event.path, targetName: targetName)
