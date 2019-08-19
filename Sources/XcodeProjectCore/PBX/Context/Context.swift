@@ -162,7 +162,7 @@ extension InternalContext {
         case (false, .some(let path)):
             group.fullPath = parentPath + "/" + path
         case (false, .none):
-            group.fullPath = parentPath
+            break
         }
         
         group.subGroups.forEach { createGroupFullPaths(for: $0, parentPath: group.fullPath) }
