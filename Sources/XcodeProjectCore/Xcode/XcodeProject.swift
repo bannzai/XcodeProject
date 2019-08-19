@@ -167,7 +167,8 @@ extension XcodeProject {
             return context.xcodeprojectDirectoryURL.path + "/" + fileRef.fullPath
         }
         let startDirectory = startDirectory ?? ""
-        try groups.forEach { group in
+        let list = groups.filter { $0.isa == .PBXGroup }
+        try list.forEach { group in
             try group.fileRefs.forEach { fileRef in
                 var next = fileRef.parentGroup
                 var expectedFullPath = ""
@@ -196,7 +197,12 @@ extension XcodeProject {
                 let isDestinationDirectoryPathExists = FileManager.default.fileExists(atPath: destinationDirectoryFullPath, isDirectory: &isDirectory)
                 let shouldCreateDirectory = !isDestinationDirectoryPathExists || !isDirectory.boolValue
                 if shouldCreateDirectory {
-                    try FileManager.default.createDirectory(at: URL(fileURLWithPath: destinationDirectoryFullPath), withIntermediateDirectories: true, attributes: nil)
+                    do {
+                        try FileManager.default.createDirectory(at: URL(fileURLWithPath: destinationDirectoryFullPath), withIntermediateDirectories: true, attributes: nil)
+                    } catch {
+                        print(error.localizedDescription)
+                        exit(1)
+                    }
                     sleep(1)
                 }
                 
