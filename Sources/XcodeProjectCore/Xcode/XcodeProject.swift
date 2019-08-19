@@ -181,16 +181,16 @@ extension XcodeProject {
             if shouldCreateDirectory {
                 try FileManager.default.createDirectory(at: URL(fileURLWithPath: destinationDirectoryFullPath), withIntermediateDirectories: true, attributes: nil)
             }
-
-            try group.fileRefs.forEach { fileRef in
-                let sourceFileReferenceFullPath = fileReferenceFullPath(fileRef)
-
-                let destinationFileReferenceFullPath = fileReferenceFullPath(fileRef)
-
-                let shouldMoveFile = sourceFileReferenceFullPath != destinationFileReferenceFullPath
-                if shouldMoveFile {
-                    try FileManager.default.moveItem(atPath: sourceFileReferenceFullPath, toPath: destinationFileReferenceFullPath)
-                }
+        }
+        
+        try groups.flatMap { $0.fileRefs }.forEach { fileRef in
+            let sourceFileReferenceFullPath = fileReferenceFullPath(fileRef)
+            
+            let destinationFileReferenceFullPath = fileReferenceFullPath(fileRef)
+            
+            let shouldMoveFile = sourceFileReferenceFullPath != destinationFileReferenceFullPath
+            if shouldMoveFile {
+                try FileManager.default.moveItem(atPath: sourceFileReferenceFullPath, toPath: destinationFileReferenceFullPath)
             }
         }
 
