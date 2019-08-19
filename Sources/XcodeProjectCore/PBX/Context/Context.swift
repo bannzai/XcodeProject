@@ -154,18 +154,18 @@ private extension InternalContext {
 // TODO: Move to PBX.Project
 extension InternalContext {
     func createGroupFullPaths(for group: PBX.Group, parentPath: String) {
-        defer {
-            group.subGroups.forEach { createGroupFullPaths(for: $0, parentPath: group.fullPath) }
-        }
-        guard let path = group.path else {
-            return
-        }
-        switch parentPath.isEmpty {
-        case true:
+        switch (parentPath.isEmpty, group.path) {
+        case (true, .some(let path)):
             group.fullPath = path
-        case false:
+        case (true, .none):
+            return
+        case (false, .some(let path)):
             group.fullPath = parentPath + "/" + path
+        case (false, .none):
+            group.fullPath = parentPath
         }
+        
+        group.subGroups.forEach { createGroupFullPaths(for: $0, parentPath: group.fullPath) }
     }
     
     func configureParentGroup(group: PBX.Group) {
