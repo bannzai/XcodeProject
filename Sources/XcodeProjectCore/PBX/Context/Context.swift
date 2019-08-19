@@ -177,7 +177,12 @@ extension InternalContext {
         guard let path = reference.path else {
             fatalError("Unexpected file reference path is nil: \(reference)")
         }
-        reference.fullPath = group.fullPath + "/" + path
+        switch group.fullPath.isEmpty {
+        case true:
+            reference.fullPath = path
+        case false:
+            reference.fullPath = group.fullPath + "/" + path
+        }
     }
 }
 
