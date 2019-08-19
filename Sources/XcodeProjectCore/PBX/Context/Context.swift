@@ -183,18 +183,26 @@ extension InternalContext {
     }
 
     func createFileReferenceFullPaths(for reference: PBX.FileReference) {
-        guard let group = reference.parentGroup else {
-            return
+        var next = reference.parentGroup
+        var parentFullPath = ""
+        while let group = next {
+            func end() {
+                next = nil
+            }
+            switch group.fullPath.isEmpty {
+            case true:
+                next = group.parentGroup
+            case false:
+                parentFullPath = group.fullPath
+                end()
+            }
         }
+        
         guard let path = reference.path else {
             fatalError("Unexpected file reference path is nil: \(reference)")
         }
-        switch group.fullPath.isEmpty {
-        case true:
-            reference.fullPath = path
-        case false:
-            reference.fullPath = group.fullPath + "/" + path
-        }
+        
+        reference.fullPath = parentFullPath + "/" + path
     }
 }
 
