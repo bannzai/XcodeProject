@@ -114,8 +114,6 @@ class InternalContext: Context {
         let project = extractPBXProject()
         fullFilePaths.removeAll()
         
-        createFileRefPath(with: project.mainGroup)
-        createFileRefForSubGroupPath(with: project.mainGroup)
         createGroupPath(with: project.mainGroup, parentPath: "")
     }
 }
@@ -167,53 +165,6 @@ extension InternalContext {
         case false:
             group.fullPath = parentPath + "/" + path
         }
-    }
-    
-    func createFileRefForSubGroupPath(with group: PBX.Group, prefix: String = "") {
-        group
-            .subGroups
-            .forEach { subGroup in
-                guard let path = subGroup.path else {
-                    createFileRefPath(with: subGroup, prefix: prefix)
-                    createFileRefForSubGroupPath(with: subGroup, prefix: prefix)
-                    return
-                }
-                let nextPrefix: String
-                switch group.sourceTree {
-                case .group:
-                    nextPrefix = generatePath(with: prefix, path: path)
-                default:
-                    nextPrefix = prefix
-                }
-                createFileRefPath(with: subGroup, prefix: nextPrefix)
-                createFileRefForSubGroupPath(with: subGroup, prefix: nextPrefix)
-        }
-    }
-    
-    func createFileRefPath(with group: PBX.Group, prefix: String = "") {
-        group
-            .fileRefs
-            .forEach { reference in
-                guard let path = reference.path else {
-                    return
-                }
-                switch (reference.sourceTree, group.sourceTree) {
-                case (.group, .group) :
-                    fullFilePaths[reference.id] = .environmentPath(.SOURCE_ROOT, generatePath(with: prefix, path: path))
-                case (.group, .absolute) :
-                    fullFilePaths[reference.id] = .simple(generatePath(with: prefix, path: path))
-                case (.group, .folder(let environment)) :
-                    fullFilePaths[reference.id] = .environmentPath(environment, generatePath(with: prefix, path: path))
-                case (.absolute, _):
-                    fullFilePaths[reference.id] = .simple(path)
-                case (.folder(let environment), _):
-                    fullFilePaths[reference.id] = .environmentPath(environment, generatePath(with: prefix, path: path))
-                }
-        }
-    }
-    
-    func generatePath(with prefix: String, path: String) -> String {
-        return prefix + "/" + path
     }
 }
 
