@@ -114,8 +114,8 @@ class InternalContext: Context {
         groups.forEach { $0.fullPath = "" }
         fileRefs.forEach { $0.fullPath = "" }
         
-        createGroupFullPaths(for: project.mainGroup, parentPath: "")
         configureParentGroup(group: mainGroup)
+        createGroupFullPaths(for: project.mainGroup, parentPath: "")
         fileRefs.forEach {
             createFileReferenceFullPaths(for: $0)
         }
@@ -157,18 +157,18 @@ private extension InternalContext {
 // TODO: Move to PBX.Project
 extension InternalContext {
     func createGroupFullPaths(for group: PBX.Group, parentPath: String) {
-        switch (parentPath.isEmpty, group.path) {
-        case (true, .some(let path)):
-            group.fullPath = path
-        case (true, .none):
-            break
-        case (false, .some(let path)):
-            group.fullPath = parentPath + "/" + path
-        case (false, .none):
-            break
+        defer {
+            group.subGroups.forEach { createGroupFullPaths(for: $0, parentPath: group.fullPath) }
         }
-        
-        group.subGroups.forEach { createGroupFullPaths(for: $0, parentPath: group.fullPath) }
+        guard let path = group.path else {
+            return
+        }
+        switch parentPath.isEmpty {
+        case true:
+            group.fullPath = path
+        case false:
+            group.fullPath = parentPath + "/" + path
+        }
     }
     
     func configureParentGroup(group: PBX.Group) {
