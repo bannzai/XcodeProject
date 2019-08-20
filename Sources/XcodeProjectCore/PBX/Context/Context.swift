@@ -109,13 +109,11 @@ class InternalContext: Context {
     }
     
     func resetGroupFullPaths() {
-        let project = extractPBXProject()
-
         groups.forEach { $0.fullPath = "" }
         fileRefs.forEach { $0.fullPath = "" }
         
         configureParentGroup(group: mainGroup)
-        createGroupFullPaths(for: project.mainGroup, parentPath: "")
+        createGroupFullPaths(for: mainGroup, parentPath: "")
         fileRefs.forEach {
             createFileReferenceFullPaths(for: $0)
         }
