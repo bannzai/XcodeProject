@@ -197,6 +197,7 @@ extension XcodeProject {
                 let isDestinationDirectoryPathExists = FileManager.default.fileExists(atPath: destinationDirectoryFullPath, isDirectory: &isDirectory)
                 let shouldCreateDirectory = !isDestinationDirectoryPathExists || !isDirectory.boolValue
                 if shouldCreateDirectory {
+                    print("mkdir -p \(destinationFileReferenceFullPath)")
                     do {
                         try FileManager.default.createDirectory(at: URL(fileURLWithPath: destinationDirectoryFullPath), withIntermediateDirectories: true, attributes: nil)
                     } catch {
@@ -206,8 +207,15 @@ extension XcodeProject {
                     sleep(1)
                 }
                 
+                if FileManager.default.fileExists(atPath: destinationFileReferenceFullPath) {
+                    print("\(destinationFileReferenceFullPath) is already exists. And will remove it.")
+                    print("rm -f \(destinationFileReferenceFullPath)")
+                    try FileManager.default.removeItem(atPath: destinationFileReferenceFullPath)
+                }
+
                 let shouldMoveFile = sourceFileReferenceFullPath != destinationFileReferenceFullPath
                 if shouldMoveFile {
+                    print("mv \(sourceFileReferenceFullPath) \(destinationFileReferenceFullPath)")
                     do {
                         try FileManager.default.moveItem(atPath: sourceFileReferenceFullPath, toPath: destinationFileReferenceFullPath)
                     } catch {
