@@ -200,7 +200,12 @@ extension InternalContext {
             fatalError("Unexpected file reference path is nil: \(reference)")
         }
         
-        reference.fullPath = parentFullPath + "/" + path
+        switch parentFullPath.isEmpty {
+        case true:
+            reference.fullPath = path
+        case false:
+            reference.fullPath = parentFullPath + "/" + path
+        }
     }
 }
 
