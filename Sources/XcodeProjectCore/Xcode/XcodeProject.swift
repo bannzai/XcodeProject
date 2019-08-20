@@ -159,70 +159,109 @@ extension XcodeProject {
 
 // MARK: - Lint
 extension XcodeProject {
+    func expectedDirectoryFullPath(_ group: PBX.Group) -> String {
+        var next = group.parentGroup
+        var expectedFullPath = group.pathOrNameOrEmpty
+        while let parentGroup = next {
+            if mainGroup === parentGroup {
+                break
+            }
+            expectedFullPath = parentGroup.pathOrNameOrEmpty + "/" + expectedFullPath
+            next = next?.parentGroup
+        }
+        expectedFullPath = context.xcodeprojectDirectoryURL.path + "/" + expectedFullPath
+        print("expectedDirectoryFullPath: \(expectedFullPath)")
+        return expectedFullPath
+    }
+    func fileReferenceFullPath(_ fileRef: PBX.FileReference) -> String {
+        return context.xcodeprojectDirectoryURL.path + "/" + fileRef.fullPath
+    }
+    func expectedFileReferenceFullPath(_ fileRef: PBX.FileReference) -> String {
+        var next = fileRef.parentGroup
+        var expectedFullPath = ""
+        while let parentGroup = next {
+            if mainGroup === parentGroup {
+                break
+            }
+            switch expectedFullPath.isEmpty {
+            case true:
+                expectedFullPath = parentGroup.pathOrNameOrEmpty
+            case false:
+                expectedFullPath = parentGroup.pathOrNameOrEmpty + "/" + expectedFullPath
+            }
+            next = next?.parentGroup
+        }
+        expectedFullPath += "/" + fileRef.pathOrNameOrEmpty
+        expectedFullPath = context.xcodeprojectDirectoryURL.path + "/" + expectedFullPath
+        print("expectedFileReferenceFullPath: \(expectedFullPath)")
+        return expectedFullPath
+    }
+    
     public func sync(from startDirectory: String? = nil) throws {
-        func directoryFullPath(_ group: PBX.Group) -> String {
-            return context.xcodeprojectDirectoryURL.path + "/" + group.fullPath
-        }
-        func fileReferenceFullPath(_ fileRef: PBX.FileReference) -> String {
-            return context.xcodeprojectDirectoryURL.path + "/" + fileRef.fullPath
-        }
-        let startDirectory = startDirectory ?? ""
+        let startDirectory = context.xcodeprojectDirectoryURL.path + "/" + (startDirectory ?? "") + "/"
         let list = groups.filter { $0.isa == .PBXGroup }
         try list.forEach { group in
-            try group.fileRefs.forEach { fileRef in
-                var next = fileRef.parentGroup
-                var expectedFullPath = ""
-                while let parentGroup = next {
-                    switch expectedFullPath.isEmpty {
-                    case true:
-                        expectedFullPath += "/" + parentGroup.pathOrNameOrEmpty
-                    case false:
-                        expectedFullPath += parentGroup.pathOrNameOrEmpty
-                    }
-                    next = next?.parentGroup
+            print("*************************************************")
+            print("group.id: \(group.id)")
+            let destinationDirectoryFullPath = expectedDirectoryFullPath(group)
+            print("destinationDirectoryFullPath: \(destinationDirectoryFullPath)")
+            if !destinationDirectoryFullPath.contains(startDirectory) {
+                return
+            }
+            var isDirectory = ObjCBool(false)
+            let isDestinationDirectoryPathExists = FileManager.default.fileExists(atPath: destinationDirectoryFullPath, isDirectory: &isDirectory)
+            let shouldCreateDirectory = !isDestinationDirectoryPathExists || !isDirectory.boolValue
+            if shouldCreateDirectory {
+                print("mkdir -p \(destinationDirectoryFullPath)")
+                do {
+                    try FileManager.default.createDirectory(at: URL(fileURLWithPath: destinationDirectoryFullPath), withIntermediateDirectories: true, attributes: nil)
+                } catch {
+                    print(error.localizedDescription)
+                    exit(1)
                 }
-                if !expectedFullPath.contains(startDirectory) {
-                    return
-                }
-                let sourceFileReferenceFullPath = fileReferenceFullPath(fileRef)
-                if let name = group.name {
-                    group.name = nil
-                    group.path = name
-                    context.resetGroupFullPaths()
-                }
-                let destinationFileReferenceFullPath = fileReferenceFullPath(fileRef)
-                
-                let destinationDirectoryFullPath = directoryFullPath(group)
-                var isDirectory = ObjCBool(false)
-                let isDestinationDirectoryPathExists = FileManager.default.fileExists(atPath: destinationDirectoryFullPath, isDirectory: &isDirectory)
-                let shouldCreateDirectory = !isDestinationDirectoryPathExists || !isDirectory.boolValue
-                if shouldCreateDirectory {
-                    print("mkdir -p \(destinationFileReferenceFullPath)")
-                    do {
-                        try FileManager.default.createDirectory(at: URL(fileURLWithPath: destinationDirectoryFullPath), withIntermediateDirectories: true, attributes: nil)
-                    } catch {
-                        print(error.localizedDescription)
-                        exit(1)
-                    }
-                    sleep(1)
-                }
-                
-                if FileManager.default.fileExists(atPath: destinationFileReferenceFullPath) {
-                    print("\(destinationFileReferenceFullPath) is already exists. And will remove it.")
-                    print("rm -f \(destinationFileReferenceFullPath)")
-                    try FileManager.default.removeItem(atPath: destinationFileReferenceFullPath)
-                }
+            }
+        }
+        
+        try list.flatMap { $0.fileRefs }.forEach { fileRef in
+            print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
+            print("fileRef.id: \(fileRef.id)")
+            let sourceFileReferenceFullPath = fileReferenceFullPath(fileRef)
+            print("sourceFileReferenceFullPath: \(sourceFileReferenceFullPath)")
+            if !sourceFileReferenceFullPath.contains(startDirectory) {
+                return
+            }
+            let destinationFileReferenceFullPath = expectedFileReferenceFullPath(fileRef)
+            print("destinationFileReferenceFullPath: \(destinationFileReferenceFullPath)")
+            if !destinationFileReferenceFullPath.contains(startDirectory) {
+                return
+            }
 
-                let shouldMoveFile = sourceFileReferenceFullPath != destinationFileReferenceFullPath
-                if shouldMoveFile {
-                    print("mv \(sourceFileReferenceFullPath) \(destinationFileReferenceFullPath)")
-                    do {
-                        try FileManager.default.moveItem(atPath: sourceFileReferenceFullPath, toPath: destinationFileReferenceFullPath)
-                    } catch {
-                        print(error.localizedDescription)
-                        exit(1)
-                    }
+            let isSamePath = sourceFileReferenceFullPath == destinationFileReferenceFullPath
+            let shouldRemoveFile = !isSamePath && FileManager.default.fileExists(atPath: destinationFileReferenceFullPath)
+            if shouldRemoveFile {
+                print("\(destinationFileReferenceFullPath) is already exists. And will remove it.")
+                print("rm -f \(destinationFileReferenceFullPath)")
+                try FileManager.default.removeItem(atPath: destinationFileReferenceFullPath)
+            }
+            
+            let shouldMoveFile = !isSamePath
+            if shouldMoveFile {
+                print("mv \(sourceFileReferenceFullPath) \(destinationFileReferenceFullPath)")
+                do {
+                    try FileManager.default.moveItem(atPath: sourceFileReferenceFullPath, toPath: destinationFileReferenceFullPath)
+                } catch {
+                    print(error.localizedDescription)
+                    exit(1)
                 }
+            }
+        }
+        
+
+        list.forEach { group in
+            if let name = group.name {
+                group.name = nil
+                group.path = name
+                context.resetGroupFullPaths()
             }
         }
 
