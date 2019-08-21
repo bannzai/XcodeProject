@@ -25,7 +25,7 @@ public enum SourceTreeType {
     
     case group
     case absolute
-    case folder(Environment)
+    case environment(Environment)
     
     init(for sourceTree: String) {
         switch sourceTree {
@@ -44,7 +44,7 @@ public enum SourceTreeType {
                             "sourceTreeString: \(sourceTree)"
                         ))
             }
-            self = .folder(sourceTreeFolder)
+            self = .environment(sourceTreeFolder)
         }
     }
     
@@ -54,7 +54,7 @@ public enum SourceTreeType {
             return "<group>"
         case .absolute:
             return "<absolute>"
-        case .folder(let env):
+        case .environment(let env):
             return env.rawValue
         }
     }

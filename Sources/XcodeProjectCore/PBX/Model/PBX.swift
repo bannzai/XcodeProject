@@ -106,7 +106,7 @@ extension /* prefix */ PBX {
             // Maybe either exists
             return path ?? name ?? ""
         }
-        open var sourceTree: SourceTreeType { return SourceTreeType(for: self.extractString(for: "sourceTree")) }
+        public lazy var sourceTree: SourceTreeType = SourceTreeType(for: extractString(for: "sourceTree"))
     }
     
     open class ReferenceProxy: Reference {
