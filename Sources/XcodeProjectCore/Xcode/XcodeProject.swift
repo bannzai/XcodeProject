@@ -161,7 +161,6 @@ extension XcodeProject {
 extension XcodeProject {
     func expectedDirectoryFullPath(_ group: PBX.Group) -> String {
         let path = group.expectedFileSystemAbsolutePath
-        print("expectedDirectoryFullPath: \(path)")
         return path
     }
     func fileReferenceFullPath(_ fileRef: PBX.FileReference) -> String {
@@ -169,12 +168,10 @@ extension XcodeProject {
     }
     func expectedFileReferenceFullPath(_ fileRef: PBX.FileReference) -> String {
         let path = fileRef.expectedFileSystemAbsolutePath
-        print("expectedFileReferenceFullPath: \(path)")
         return path
     }
     
     public func sync(from startDirectory: String? = nil) throws {
-        print(objects["6E8783F51B55F96400D6C38F"]!)
         let startDirectory = context.xcodeprojectDirectoryURL.path + "/" + (startDirectory ?? "") + "/"
         func filter(_ sourceTreeType: SourceTreeType) -> Bool {
             switch sourceTreeType {
@@ -190,20 +187,15 @@ extension XcodeProject {
             }
         }
         try groups.flatMap { $0.fileRefs }.filter { filter($0.sourceTree) }.forEach { fileRef in
-            print("xxxxxxxxxxxxxxxxxxxxxxxxxxx START xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
-            print("fileRef.id: \(fileRef.id)")
             let sourceFileReferenceFullPath = fileReferenceFullPath(fileRef)
             let destinationFileReferenceFullPath = expectedFileReferenceFullPath(fileRef)
-            print("sourceFileReferenceFullPath: \(sourceFileReferenceFullPath)")
             if !sourceFileReferenceFullPath.contains(startDirectory) {
                 return
             }
-            print("destinationFileReferenceFullPath: \(destinationFileReferenceFullPath)")
             if !destinationFileReferenceFullPath.contains(startDirectory) {
                 return
             }
             let destinationDirectoryFullPath = destinationFileReferenceFullPath.components(separatedBy: "/").dropLast().joined(separator: "/")
-            print("destinationDirectoryFullPath: \(destinationDirectoryFullPath)")
             if !destinationDirectoryFullPath.contains(startDirectory) {
                 return
             }
@@ -211,43 +203,28 @@ extension XcodeProject {
             let isDestinationDirectoryPathExists = FileManager.default.fileExists(atPath: destinationDirectoryFullPath)
             let shouldCreateDirectory = !isDestinationDirectoryPathExists
             if shouldCreateDirectory {
-                print("mkdir -p \(destinationDirectoryFullPath)")
-                do {
-                    try FileManager.default.createDirectory(at: URL(fileURLWithPath: destinationDirectoryFullPath), withIntermediateDirectories: true, attributes: nil)
-                } catch {
-                    print(error.localizedDescription)
-                    exit(1)
-                }
+                print("🛠 Make directory for \(destinationDirectoryFullPath)")
+                try FileManager.default.createDirectory(at: URL(fileURLWithPath: destinationDirectoryFullPath), withIntermediateDirectories: true, attributes: nil)
             }
             
 
             let isSamePath = sourceFileReferenceFullPath == destinationFileReferenceFullPath
             let shouldRemoveFile = !isSamePath && FileManager.default.fileExists(atPath: destinationFileReferenceFullPath)
             if shouldRemoveFile {
-                print("\(destinationFileReferenceFullPath) is already exists. And will remove it.")
-                print("rm -f \(destinationFileReferenceFullPath)")
+                print("🗑 \(destinationFileReferenceFullPath) is already exists. And will remove it.")
                 try FileManager.default.removeItem(atPath: destinationFileReferenceFullPath)
             }
             
             let shouldMoveFile = !isSamePath
             if shouldMoveFile {
-                print("mv \(sourceFileReferenceFullPath) \(destinationFileReferenceFullPath)")
-                do {
-                    try FileManager.default.moveItem(atPath: sourceFileReferenceFullPath, toPath: destinationFileReferenceFullPath)
-                } catch {
-                    print(error.localizedDescription)
-                    exit(1)
-                }
+                print("♻️ Move directory from \(sourceFileReferenceFullPath) to \(destinationFileReferenceFullPath)")
+                try FileManager.default.moveItem(atPath: sourceFileReferenceFullPath, toPath: destinationFileReferenceFullPath)
             }
-            print("xxxxxxxxxxxxxxxxxxxxxxxxxxx END xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
         }
         
 
         groups.filter { $0.isa != .PBXVariantGroup }.forEach { group in
-            print("++++++++++++++++++++++ START +++++++++++++++++++++++++++++++++")
-            print("group.id: \(group.id)")
             let destinationDirectoryFullPath = expectedDirectoryFullPath(group)
-            print("destinationDirectoryFullPath: \(destinationDirectoryFullPath)")
             if !destinationDirectoryFullPath.contains(startDirectory) {
                 return
             }
@@ -256,7 +233,6 @@ extension XcodeProject {
                 group.path = name
                 context.resetGroupFullPaths()
             }
-            print("++++++++++++++++++++++ END +++++++++++++++++++++++++++++++++")
         }
 
         try write()
