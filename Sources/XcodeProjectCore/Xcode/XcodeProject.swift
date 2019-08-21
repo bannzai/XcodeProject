@@ -175,7 +175,7 @@ extension XcodeProject {
     
     public func sync(from startDirectory: String? = nil) throws {
         let startDirectory = context.xcodeprojectDirectoryURL.path + "/" + (startDirectory ?? "") + "/"
-        let list = groups.filter { $0.isa == .PBXGroup || $0.isa == .XCVersionGroup}
+        let list = groups.filter { $0.isa != .PBXVariantGroup }
         try list.forEach { group in
             print("********************* START ****************************")
             print("group.id: \(group.id)")
