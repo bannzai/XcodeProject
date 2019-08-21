@@ -12,6 +12,7 @@
 		3393D46922EB050800550D19 /* TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3393D46722EB050800550D19 /* TableViewCell.swift */; };
 		3393D46A22EB050800550D19 /* TableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3393D46822EB050800550D19 /* TableViewCell.xib */; };
 		33CCF9DC230D7A72000CFDAC /* Localized.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 33CCF9DE230D7A72000CFDAC /* Localized.storyboard */; };
+		33CCF9EB230D9830000CFDAC /* NoReferenceFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33CCF9EA230D9830000CFDAC /* NoReferenceFile.swift */; };
 		BA4268041F89EB7F001FA700 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA4268031F89EB7F001FA700 /* AppDelegate.swift */; };
 		BA4268061F89EB7F001FA700 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA4268051F89EB7F001FA700 /* ViewController.swift */; };
 		BA4268091F89EB7F001FA700 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BA4268071F89EB7F001FA700 /* Main.storyboard */; };
@@ -54,6 +55,7 @@
 		33BD753322D4E12600092308 /* Podfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; };
 		33CCF9DD230D7A72000CFDAC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Localized.storyboard; sourceTree = "<group>"; };
 		33CCF9E0230D7A75000CFDAC /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localized.strings; sourceTree = "<group>"; };
+		33CCF9EA230D9830000CFDAC /* NoReferenceFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = NoReferenceFile.swift; path = iOSTestProject/NoReferenceFile.swift; sourceTree = SOURCE_ROOT; };
 		BA4268001F89EB7F001FA700 /* iOSTestProject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iOSTestProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BA4268031F89EB7F001FA700 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BA4268051F89EB7F001FA700 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -103,6 +105,14 @@
 			path = Group;
 			sourceTree = "<group>";
 		};
+		33CCF9E6230D9800000CFDAC /* NoReferenceGroup */ = {
+			isa = PBXGroup;
+			children = (
+				33CCF9EA230D9830000CFDAC /* NoReferenceFile.swift */,
+			);
+			path = NoReferenceGroup;
+			sourceTree = "<group>";
+		};
 		BA4267F71F89EB7F001FA700 = {
 			isa = PBXGroup;
 			children = (
@@ -129,6 +139,7 @@
 		BA4268021F89EB7F001FA700 /* iOSTestProject */ = {
 			isa = PBXGroup;
 			children = (
+				33CCF9E6230D9800000CFDAC /* NoReferenceGroup */,
 				33467EB722E6C5AE00897582 /* Group */,
 				BAD04BFF22E35F61008ADCAD /* ReferenceProject.xcodeproj */,
 				BA4268031F89EB7F001FA700 /* AppDelegate.swift */,
@@ -363,6 +374,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				33CCF9EB230D9830000CFDAC /* NoReferenceFile.swift in Sources */,
 				3393D46922EB050800550D19 /* TableViewCell.swift in Sources */,
 				BA4268061F89EB7F001FA700 /* ViewController.swift in Sources */,
 				33467EDB22E9513E00897582 /* Config.swift in Sources */,
