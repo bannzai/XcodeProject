@@ -110,7 +110,7 @@
 			children = (
 				33CCF9EA230D9830000CFDAC /* NoReferenceFile.swift */,
 			);
-			path = NoReferenceGroup;
+			name = NoReferenceGroup;
 			sourceTree = "<group>";
 		};
 		BA4267F71F89EB7F001FA700 = {
