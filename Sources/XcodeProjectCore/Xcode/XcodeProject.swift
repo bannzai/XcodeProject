@@ -176,29 +176,6 @@ extension XcodeProject {
     public func sync(from startDirectory: String? = nil) throws {
         print(objects["6E8783F51B55F96400D6C38F"]!)
         let startDirectory = context.xcodeprojectDirectoryURL.path + "/" + (startDirectory ?? "") + "/"
-        groups.filter { $0.isa != .PBXVariantGroup }.forEach { group in
-            print("********************* START ****************************")
-            print("group.id: \(group.id)")
-            let destinationDirectoryFullPath = expectedDirectoryFullPath(group)
-            print("destinationDirectoryFullPath: \(destinationDirectoryFullPath)")
-            if !destinationDirectoryFullPath.contains(startDirectory) {
-                return
-            }
-            let isDestinationDirectoryPathExists = FileManager.default.fileExists(atPath: destinationDirectoryFullPath)
-            let shouldCreateDirectory = !isDestinationDirectoryPathExists
-            if shouldCreateDirectory {
-                print("mkdir -p \(destinationDirectoryFullPath)")
-                do {
-                    try FileManager.default.createDirectory(at: URL(fileURLWithPath: destinationDirectoryFullPath), withIntermediateDirectories: true, attributes: nil)
-                } catch {
-                    print(error.localizedDescription)
-                    exit(1)
-                }
-            }
-            
-            print("******************** END ***************************")
-        }
-        
         func filter(_ sourceTreeType: SourceTreeType) -> Bool {
             switch sourceTreeType {
             case .environment(let env):
@@ -225,6 +202,24 @@ extension XcodeProject {
             if !destinationFileReferenceFullPath.contains(startDirectory) {
                 return
             }
+            let destinationDirectoryFullPath = destinationFileReferenceFullPath.components(separatedBy: "/").dropLast().joined(separator: "/")
+            print("destinationDirectoryFullPath: \(destinationDirectoryFullPath)")
+            if !destinationDirectoryFullPath.contains(startDirectory) {
+                return
+            }
+            
+            let isDestinationDirectoryPathExists = FileManager.default.fileExists(atPath: destinationDirectoryFullPath)
+            let shouldCreateDirectory = !isDestinationDirectoryPathExists
+            if shouldCreateDirectory {
+                print("mkdir -p \(destinationDirectoryFullPath)")
+                do {
+                    try FileManager.default.createDirectory(at: URL(fileURLWithPath: destinationDirectoryFullPath), withIntermediateDirectories: true, attributes: nil)
+                } catch {
+                    print(error.localizedDescription)
+                    exit(1)
+                }
+            }
+            
 
             let isSamePath = sourceFileReferenceFullPath == destinationFileReferenceFullPath
             let shouldRemoveFile = !isSamePath && FileManager.default.fileExists(atPath: destinationFileReferenceFullPath)
