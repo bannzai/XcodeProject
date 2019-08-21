@@ -13,7 +13,6 @@ class XcodeProjectPropertiesTests: XCTestCase {
     func testVariantGroup() {
         let xcodeproject = makeXcodeProject()
         XCTAssertFalse(xcodeproject.context.fileRefs.filter { $0.parentGroup is PBX.VariantGroup }.isEmpty)
-        XCTAssertTrue(xcodeproject.context.fileRefs.filter { $0.parentGroup is PBX.VariantGroup }.compactMap { $0.parentGroup }.first!.pathOrNameOrEmpty == "Localized.storyboard")
     }
 
 }
