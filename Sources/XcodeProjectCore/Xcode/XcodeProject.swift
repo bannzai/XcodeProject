@@ -17,10 +17,12 @@ public class XcodeProject {
     private let resourcesBuildPhaseAppender: BuildPhaseAppender
     private let sourcesBuildPhaseAppender: BuildPhaseAppender
     private let fileWriter: Writer
+    private let fileSystemWriter: FileSystemWriter
     public init(
         xcodeprojectURL: URL,
         parser: ContextParser = PBXProjectContextParser(),
         fileWriter: Writer = FileWriter(),
+        fileSystemWriter: FileSystemWriter = FileSystemWriterImpl(),
         fileReferenceAppender: FileReferenceAppender = FileReferenceAppenderImpl(),
         groupAppender: GroupAppender = GroupAppenderImpl(),
         resourcesBuildPhaseAppender: BuildPhaseAppender = ResourceBuildPhaseAppenderImpl(),
@@ -30,6 +32,7 @@ public class XcodeProject {
         ) throws {
         context = try parser.parse(xcodeprojectUrl: xcodeprojectURL)
         self.fileWriter = fileWriter
+        self.fileSystemWriter = fileSystemWriter
         self.fileReferenceAppender = fileReferenceAppender
         self.groupAppender = groupAppender
         self.resourcesBuildPhaseAppender = resourcesBuildPhaseAppender
@@ -234,25 +237,25 @@ extension XcodeProject {
                 return
             }
             
-            let isDestinationDirectoryPathExists = FileManager.default.fileExists(atPath: destinationDirectoryFullPath)
+            let isDestinationDirectoryPathExists = fileSystemWriter.isExists(path: destinationDirectoryFullPath)
             let shouldCreateDirectory = !isDestinationDirectoryPathExists
             if shouldCreateDirectory {
                 print("🛠 Make directory for \(destinationDirectoryFullPath)")
-                try FileManager.default.createDirectory(at: URL(fileURLWithPath: destinationDirectoryFullPath), withIntermediateDirectories: true, attributes: nil)
+                try fileSystemWriter.createDirectory(path: destinationDirectoryFullPath)
             }
             
             
             let isSamePath = sourceFileReferenceFullPath == destinationFileReferenceFullPath
-            let shouldRemoveFile = !isSamePath && FileManager.default.fileExists(atPath: destinationFileReferenceFullPath)
+            let shouldRemoveFile = !isSamePath && fileSystemWriter.isExists(path: destinationFileReferenceFullPath)
             if shouldRemoveFile {
                 print("🗑 \(destinationFileReferenceFullPath) is already exists. And will remove it.")
-                try FileManager.default.removeItem(atPath: destinationFileReferenceFullPath)
+                try fileSystemWriter.remove(path: destinationFileReferenceFullPath)
             }
             
             let shouldMoveFile = !isSamePath
             if shouldMoveFile {
                 print("♻️ Move directory from \(sourceFileReferenceFullPath) to \(destinationFileReferenceFullPath)")
-                try FileManager.default.moveItem(atPath: sourceFileReferenceFullPath, toPath: destinationFileReferenceFullPath)
+                try fileSystemWriter.move(source: sourceFileReferenceFullPath, destination: destinationFileReferenceFullPath)
             }
         }
     }
