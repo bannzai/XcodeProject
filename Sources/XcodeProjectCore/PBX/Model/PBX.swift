@@ -135,10 +135,14 @@ extension /* prefix */ PBX {
                 if context.mainGroup === parentGroup {
                     break
                 }
+                if parentGroup is PBX.VariantGroup {
+                    next = parentGroup.parentGroup
+                    continue
+                }
                 if let path = parentGroup.path {
                     expectedFullPath = path + "/" + expectedFullPath
                 }
-                next = next?.parentGroup
+                next = parentGroup.parentGroup
             }
             expectedFullPath = context.xcodeprojectDirectoryURL.path + "/" + expectedFullPath
             return expectedFullPath
@@ -166,8 +170,12 @@ extension /* prefix */ PBX {
                 if context.mainGroup === parentGroup {
                     break
                 }
+                if parentGroup is PBX.VariantGroup {
+                    next = parentGroup.parentGroup
+                    continue
+                }
                 expectedFullPath = parentGroup.pathOrNameOrEmpty + "/" + expectedFullPath
-                next = next?.parentGroup
+                next = parentGroup.parentGroup
             }
             expectedFullPath = context.xcodeprojectDirectoryURL.path + "/" + expectedFullPath
             return expectedFullPath

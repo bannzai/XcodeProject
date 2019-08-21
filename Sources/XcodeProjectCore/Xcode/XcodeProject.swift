@@ -174,9 +174,9 @@ extension XcodeProject {
     }
     
     public func sync(from startDirectory: String? = nil) throws {
+        print(objects["6E8783F51B55F96400D6C38F"]!)
         let startDirectory = context.xcodeprojectDirectoryURL.path + "/" + (startDirectory ?? "") + "/"
-        let list = groups.filter { $0.isa != .PBXVariantGroup }
-        try list.forEach { group in
+        groups.filter { $0.isa != .PBXVariantGroup }.forEach { group in
             print("********************* START ****************************")
             print("group.id: \(group.id)")
             let destinationDirectoryFullPath = expectedDirectoryFullPath(group)
@@ -212,7 +212,7 @@ extension XcodeProject {
                 return true
             }
         }
-        try list.flatMap { $0.fileRefs }.filter { filter($0.sourceTree) }.forEach { fileRef in
+        try groups.flatMap { $0.fileRefs }.filter { filter($0.sourceTree) }.forEach { fileRef in
             print("xxxxxxxxxxxxxxxxxxxxxxxxxxx START xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
             print("fileRef.id: \(fileRef.id)")
             let sourceFileReferenceFullPath = fileReferenceFullPath(fileRef)
@@ -248,7 +248,7 @@ extension XcodeProject {
         }
         
 
-        list.forEach { group in
+        groups.filter { $0.isa != .PBXVariantGroup }.forEach { group in
             print("++++++++++++++++++++++ START +++++++++++++++++++++++++++++++++")
             print("group.id: \(group.id)")
             let destinationDirectoryFullPath = expectedDirectoryFullPath(group)
