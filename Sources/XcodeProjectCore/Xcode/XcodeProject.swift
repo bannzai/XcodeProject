@@ -160,41 +160,17 @@ extension XcodeProject {
 // MARK: - Lint
 extension XcodeProject {
     func expectedDirectoryFullPath(_ group: PBX.Group) -> String {
-        var next = group.parentGroup
-        var expectedFullPath = group.pathOrNameOrEmpty
-        while let parentGroup = next {
-            if mainGroup === parentGroup {
-                break
-            }
-            expectedFullPath = parentGroup.pathOrNameOrEmpty + "/" + expectedFullPath
-            next = next?.parentGroup
-        }
-        expectedFullPath = context.xcodeprojectDirectoryURL.path + "/" + expectedFullPath
-        print("expectedDirectoryFullPath: \(expectedFullPath)")
-        return expectedFullPath
+        let path = group.fileSystemAbsolutePath
+        print("expectedDirectoryFullPath: \(path)")
+        return path
     }
     func fileReferenceFullPath(_ fileRef: PBX.FileReference) -> String {
         return context.xcodeprojectDirectoryURL.path + "/" + fileRef.fullPath
     }
     func expectedFileReferenceFullPath(_ fileRef: PBX.FileReference) -> String {
-        var next = fileRef.parentGroup
-        var expectedFullPath = ""
-        while let parentGroup = next {
-            if mainGroup === parentGroup {
-                break
-            }
-            switch expectedFullPath.isEmpty {
-            case true:
-                expectedFullPath = parentGroup.pathOrNameOrEmpty
-            case false:
-                expectedFullPath = parentGroup.pathOrNameOrEmpty + "/" + expectedFullPath
-            }
-            next = next?.parentGroup
-        }
-        expectedFullPath += "/" + fileRef.pathOrNameOrEmpty
-        expectedFullPath = context.xcodeprojectDirectoryURL.path + "/" + expectedFullPath
-        print("expectedFileReferenceFullPath: \(expectedFullPath)")
-        return expectedFullPath
+        let path = fileRef.fileSystemAbsolutePath
+        print("expectedFileReferenceFullPath: \(path)")
+        return path
     }
     
     public func sync(from startDirectory: String? = nil) throws {

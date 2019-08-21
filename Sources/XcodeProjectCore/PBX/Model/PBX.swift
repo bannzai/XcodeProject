@@ -102,10 +102,43 @@ extension /* prefix */ PBX {
                 dictionary["path"] = _path
             }
         }
+        
+        public weak var parentGroup: PBX.Group?
+
         public var pathOrNameOrEmpty: String {
-            // Maybe either exists
             return path ?? name ?? ""
         }
+        
+        public var fileSystemAbsolutePath: String {
+            switch sourceTree {
+            case .group:
+                break
+            case .absolute:
+                // Maybe not nil
+                return path!
+            case .environment(let env):
+                switch env {
+                case .SOURCE_ROOT:
+                    // Maybe not nil
+                    return path!
+                case _:
+                    fatalError("Unexpected pattern")
+                }
+            }
+            
+            var next = parentGroup
+            var expectedFullPath = pathOrNameOrEmpty
+            while let parentGroup = next {
+                if context.mainGroup === parentGroup {
+                    break
+                }
+                expectedFullPath = parentGroup.pathOrNameOrEmpty + "/" + expectedFullPath
+                next = next?.parentGroup
+            }
+            expectedFullPath = context.xcodeprojectDirectoryURL.path + "/" + expectedFullPath
+            return expectedFullPath
+        }
+        
         public lazy var sourceTree: SourceTreeType = SourceTreeType(for: extractString(for: "sourceTree"))
     }
     
@@ -116,7 +149,6 @@ extension /* prefix */ PBX {
     
     open class FileReference: Reference {
         // convenience accessor
-        open weak var parentGroup: PBX.Group?
         open var fullPath: String = ""
     }
     
@@ -157,7 +189,6 @@ extension /* prefix */ PBX {
         open var fullPath: String = ""
         
         // convenience accessor
-        public weak var parentGroup: PBX.Group?
         open var subGroups: [Group] { return children.ofType(PBX.Group.self) }
         open var fileRefs: [PBX.FileReference] { return children.ofType(PBX.FileReference.self) }
         
