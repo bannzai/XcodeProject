@@ -12,8 +12,8 @@ open class /* prefix */ XC {
         open var name: String { return self.extractString(for: "name") }
     }
     
-    open class VersionGroup: PBX.Reference {
-        
+    open class VersionGroup: PBX.Group {
+
     }
     
     open class ConfigurationList: PBX.ProjectItem {
