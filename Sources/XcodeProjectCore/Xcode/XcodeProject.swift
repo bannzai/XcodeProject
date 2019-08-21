@@ -159,6 +159,9 @@ extension XcodeProject {
 
 // MARK: - Lint
 extension XcodeProject {
+    func groupReferenceFullPath(_ group: PBX.Group) -> String {
+        return context.xcodeprojectDirectoryURL.path + "/" + group.fullPath
+    }
     func expectedDirectoryFullPath(_ group: PBX.Group) -> String {
         let path = group.fileSystemAbsolutePath
         print("expectedDirectoryFullPath: \(path)")
@@ -175,7 +178,7 @@ extension XcodeProject {
     
     public func sync(from startDirectory: String? = nil) throws {
         let startDirectory = context.xcodeprojectDirectoryURL.path + "/" + (startDirectory ?? "") + "/"
-        let list = groups.filter { $0.isa == .PBXGroup }
+        let list = groups.filter { $0.isa == .PBXGroup || $0.isa == .XCVersionGroup}
         try list.forEach { group in
             print("*************************************************")
             print("group.id: \(group.id)")
@@ -184,9 +187,8 @@ extension XcodeProject {
             if !destinationDirectoryFullPath.contains(startDirectory) {
                 return
             }
-            var isDirectory = ObjCBool(false)
-            let isDestinationDirectoryPathExists = FileManager.default.fileExists(atPath: destinationDirectoryFullPath, isDirectory: &isDirectory)
-            let shouldCreateDirectory = !isDestinationDirectoryPathExists || !isDirectory.boolValue
+            let isDestinationDirectoryPathExists = FileManager.default.fileExists(atPath: destinationDirectoryFullPath)
+            let shouldCreateDirectory = !isDestinationDirectoryPathExists
             if shouldCreateDirectory {
                 print("mkdir -p \(destinationDirectoryFullPath)")
                 do {
@@ -198,15 +200,28 @@ extension XcodeProject {
             }
         }
         
-        try list.flatMap { $0.fileRefs }.forEach { fileRef in
+        func filter(_ sourceTreeType: SourceTreeType) -> Bool {
+            switch sourceTreeType {
+            case .environment(let env):
+                switch env {
+                case .BUILT_PRODUCTS_DIR, .SDKROOT:
+                    return false
+                case _:
+                    return true
+                }
+            case _:
+                return true
+            }
+        }
+        try list.flatMap { $0.fileRefs }.filter { filter($0.sourceTree) }.forEach { fileRef in
             print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
             print("fileRef.id: \(fileRef.id)")
             let sourceFileReferenceFullPath = fileReferenceFullPath(fileRef)
+            let destinationFileReferenceFullPath = expectedFileReferenceFullPath(fileRef)
             print("sourceFileReferenceFullPath: \(sourceFileReferenceFullPath)")
             if !sourceFileReferenceFullPath.contains(startDirectory) {
                 return
             }
-            let destinationFileReferenceFullPath = expectedFileReferenceFullPath(fileRef)
             print("destinationFileReferenceFullPath: \(destinationFileReferenceFullPath)")
             if !destinationFileReferenceFullPath.contains(startDirectory) {
                 return
@@ -234,6 +249,13 @@ extension XcodeProject {
         
 
         list.forEach { group in
+            print("*************************************************")
+            print("group.id: \(group.id)")
+            let destinationDirectoryFullPath = expectedDirectoryFullPath(group)
+            print("destinationDirectoryFullPath: \(destinationDirectoryFullPath)")
+            if !destinationDirectoryFullPath.contains(startDirectory) {
+                return
+            }
             if let name = group.name {
                 group.name = nil
                 group.path = name

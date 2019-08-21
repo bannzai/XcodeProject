@@ -122,7 +122,7 @@ extension /* prefix */ PBX {
                     // Maybe not nil
                     return path!
                 case _:
-                    fatalError("Unexpected pattern")
+                    fatalError("Unexpected pattern \(sourceTree)")
                 }
             }
             
