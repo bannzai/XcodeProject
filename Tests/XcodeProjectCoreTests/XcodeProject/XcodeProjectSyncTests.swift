@@ -9,6 +9,22 @@ import XCTest
 @testable import XcodeProjectCore
 
 class XcodeProjectSyncTests: XCTestCase {
+    func testRestructure() {
+        let xcodeproject = makeXcodeProject()
+        
+        before: do {
+            XCTAssertEqual(xcodeproject.fileRefs.filter { $0.name == "NoReferenceFile.swift" }.first!.sourceTree, SourceTreeType.environment(.SOURCE_ROOT))
+            XCTAssertEqual(xcodeproject.fileRefs.filter { $0.name == "NoReferenceFile.swift" }.first!.path, "iOSTestProject/NoReferenceFile.swift")
+        }
+        
+        xcodeproject.restructure(from: "iOSTestProject")
+        
+        after: do {
+            XCTAssertEqual(xcodeproject.fileRefs.filter { $0.name == "NoReferenceFile.swift" }.first!.sourceTree, .group)
+            XCTAssertEqual(xcodeproject.fileRefs.filter { $0.name == "NoReferenceFile.swift" }.first!.path, "NoReferenceFile.swift")
+        }
+        
+    }
 
     func testExpectedFileFullPath() {
         XCTContext.runActivity(named: "in group") { (_) in
