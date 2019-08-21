@@ -159,19 +159,16 @@ extension XcodeProject {
 
 // MARK: - Lint
 extension XcodeProject {
-    func groupReferenceFullPath(_ group: PBX.Group) -> String {
-        return context.xcodeprojectDirectoryURL.path + "/" + group.fullPath
-    }
     func expectedDirectoryFullPath(_ group: PBX.Group) -> String {
-        let path = group.fileSystemAbsolutePath
+        let path = group.expectedFileSystemAbsolutePath
         print("expectedDirectoryFullPath: \(path)")
         return path
     }
     func fileReferenceFullPath(_ fileRef: PBX.FileReference) -> String {
-        return context.xcodeprojectDirectoryURL.path + "/" + fileRef.fullPath
+        return fileRef.fileSystemAbsolutePath
     }
     func expectedFileReferenceFullPath(_ fileRef: PBX.FileReference) -> String {
-        let path = fileRef.fileSystemAbsolutePath
+        let path = fileRef.expectedFileSystemAbsolutePath
         print("expectedFileReferenceFullPath: \(path)")
         return path
     }
@@ -180,7 +177,7 @@ extension XcodeProject {
         let startDirectory = context.xcodeprojectDirectoryURL.path + "/" + (startDirectory ?? "") + "/"
         let list = groups.filter { $0.isa == .PBXGroup || $0.isa == .XCVersionGroup}
         try list.forEach { group in
-            print("*************************************************")
+            print("********************* START ****************************")
             print("group.id: \(group.id)")
             let destinationDirectoryFullPath = expectedDirectoryFullPath(group)
             print("destinationDirectoryFullPath: \(destinationDirectoryFullPath)")
@@ -198,6 +195,8 @@ extension XcodeProject {
                     exit(1)
                 }
             }
+            
+            print("******************** END ***************************")
         }
         
         func filter(_ sourceTreeType: SourceTreeType) -> Bool {
@@ -214,7 +213,7 @@ extension XcodeProject {
             }
         }
         try list.flatMap { $0.fileRefs }.filter { filter($0.sourceTree) }.forEach { fileRef in
-            print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
+            print("xxxxxxxxxxxxxxxxxxxxxxxxxxx START xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
             print("fileRef.id: \(fileRef.id)")
             let sourceFileReferenceFullPath = fileReferenceFullPath(fileRef)
             let destinationFileReferenceFullPath = expectedFileReferenceFullPath(fileRef)
@@ -245,11 +244,12 @@ extension XcodeProject {
                     exit(1)
                 }
             }
+            print("xxxxxxxxxxxxxxxxxxxxxxxxxxx END xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
         }
         
 
         list.forEach { group in
-            print("*************************************************")
+            print("++++++++++++++++++++++ START +++++++++++++++++++++++++++++++++")
             print("group.id: \(group.id)")
             let destinationDirectoryFullPath = expectedDirectoryFullPath(group)
             print("destinationDirectoryFullPath: \(destinationDirectoryFullPath)")
@@ -261,6 +261,7 @@ extension XcodeProject {
                 group.path = name
                 context.resetGroupFullPaths()
             }
+            print("++++++++++++++++++++++ END +++++++++++++++++++++++++++++++++")
         }
 
         try write()

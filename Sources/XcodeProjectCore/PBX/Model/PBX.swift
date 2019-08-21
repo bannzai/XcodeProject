@@ -127,6 +127,40 @@ extension /* prefix */ PBX {
             }
             
             var next = parentGroup
+            var expectedFullPath = ""
+            if let path = self.path {
+                expectedFullPath = path
+            }
+            while let parentGroup = next {
+                if context.mainGroup === parentGroup {
+                    break
+                }
+                if let path = parentGroup.path {
+                    expectedFullPath = path + "/" + expectedFullPath
+                }
+                next = next?.parentGroup
+            }
+            expectedFullPath = context.xcodeprojectDirectoryURL.path + "/" + expectedFullPath
+            return expectedFullPath
+        }
+        public var expectedFileSystemAbsolutePath: String {
+            switch sourceTree {
+            case .group:
+                break
+            case .absolute:
+                // Maybe not nil
+                return path!
+            case .environment(let env):
+                switch env {
+                case .SOURCE_ROOT:
+                    // Maybe not nil
+                    return path!
+                case _:
+                    fatalError("Unexpected pattern \(sourceTree)")
+                }
+            }
+            
+            var next = parentGroup
             var expectedFullPath = pathOrNameOrEmpty
             while let parentGroup = next {
                 if context.mainGroup === parentGroup {
