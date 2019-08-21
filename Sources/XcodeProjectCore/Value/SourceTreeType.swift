@@ -59,3 +59,11 @@ public enum SourceTreeType {
         }
     }
 }
+
+extension SourceTreeType.Environment: Equatable {
+    
+}
+
+extension SourceTreeType: Equatable {
+    
+}

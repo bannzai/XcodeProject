@@ -171,22 +171,56 @@ extension XcodeProject {
         return path
     }
     
-    public func sync(from startDirectory: String? = nil) throws {
-        let startDirectory = context.xcodeprojectDirectoryURL.path + "/" + (startDirectory ?? "") + "/"
-        func filter(_ sourceTreeType: SourceTreeType) -> Bool {
-            switch sourceTreeType {
-            case .environment(let env):
-                switch env {
-                case .BUILT_PRODUCTS_DIR, .SDKROOT:
-                    return false
-                case _:
-                    return true
-                }
+    func isNotImplementCase(_ sourceTreeType: SourceTreeType) -> Bool {
+        switch sourceTreeType {
+        case .environment(let env):
+            switch env {
+            case .BUILT_PRODUCTS_DIR, .SDKROOT:
+                return false
             case _:
                 return true
             }
+        case _:
+            return true
         }
-        try groups.flatMap { $0.fileRefs }.filter { filter($0.sourceTree) }.forEach { fileRef in
+    }
+    
+    func restructure(from startDirectory: String? = nil) {
+        let startDirectory = context.xcodeprojectDirectoryURL.path + "/" + (startDirectory ?? "") + "/"
+        groups.flatMap { $0.fileRefs }.filter { isNotImplementCase($0.sourceTree) }.forEach { fileRef in
+            switch fileRef.sourceTree {
+            case .group, .absolute:
+                return
+            case .environment(let env):
+                switch env {
+                case .SOURCE_ROOT:
+                    if let filename = fileRef.path?.components(separatedBy: "/").last {
+                        fileRef.sourceTree = .group
+                        fileRef.path = filename
+                    }
+                case _:
+                    return
+                }
+            }
+        }
+        
+        groups.filter { $0.isa != .PBXVariantGroup }.forEach { group in
+            let destinationDirectoryFullPath = expectedDirectoryFullPath(group)
+            if !destinationDirectoryFullPath.contains(startDirectory) {
+                return
+            }
+            if let name = group.name {
+                group.name = nil
+                group.path = name
+                context.resetGroupFullPaths()
+            }
+        }
+
+    }
+    
+    func syncFileSystem(from startDirectory: String? = nil) throws {
+        let startDirectory = context.xcodeprojectDirectoryURL.path + "/" + (startDirectory ?? "") + "/"
+        try groups.flatMap { $0.fileRefs }.filter { isNotImplementCase($0.sourceTree) }.forEach { fileRef in
             let sourceFileReferenceFullPath = fileReferenceFullPath(fileRef)
             let destinationFileReferenceFullPath = expectedFileReferenceFullPath(fileRef)
             if !sourceFileReferenceFullPath.contains(startDirectory) {
@@ -207,7 +241,7 @@ extension XcodeProject {
                 try FileManager.default.createDirectory(at: URL(fileURLWithPath: destinationDirectoryFullPath), withIntermediateDirectories: true, attributes: nil)
             }
             
-
+            
             let isSamePath = sourceFileReferenceFullPath == destinationFileReferenceFullPath
             let shouldRemoveFile = !isSamePath && FileManager.default.fileExists(atPath: destinationFileReferenceFullPath)
             if shouldRemoveFile {
@@ -221,20 +255,11 @@ extension XcodeProject {
                 try FileManager.default.moveItem(atPath: sourceFileReferenceFullPath, toPath: destinationFileReferenceFullPath)
             }
         }
-        
-
-        groups.filter { $0.isa != .PBXVariantGroup }.forEach { group in
-            let destinationDirectoryFullPath = expectedDirectoryFullPath(group)
-            if !destinationDirectoryFullPath.contains(startDirectory) {
-                return
-            }
-            if let name = group.name {
-                group.name = nil
-                group.path = name
-                context.resetGroupFullPaths()
-            }
-        }
-
+    }
+    
+    public func sync(from startDirectory: String? = nil) throws {
+        try syncFileSystem()
+        restructure()
         try write()
     }
 }
