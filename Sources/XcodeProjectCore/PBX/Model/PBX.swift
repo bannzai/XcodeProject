@@ -120,7 +120,7 @@ extension /* prefix */ PBX {
                 switch env {
                 case .SOURCE_ROOT:
                     // Maybe not nil
-                    return context.xcodeprojectDirectoryURL.path + "/" + path!
+                    return path!
                 case _:
                     fatalError("Unexpected pattern \(sourceTree)")
                 }
@@ -148,8 +148,24 @@ extension /* prefix */ PBX {
             return expectedFullPath
         }
         public var expectedFileSystemAbsolutePath: String {
-            var expectedFullPath = name ?? path ?? ""
+            switch sourceTree {
+            case .group:
+                break
+            case .absolute:
+                // Maybe not nil
+                return path!
+            case .environment(let env):
+                switch env {
+                case .SOURCE_ROOT:
+                    // Maybe not nil
+                    return path!
+                case _:
+                    fatalError("Unexpected pattern \(sourceTree)")
+                }
+            }
+            
             var next = parentGroup
+            var expectedFullPath = pathOrNameOrEmpty
             while let parentGroup = next {
                 if context.mainGroup === parentGroup {
                     break
