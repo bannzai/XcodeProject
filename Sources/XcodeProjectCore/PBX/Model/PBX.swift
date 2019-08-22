@@ -165,7 +165,14 @@ extension /* prefix */ PBX {
             return expectedFullPath
         }
         
-        public lazy var sourceTree: SourceTreeType = SourceTreeType(for: extractString(for: "sourceTree"))
+        private lazy var _sourceTree: SourceTreeType = SourceTreeType(for: extractString(for: "sourceTree"))
+        public var sourceTree: SourceTreeType {
+            get { return _sourceTree }
+            set {
+                _sourceTree = newValue
+                dictionary["sourceTree"] = _sourceTree
+            }
+        }
     }
     
     open class ReferenceProxy: Reference {
