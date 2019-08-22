@@ -73,6 +73,12 @@ class XcodeProjectSyncTests: XCTestCase {
             
             XCTAssertEqual(result, xcodeproject.context.xcodeprojectDirectoryURL.path + "/iOSTestProject/AppDelegate.swift")
         }
+        XCTContext.runActivity(named: "when variant group") { (_) in
+            let xcodeproject = makeXcodeProject()
+            let result = xcodeproject.expectedFileReferenceFullPath(xcodeproject.fileRefs.filter { $0.id == "33CCF9DD230D7A72000CFDAC" }.filter { $0.parentGroup is PBX.VariantGroup }.first!)
+            
+            XCTAssertEqual(result, xcodeproject.context.xcodeprojectDirectoryURL.path + "/iOSTestProject/Base.lproj/Localized.storyboard")
+        }
         XCTContext.runActivity(named: "in group with no reference file") { (_) in
             let xcodeproject = makeXcodeProject()
             let result = xcodeproject.expectedFileReferenceFullPath(xcodeproject.fileRefs.filter { $0.name == "NoReferenceFile.swift" }.first!)
@@ -93,6 +99,12 @@ class XcodeProjectSyncTests: XCTestCase {
             let result = xcodeproject.fileReferenceFullPath(xcodeproject.fileRefs[path: "AppDelegate.swift"]!)
             
             XCTAssertEqual(result, xcodeproject.context.xcodeprojectDirectoryURL.path + "/iOSTestProject/AppDelegate.swift")
+        }
+        XCTContext.runActivity(named: "when variant group") { (_) in
+            let xcodeproject = makeXcodeProject()
+            let result = xcodeproject.fileReferenceFullPath(xcodeproject.fileRefs.filter { $0.id == "33CCF9DD230D7A72000CFDAC" }.filter { $0.parentGroup is PBX.VariantGroup }.first!)
+            
+            XCTAssertEqual(result, xcodeproject.context.xcodeprojectDirectoryURL.path + "/iOSTestProject/Base.lproj/Localized.storyboard")
         }
         XCTContext.runActivity(named: "in group with no reference file") { (_) in
             let xcodeproject = makeXcodeProject()
