@@ -148,7 +148,7 @@ extension /* prefix */ PBX {
             return expectedFullPath
         }
         public var expectedFileSystemAbsolutePath: String {
-            var expectedFullPath = name ?? path ?? ""
+            var expectedFullPath = pathOrNameOrEmpty
             var next = parentGroup
             while let parentGroup = next {
                 if context.mainGroup === parentGroup {
@@ -170,7 +170,7 @@ extension /* prefix */ PBX {
             get { return _sourceTree }
             set {
                 _sourceTree = newValue
-                dictionary["sourceTree"] = _sourceTree
+                dictionary["sourceTree"] = _sourceTree.value
             }
         }
     }
