@@ -10,20 +10,60 @@ import XCTest
 
 class XcodeProjectSyncTests: XCTestCase {
     func testRestructure() {
-        let xcodeproject = makeXcodeProject()
-        
-        before: do {
-            XCTAssertEqual(xcodeproject.fileRefs.filter { $0.name == "NoReferenceFile.swift" }.first!.sourceTree, SourceTreeType.environment(.SOURCE_ROOT))
-            XCTAssertEqual(xcodeproject.fileRefs.filter { $0.name == "NoReferenceFile.swift" }.first!.path, "iOSTestProject/NoReferenceFile.swift")
+        XCTContext.runActivity(named: "Change sourceTreeType about .environment(SOURCE_ROOT) to .group") { (_) in
+            let xcodeproject = makeXcodeProject()
+            
+            before: do {
+                XCTAssertEqual(xcodeproject.fileRefs.filter { $0.name == "NoReferenceFile.swift" }.first!.sourceTree, SourceTreeType.environment(.SOURCE_ROOT))
+                XCTAssertEqual(xcodeproject.fileRefs.filter { $0.name == "NoReferenceFile.swift" }.first!.path, "iOSTestProject/NoReferenceFile.swift")
+            }
+            
+            xcodeproject.restructure(from: "iOSTestProject")
+            
+            after: do {
+                XCTAssertEqual(xcodeproject.fileRefs.filter { $0.name == "NoReferenceFile.swift" }.first!.sourceTree, .group)
+                XCTAssertEqual(xcodeproject.fileRefs.filter { $0.name == "NoReferenceFile.swift" }.first!.path, "NoReferenceFile.swift")
+            }
         }
-        
-        xcodeproject.restructure(from: "iOSTestProject")
-        
-        after: do {
-            XCTAssertEqual(xcodeproject.fileRefs.filter { $0.name == "NoReferenceFile.swift" }.first!.sourceTree, .group)
-            XCTAssertEqual(xcodeproject.fileRefs.filter { $0.name == "NoReferenceFile.swift" }.first!.path, "NoReferenceFile.swift")
-        }
-        
+    }
+    
+    func testSyncFileSystem() {
+        XCTContext.runActivity(named: "When is not exists directory and file", block: { _ in
+            let fileSystemWriterMock = FileSystemWriterMock()
+            let xcodeproject = makeXcodeProject(fileSystemWriter: fileSystemWriterMock)
+            
+            fileSystemWriterMock.isExistsDirectoryPathClosure = { _ in
+                return false
+            }
+            fileSystemWriterMock.isExistsFilePathClosure = { _ in
+                return false
+            }
+            try! xcodeproject.syncFileSystem(from: "iOSTestProject")
+            
+            XCTAssertEqual(fileSystemWriterMock.isExistsDirectoryPathCalled, true)
+            XCTAssertEqual(fileSystemWriterMock.createDirectoryPathCalled, true)
+            XCTAssertEqual(fileSystemWriterMock.isExistsFilePathCalled, true)
+            XCTAssertEqual(fileSystemWriterMock.removePathCalled, false)
+            XCTAssertEqual(fileSystemWriterMock.moveSourceDestinationCalled, true)
+        })
+        XCTContext.runActivity(named: "When is exists directory and file", block: { _ in
+            let fileSystemWriterMock = FileSystemWriterMock()
+            let xcodeproject = makeXcodeProject(fileSystemWriter: fileSystemWriterMock)
+            
+            fileSystemWriterMock.isExistsDirectoryPathClosure = { _ in
+                return true
+            }
+            fileSystemWriterMock.isExistsFilePathClosure = { _ in
+                return true
+            }
+            try! xcodeproject.syncFileSystem(from: "iOSTestProject")
+            
+            XCTAssertEqual(fileSystemWriterMock.isExistsDirectoryPathCalled, true)
+            XCTAssertEqual(fileSystemWriterMock.createDirectoryPathCalled, false)
+            XCTAssertEqual(fileSystemWriterMock.isExistsFilePathCalled, true)
+            XCTAssertEqual(fileSystemWriterMock.removePathCalled, true)
+            XCTAssertEqual(fileSystemWriterMock.moveSourceDestinationCalled, true)
+        })
     }
 
     func testExpectedFileFullPath() {

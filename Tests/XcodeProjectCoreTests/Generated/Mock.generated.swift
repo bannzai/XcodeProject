@@ -113,21 +113,38 @@ class FileSystemWriterMock: FileSystemWriter {
         try removePathClosure?(path)
     }
 
-    //MARK: - isExists
+    //MARK: - isExistsFile
 
-    var isExistsPathCallsCount = 0
-    var isExistsPathCalled: Bool {
-        return isExistsPathCallsCount > 0
+    var isExistsFilePathCallsCount = 0
+    var isExistsFilePathCalled: Bool {
+        return isExistsFilePathCallsCount > 0
     }
-    var isExistsPathReceivedPath: String?
-    var isExistsPathReturnValue: Bool!
-    var isExistsPathClosure: ((String) -> Bool)?
+    var isExistsFilePathReceivedPath: String?
+    var isExistsFilePathReturnValue: Bool!
+    var isExistsFilePathClosure: ((String) -> Bool)?
 
-    func isExists(path: String) -> Bool {
-        methodCalledStack.append("isExists(path:)")
-        isExistsPathCallsCount += 1
-        isExistsPathReceivedPath = path
-        return isExistsPathClosure.map({ $0(path) }) ?? isExistsPathReturnValue
+    func isExistsFile(path: String) -> Bool {
+        methodCalledStack.append("isExistsFile(path:)")
+        isExistsFilePathCallsCount += 1
+        isExistsFilePathReceivedPath = path
+        return isExistsFilePathClosure.map({ $0(path) }) ?? isExistsFilePathReturnValue
+    }
+
+    //MARK: - isExistsDirectory
+
+    var isExistsDirectoryPathCallsCount = 0
+    var isExistsDirectoryPathCalled: Bool {
+        return isExistsDirectoryPathCallsCount > 0
+    }
+    var isExistsDirectoryPathReceivedPath: String?
+    var isExistsDirectoryPathReturnValue: Bool!
+    var isExistsDirectoryPathClosure: ((String) -> Bool)?
+
+    func isExistsDirectory(path: String) -> Bool {
+        methodCalledStack.append("isExistsDirectory(path:)")
+        isExistsDirectoryPathCallsCount += 1
+        isExistsDirectoryPathReceivedPath = path
+        return isExistsDirectoryPathClosure.map({ $0(path) }) ?? isExistsDirectoryPathReturnValue
     }
 
 }

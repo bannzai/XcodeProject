@@ -237,7 +237,7 @@ extension XcodeProject {
                 return
             }
             
-            let isDestinationDirectoryPathExists = fileSystemWriter.isExists(path: destinationDirectoryFullPath)
+            let isDestinationDirectoryPathExists = fileSystemWriter.isExistsDirectory(path: destinationDirectoryFullPath)
             let shouldCreateDirectory = !isDestinationDirectoryPathExists
             if shouldCreateDirectory {
                 print("🛠 Make directory for \(destinationDirectoryFullPath)")
@@ -246,7 +246,7 @@ extension XcodeProject {
             
             
             let isSamePath = sourceFileReferenceFullPath == destinationFileReferenceFullPath
-            let shouldRemoveFile = !isSamePath && fileSystemWriter.isExists(path: destinationFileReferenceFullPath)
+            let shouldRemoveFile = !isSamePath && fileSystemWriter.isExistsFile(path: destinationFileReferenceFullPath)
             if shouldRemoveFile {
                 print("🗑 \(destinationFileReferenceFullPath) is already exists. And will remove it.")
                 try fileSystemWriter.remove(path: destinationFileReferenceFullPath)

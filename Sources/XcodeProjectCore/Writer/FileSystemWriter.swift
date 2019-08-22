@@ -11,7 +11,8 @@ public protocol FileSystemWriter: AutoMockable {
     func move(source: String, destination: String) throws
     func createDirectory(path: String) throws
     func remove(path: String) throws
-    func isExists(path: String) -> Bool
+    func isExistsFile(path: String) -> Bool
+    func isExistsDirectory(path: String) -> Bool
 }
 
 public struct FileSystemWriterImpl: FileSystemWriter {
@@ -30,7 +31,10 @@ public struct FileSystemWriterImpl: FileSystemWriter {
         try FileManager.default.removeItem(atPath: path)
     }
     
-    public func isExists(path: String) -> Bool {
+    public func isExistsFile(path: String) -> Bool {
+        return FileManager.default.fileExists(atPath: path)
+    }
+    public func isExistsDirectory(path: String) -> Bool {
         return FileManager.default.fileExists(atPath: path)
     }
 }
