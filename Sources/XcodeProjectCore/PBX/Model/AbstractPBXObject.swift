@@ -12,7 +12,7 @@ extension PBX {
     
     open class AbstractObject {
         public let id: String
-        public let dictionary: PBXRawMapType
+        public internal(set) var dictionary: PBXRawMapType
         public let isa: ObjectType
         public weak var context: Context!
         

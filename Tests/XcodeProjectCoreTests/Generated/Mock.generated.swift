@@ -49,6 +49,105 @@ class FieldFormatterMock: FieldFormatter {
     }
 
 }
+class FileSystemWriterMock: FileSystemWriter {
+    var methodCalledStack: [String] = []
+
+
+    //MARK: - move
+
+    var moveSourceDestinationThrowableError: Error?
+    var moveSourceDestinationCallsCount = 0
+    var moveSourceDestinationCalled: Bool {
+        return moveSourceDestinationCallsCount > 0
+    }
+    var moveSourceDestinationReceivedArguments: (source: String, destination: String)?
+    var moveSourceDestinationClosure: ((String, String) throws -> Void)?
+
+    func move(source: String, destination: String) throws {
+        methodCalledStack.append("move(source:destination:)")
+        if let error = moveSourceDestinationThrowableError {
+            throw error
+        }
+        moveSourceDestinationCallsCount += 1
+        moveSourceDestinationReceivedArguments = (source: source, destination: destination)
+        try moveSourceDestinationClosure?(source, destination)
+    }
+
+    //MARK: - createDirectory
+
+    var createDirectoryPathThrowableError: Error?
+    var createDirectoryPathCallsCount = 0
+    var createDirectoryPathCalled: Bool {
+        return createDirectoryPathCallsCount > 0
+    }
+    var createDirectoryPathReceivedPath: String?
+    var createDirectoryPathClosure: ((String) throws -> Void)?
+
+    func createDirectory(path: String) throws {
+        methodCalledStack.append("createDirectory(path:)")
+        if let error = createDirectoryPathThrowableError {
+            throw error
+        }
+        createDirectoryPathCallsCount += 1
+        createDirectoryPathReceivedPath = path
+        try createDirectoryPathClosure?(path)
+    }
+
+    //MARK: - remove
+
+    var removePathThrowableError: Error?
+    var removePathCallsCount = 0
+    var removePathCalled: Bool {
+        return removePathCallsCount > 0
+    }
+    var removePathReceivedPath: String?
+    var removePathClosure: ((String) throws -> Void)?
+
+    func remove(path: String) throws {
+        methodCalledStack.append("remove(path:)")
+        if let error = removePathThrowableError {
+            throw error
+        }
+        removePathCallsCount += 1
+        removePathReceivedPath = path
+        try removePathClosure?(path)
+    }
+
+    //MARK: - isExistsFile
+
+    var isExistsFilePathCallsCount = 0
+    var isExistsFilePathCalled: Bool {
+        return isExistsFilePathCallsCount > 0
+    }
+    var isExistsFilePathReceivedPath: String?
+    var isExistsFilePathReturnValue: Bool!
+    var isExistsFilePathClosure: ((String) -> Bool)?
+
+    func isExistsFile(path: String) -> Bool {
+        methodCalledStack.append("isExistsFile(path:)")
+        isExistsFilePathCallsCount += 1
+        isExistsFilePathReceivedPath = path
+        return isExistsFilePathClosure.map({ $0(path) }) ?? isExistsFilePathReturnValue
+    }
+
+    //MARK: - isExistsDirectory
+
+    var isExistsDirectoryPathCallsCount = 0
+    var isExistsDirectoryPathCalled: Bool {
+        return isExistsDirectoryPathCallsCount > 0
+    }
+    var isExistsDirectoryPathReceivedPath: String?
+    var isExistsDirectoryPathReturnValue: Bool!
+    var isExistsDirectoryPathClosure: ((String) -> Bool)?
+
+    func isExistsDirectory(path: String) -> Bool {
+        methodCalledStack.append("isExistsDirectory(path:)")
+        isExistsDirectoryPathCallsCount += 1
+        isExistsDirectoryPathReceivedPath = path
+        return isExistsDirectoryPathClosure.map({ $0(path) }) ?? isExistsDirectoryPathReturnValue
+    }
+
+}
 class PBXAtomicValueFormatterMock: PBXAtomicValueFormatter {
     var methodCalledStack: [String] = []
 

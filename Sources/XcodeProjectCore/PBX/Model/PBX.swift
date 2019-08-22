@@ -86,9 +86,96 @@ extension /* prefix */ PBX {
     }
     
     open class Reference: ContainerItem {
-        open var name: String? { return self.extractStringIfExists(for: "name") }
-        open var path: String? { return self.extractStringIfExists(for: "path") }
-        open var sourceTree: SourceTreeType { return SourceTreeType(for: self.extractString(for: "sourceTree")) }
+        private lazy var _name: String? = self.extractStringIfExists(for: "name")
+        open var name: String? {
+            get { return _name }
+            set {
+                _name = newValue
+                dictionary["name"] = _name
+            }
+        }
+        private lazy var _path: String? = self.extractStringIfExists(for: "path")
+        open var path: String? {
+            get { return _path }
+            set {
+                _path = newValue
+                dictionary["path"] = _path
+            }
+        }
+        
+        public weak var parentGroup: PBX.Group?
+
+        public var pathOrNameOrEmpty: String {
+            return path ?? name ?? ""
+        }
+        
+        public var fileSystemAbsolutePath: String {
+            switch sourceTree {
+            case .group:
+                break
+            case .absolute:
+                // Maybe not nil
+                return path!
+            case .environment(let env):
+                switch env {
+                case .SOURCE_ROOT:
+                    // Maybe not nil
+                    return context.xcodeprojectDirectoryURL.path + "/" + path!
+                case _:
+                    fatalError("Unexpected pattern \(sourceTree)")
+                }
+            }
+            
+            var next = parentGroup
+            var expectedFullPath = ""
+            if let path = self.path {
+                expectedFullPath = path
+            }
+            while let parentGroup = next {
+                if context.mainGroup === parentGroup {
+                    break
+                }
+                if parentGroup is PBX.VariantGroup {
+                    next = parentGroup.parentGroup
+                    continue
+                }
+                if let path = parentGroup.path {
+                    expectedFullPath = path + "/" + expectedFullPath
+                }
+                next = parentGroup.parentGroup
+            }
+            expectedFullPath = context.xcodeprojectDirectoryURL.path + "/" + expectedFullPath
+            return expectedFullPath
+        }
+        public var expectedFileSystemAbsolutePath: String {
+            var expectedFullPath: String = name ?? path ?? ""
+            var next = parentGroup
+            if let _ = parentGroup as? PBX.VariantGroup {
+                expectedFullPath = pathOrNameOrEmpty
+            }
+            while let parentGroup = next {
+                if context.mainGroup === parentGroup {
+                    break
+                }
+                if parentGroup is PBX.VariantGroup {
+                    next = parentGroup.parentGroup
+                    continue
+                }
+                expectedFullPath = parentGroup.pathOrNameOrEmpty + "/" + expectedFullPath
+                next = parentGroup.parentGroup
+            }
+            expectedFullPath = context.xcodeprojectDirectoryURL.path + "/" + expectedFullPath
+            return expectedFullPath
+        }
+        
+        private lazy var _sourceTree: SourceTreeType = SourceTreeType(for: extractString(for: "sourceTree"))
+        public var sourceTree: SourceTreeType {
+            get { return _sourceTree }
+            set {
+                _sourceTree = newValue
+                dictionary["sourceTree"] = _sourceTree.value
+            }
+        }
     }
     
     open class ReferenceProxy: Reference {
@@ -98,20 +185,7 @@ extension /* prefix */ PBX {
     
     open class FileReference: Reference {
         // convenience accessor
-        open var fullPath: PathComponent {
-            return self.generateFullPath()
-        }
-        
-        fileprivate func generateFullPath() -> PathComponent {
-            guard let path = context.fullFilePaths[self.id] else {
-                fatalError(assertionMessage(description:
-                    "unexpected id: \(id)",
-                    "and fullFilePaths: \(context.fullFilePaths)"
-                    )
-                )
-            }
-            return path
-        }
+        open var fullPath: String = ""
     }
     
     open class Group: Reference {

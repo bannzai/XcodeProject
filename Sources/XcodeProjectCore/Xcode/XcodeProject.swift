@@ -17,10 +17,12 @@ public class XcodeProject {
     private let resourcesBuildPhaseAppender: BuildPhaseAppender
     private let sourcesBuildPhaseAppender: BuildPhaseAppender
     private let fileWriter: Writer
+    private let fileSystemWriter: FileSystemWriter
     public init(
         xcodeprojectURL: URL,
         parser: ContextParser = PBXProjectContextParser(),
         fileWriter: Writer = FileWriter(),
+        fileSystemWriter: FileSystemWriter = FileSystemWriterImpl(),
         fileReferenceAppender: FileReferenceAppender = FileReferenceAppenderImpl(),
         groupAppender: GroupAppender = GroupAppenderImpl(),
         resourcesBuildPhaseAppender: BuildPhaseAppender = ResourceBuildPhaseAppenderImpl(),
@@ -30,6 +32,7 @@ public class XcodeProject {
         ) throws {
         context = try parser.parse(xcodeprojectUrl: xcodeprojectURL)
         self.fileWriter = fileWriter
+        self.fileSystemWriter = fileSystemWriter
         self.fileReferenceAppender = fileReferenceAppender
         self.groupAppender = groupAppender
         self.resourcesBuildPhaseAppender = resourcesBuildPhaseAppender
@@ -156,6 +159,123 @@ extension XcodeProject {
         return path.isEmpty ? nil : groupAppender.append(context: context, childrenIDs: [], path: path)
     }
 }
+
+// MARK: - Lint
+extension XcodeProject {
+    func expectedDirectoryFullPath(_ group: PBX.Group) -> String {
+        let path = group.expectedFileSystemAbsolutePath
+        return path
+    }
+    func fileReferenceFullPath(_ fileRef: PBX.FileReference) -> String {
+        return fileRef.fileSystemAbsolutePath
+    }
+    func expectedFileReferenceFullPath(_ fileRef: PBX.FileReference) -> String {
+        let path = fileRef.expectedFileSystemAbsolutePath
+        return path
+    }
+    
+    func isNotImplementCase(_ sourceTreeType: SourceTreeType) -> Bool {
+        switch sourceTreeType {
+        case .environment(let env):
+            switch env {
+            case .BUILT_PRODUCTS_DIR, .SDKROOT:
+                return false
+            case _:
+                return true
+            }
+        case _:
+            return true
+        }
+    }
+    
+    // FIXME: function name
+    func containsPath(for target: String, of startDirectory: String?) -> Bool {
+        switch startDirectory {
+        case .none:
+            return true
+        case .some(let start):
+            let absolutePath = context.xcodeprojectDirectoryURL.path + "/" + start + "/"
+            return target.contains(absolutePath)
+        }
+    }
+    
+    func restructure(from startDirectory: String? = nil) {
+        groups.flatMap { $0.fileRefs }.filter { isNotImplementCase($0.sourceTree) }.forEach { fileRef in
+            switch fileRef.sourceTree {
+            case .group, .absolute:
+                return
+            case .environment(let env):
+                switch env {
+                case .SOURCE_ROOT:
+                    if let filename = fileRef.path?.components(separatedBy: "/").last {
+                        fileRef.sourceTree = .group
+                        fileRef.path = filename
+                    }
+                case _:
+                    return
+                }
+            }
+        }
+        
+        groups.filter { $0.isa != .PBXVariantGroup }.forEach { group in
+            let destinationDirectoryFullPath = expectedDirectoryFullPath(group)
+            if !containsPath(for: destinationDirectoryFullPath, of: startDirectory) {
+                return
+            }
+            if let name = group.name {
+                group.name = nil
+                group.path = name
+                context.resetGroupFullPaths()
+            }
+        }
+
+    }
+    
+    func syncFileSystem(from startDirectory: String? = nil) throws {
+        try groups.flatMap { $0.fileRefs }.filter { isNotImplementCase($0.sourceTree) }.forEach { fileRef in
+            let sourceFileReferenceFullPath = fileReferenceFullPath(fileRef)
+            let destinationFileReferenceFullPath = expectedFileReferenceFullPath(fileRef)
+            if !containsPath(for: sourceFileReferenceFullPath, of: startDirectory) {
+                return
+            }
+            if !containsPath(for: destinationFileReferenceFullPath, of: startDirectory) {
+                return
+            }
+            let destinationDirectoryFullPath = destinationFileReferenceFullPath.components(separatedBy: "/").dropLast().joined(separator: "/")
+            if !containsPath(for: destinationDirectoryFullPath, of: startDirectory) {
+                return
+            }
+            
+            let isDestinationDirectoryPathExists = fileSystemWriter.isExistsDirectory(path: destinationDirectoryFullPath)
+            let shouldCreateDirectory = !isDestinationDirectoryPathExists
+            if shouldCreateDirectory {
+                print("🛠 Make directory for \(destinationDirectoryFullPath)")
+                try fileSystemWriter.createDirectory(path: destinationDirectoryFullPath)
+            }
+            
+            
+            let isSamePath = sourceFileReferenceFullPath == destinationFileReferenceFullPath
+            let shouldRemoveFile = !isSamePath && fileSystemWriter.isExistsFile(path: destinationFileReferenceFullPath)
+            if shouldRemoveFile {
+                print("🗑 \(destinationFileReferenceFullPath) is already exists. And will remove it.")
+                try fileSystemWriter.remove(path: destinationFileReferenceFullPath)
+            }
+            
+            let shouldMoveFile = !isSamePath
+            if shouldMoveFile {
+                print("♻️ Move directory from \(sourceFileReferenceFullPath) to \(destinationFileReferenceFullPath)")
+                try fileSystemWriter.move(source: sourceFileReferenceFullPath, destination: destinationFileReferenceFullPath)
+            }
+        }
+    }
+    
+    public func sync(from startDirectory: String? = nil) throws {
+        try syncFileSystem(from: startDirectory)
+        restructure(from: startDirectory)
+        try write()
+    }
+}
+
 
 // MARK: - Write
 extension XcodeProject {

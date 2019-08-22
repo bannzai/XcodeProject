@@ -41,10 +41,13 @@ func projectRootPath() -> URL {
     return url
 }
 
-func makeXcodeProject() -> XcodeProject {
+func makeXcodeProject(
+    fileSystemWriter: FileSystemWriter = FileSystemWriterMock()
+    ) -> XcodeProject {
     do {
         let project = try XcodeProject(
-            xcodeprojectURL: xcodeProjectUrl()
+            xcodeprojectURL: xcodeProjectUrl(),
+            fileSystemWriter: fileSystemWriter
         )
         return project
     } catch {

@@ -32,6 +32,9 @@ let package = Package(
             name: "XcodeProjectCore",
             dependencies: ["Swdifft"]),
         .target(
+            name: "LintExample",
+            dependencies: ["XcodeProjectCore", "Commander"]),
+        .target(
             name: "OchaExample",
             dependencies: ["XcodeProjectCore", "Ocha", "Commander"]),
         .testTarget(

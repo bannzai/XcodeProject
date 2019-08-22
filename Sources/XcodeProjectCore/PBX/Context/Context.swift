@@ -8,19 +8,18 @@
 
 import Foundation
 
-public typealias PathType = [PBXObjectIDType: PathComponent]
 // TODO: Confirm Iteratable, Collection
 public protocol Context: class {
     var objects: [String: PBX.Object] { get set }
-    var fullFilePaths: PathType { get }
     var xcodeprojectUrl: URL { get }
+    var xcodeprojectDirectoryURL: URL { get }
     var allPBX: PBXRawMapType { get }
 
     func extractPBXProject() -> PBX.Project
     func extractProjectName() -> String
     func resetGroupFullPaths()
     // FIXME: Integrate reset Group full paths
-    func createGroupPath(with group: PBX.Group, parentPath: String) 
+    func createGroupFullPaths(for group: PBX.Group, parentPath: String)
 
     func object<T: PBX.Object>(for key: String) -> T
 }
@@ -55,9 +54,17 @@ extension Context {
 
 class InternalContext: Context {
     var objects: [String: PBX.Object] = [:]
-    var fullFilePaths: PathType = [:]
     var allPBX: PBXRawMapType
     let xcodeprojectUrl: URL
+    var xcodeprojectDirectoryURL: URL {
+        let directory = xcodeprojectUrl
+            .path
+            .components(separatedBy: "/")
+            .dropLast() // drop project.pbxproj
+            .dropLast() // drop YOUR_PROJECT.xcodeproj
+            .joined(separator: "/")
+        return URL(fileURLWithPath: directory)
+    }
 
     init(
         allPBX: PBXRawMapType,
@@ -101,12 +108,14 @@ class InternalContext: Context {
     }
     
     func resetGroupFullPaths() {
-        let project = extractPBXProject()
-        fullFilePaths.removeAll()
+        groups.forEach { $0.fullPath = "" }
+        fileRefs.forEach { $0.fullPath = "" }
         
-        createFileRefPath(with: project.mainGroup)
-        createFileRefForSubGroupPath(with: project.mainGroup)
-        createGroupPath(with: project.mainGroup, parentPath: "")
+        configureParentGroup(group: mainGroup)
+        createGroupFullPaths(for: mainGroup, parentPath: "")
+        fileRefs.forEach {
+            createFileReferenceFullPaths(for: $0)
+        }
     }
 }
 
@@ -144,63 +153,58 @@ private extension InternalContext {
 
 // TODO: Move to PBX.Project
 extension InternalContext {
-    func createGroupPath(with group: PBX.Group, parentPath: String) {
-        let path = group.path ?? group.name ?? ""
-        group.fullPath = ""
+    func createGroupFullPaths(for group: PBX.Group, parentPath: String) {
+        defer {
+            group.subGroups.forEach { createGroupFullPaths(for: $0, parentPath: group.fullPath) }
+        }
+        guard let path = group.path else {
+            return
+        }
         switch parentPath.isEmpty {
         case true:
             group.fullPath = path
         case false:
             group.fullPath = parentPath + "/" + path
         }
-        group.subGroups.forEach { createGroupPath(with: $0, parentPath: group.fullPath) }
     }
     
-    func createFileRefForSubGroupPath(with group: PBX.Group, prefix: String = "") {
-        group
-            .subGroups
-            .forEach { subGroup in
-                guard let path = subGroup.path else {
-                    createFileRefPath(with: subGroup, prefix: prefix)
-                    createFileRefForSubGroupPath(with: subGroup, prefix: prefix)
-                    return
-                }
-                let nextPrefix: String
-                switch group.sourceTree {
-                case .group:
-                    nextPrefix = generatePath(with: prefix, path: path)
-                default:
-                    nextPrefix = prefix
-                }
-                createFileRefPath(with: subGroup, prefix: nextPrefix)
-                createFileRefForSubGroupPath(with: subGroup, prefix: nextPrefix)
+    func configureParentGroup(group: PBX.Group) {
+        // TODO: set and prepare to PBX.Group.parentGroup
+        group.fileRefs.forEach {
+            $0.parentGroup = group
+        }
+        group.subGroups.forEach {
+            $0.parentGroup = group
+            configureParentGroup(group: $0)
         }
     }
-    
-    func createFileRefPath(with group: PBX.Group, prefix: String = "") {
-        group
-            .fileRefs
-            .forEach { reference in
-                guard let path = reference.path else {
-                    return
-                }
-                switch (reference.sourceTree, group.sourceTree) {
-                case (.group, .group) :
-                    fullFilePaths[reference.id] = .environmentPath(.SOURCE_ROOT, generatePath(with: prefix, path: path))
-                case (.group, .absolute) :
-                    fullFilePaths[reference.id] = .simple(generatePath(with: prefix, path: path))
-                case (.group, .folder(let environment)) :
-                    fullFilePaths[reference.id] = .environmentPath(environment, generatePath(with: prefix, path: path))
-                case (.absolute, _):
-                    fullFilePaths[reference.id] = .simple(path)
-                case (.folder(let environment), _):
-                    fullFilePaths[reference.id] = .environmentPath(environment, generatePath(with: prefix, path: path))
-                }
+
+    func createFileReferenceFullPaths(for reference: PBX.FileReference) {
+        var next = reference.parentGroup
+        var parentFullPath = ""
+        while let group = next {
+            func end() {
+                next = nil
+            }
+            switch group.fullPath.isEmpty {
+            case true:
+                next = group.parentGroup
+            case false:
+                parentFullPath = group.fullPath
+                end()
+            }
         }
-    }
-    
-    func generatePath(with prefix: String, path: String) -> String {
-        return prefix + "/" + path
+        
+        guard let path = reference.path else {
+            fatalError("Unexpected file reference path is nil: \(reference)")
+        }
+        
+        switch parentFullPath.isEmpty {
+        case true:
+            reference.fullPath = path
+        case false:
+            reference.fullPath = parentFullPath + "/" + path
+        }
     }
 }
 
