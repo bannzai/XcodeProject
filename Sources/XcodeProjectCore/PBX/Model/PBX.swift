@@ -148,7 +148,10 @@ extension /* prefix */ PBX {
             return expectedFullPath
         }
         public var expectedFileSystemAbsolutePath: String {
-            var expectedFullPath = pathOrNameOrEmpty
+            var expectedFullPath: String = name ?? path ?? ""
+            if let variantGroup = parentGroup as? PBX.VariantGroup {
+                expectedFullPath = variantGroup.parentGroup!.path!
+            }
             var next = parentGroup
             while let parentGroup = next {
                 if context.mainGroup === parentGroup {
