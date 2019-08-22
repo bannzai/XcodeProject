@@ -188,8 +188,18 @@ extension XcodeProject {
         }
     }
     
+    // FIXME: function name
+    func containsPath(for target: String, of startDirectory: String?) -> Bool {
+        switch startDirectory {
+        case .none:
+            return true
+        case .some(let start):
+            let absolutePath = context.xcodeprojectDirectoryURL.path + "/" + start + "/"
+            return target.contains(absolutePath)
+        }
+    }
+    
     func restructure(from startDirectory: String? = nil) {
-        let startDirectory = context.xcodeprojectDirectoryURL.path + "/" + (startDirectory ?? "") + "/"
         groups.flatMap { $0.fileRefs }.filter { isNotImplementCase($0.sourceTree) }.forEach { fileRef in
             switch fileRef.sourceTree {
             case .group, .absolute:
@@ -209,7 +219,7 @@ extension XcodeProject {
         
         groups.filter { $0.isa != .PBXVariantGroup }.forEach { group in
             let destinationDirectoryFullPath = expectedDirectoryFullPath(group)
-            if !destinationDirectoryFullPath.contains(startDirectory) {
+            if !containsPath(for: destinationDirectoryFullPath, of: startDirectory) {
                 return
             }
             if let name = group.name {
@@ -222,18 +232,17 @@ extension XcodeProject {
     }
     
     func syncFileSystem(from startDirectory: String? = nil) throws {
-        let startDirectory = context.xcodeprojectDirectoryURL.path + "/" + (startDirectory ?? "") + "/"
         try groups.flatMap { $0.fileRefs }.filter { isNotImplementCase($0.sourceTree) }.forEach { fileRef in
             let sourceFileReferenceFullPath = fileReferenceFullPath(fileRef)
             let destinationFileReferenceFullPath = expectedFileReferenceFullPath(fileRef)
-            if !sourceFileReferenceFullPath.contains(startDirectory) {
+            if !containsPath(for: sourceFileReferenceFullPath, of: startDirectory) {
                 return
             }
-            if !destinationFileReferenceFullPath.contains(startDirectory) {
+            if !containsPath(for: destinationFileReferenceFullPath, of: startDirectory) {
                 return
             }
             let destinationDirectoryFullPath = destinationFileReferenceFullPath.components(separatedBy: "/").dropLast().joined(separator: "/")
-            if !destinationDirectoryFullPath.contains(startDirectory) {
+            if !containsPath(for: destinationDirectoryFullPath, of: startDirectory) {
                 return
             }
             
@@ -261,8 +270,8 @@ extension XcodeProject {
     }
     
     public func sync(from startDirectory: String? = nil) throws {
-        try syncFileSystem()
-        restructure()
+        try syncFileSystem(from: startDirectory)
+        restructure(from: startDirectory)
         try write()
     }
 }
