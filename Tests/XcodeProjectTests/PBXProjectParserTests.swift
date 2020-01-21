@@ -11,11 +11,12 @@ import XCTest
 class PBXProjectParserTests: XCTestCase {
     func testParse() {
         do {
-            let parser = try PBXProjectParser(xcodeprojectUrl: xcodeProjectUrl())
-            XCTAssert(parser.context().dictionary.count == 58)
-            XCTAssert(parser.context().fullFilePaths.count == 15)
-            XCTAssert(parser.context().grouped.count == 13)
-            XCTAssert(parser.pair().count == 5)
+            let parser1 = try PBXProjectParser(xcodeprojectUrl: xcodeProjectUrl())
+            let parser2 = try PBXProjectParser(xcodeprojectUrl: xcodeProjectUrl())
+            XCTAssertEqual(parser1.context().dictionary.count, parser2.context().dictionary.count)
+            XCTAssertEqual(parser1.context().fullFilePaths.count, parser2.context().fullFilePaths.count)
+            XCTAssertEqual(parser1.context().grouped.count, parser2.context().grouped.count)
+            XCTAssertEqual(parser1.pair().count, parser2.pair().count)
         } catch {
             XCTFail(error.localizedDescription)
         }
