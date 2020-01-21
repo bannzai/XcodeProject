@@ -15,7 +15,7 @@ func xcodeProjectUrl() -> URL {
         let url = URL(string: "file://" + testPath)
         else {
             XCTFail("Should set environment PBXProjectPath.")
-            fatalError()
+            fatalError("Can not find file path. PBXProjectPath: \(String(describing: ProcessInfo().environment["PBXProjectPath"])) ")
     }
     
     return url

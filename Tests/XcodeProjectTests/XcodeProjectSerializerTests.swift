@@ -20,7 +20,7 @@ class XcodeProjectSerializerTests: XCTestCase {
             return (parser.context(), XcodeProjectSerializer(project: project))
         } catch {
             XCTFail(error.localizedDescription)
-            fatalError()
+            fatalError(error.localizedDescription)
         }
     }
     
