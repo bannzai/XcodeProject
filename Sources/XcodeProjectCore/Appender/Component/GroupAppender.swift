@@ -36,6 +36,7 @@ public struct GroupAppenderImpl: GroupAppender {
         }
         
         if let alreadyExistsGroup = extractor.extract(context: context, path: path) {
+            alreadyExistsGroup.children.append(contentsOf: childrenIDs.compactMap { context.objects[$0] as? PBX.Reference })
             return alreadyExistsGroup
         }
 
