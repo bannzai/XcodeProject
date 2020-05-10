@@ -22,8 +22,6 @@ public protocol Context: class {
     // FIXME: Integrate reset Group full paths
     func createGroupPath(with group: PBX.Group, parentPath: String)
     
-    var serializeObjectHistory: [PBX.Object] { get set }
-
     func object<T: PBX.Object>(for key: String) -> T
 }
 
@@ -61,8 +59,6 @@ class InternalContext: Context {
     var allPBX: PBXRawMapType
     let xcodeprojectUrl: URL
     
-    var serializeObjectHistory: [PBX.Object] = [] 
-
     init(
         allPBX: PBXRawMapType,
         xcodeProjectUrl: URL

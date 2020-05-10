@@ -76,9 +76,6 @@ extension SerializeFormatter {
             return ""
         }
         
-        context.serializeObjectHistory.append(object)
-        defer { context.serializeObjectHistory.removeLast() }
-
         switch object {
         case let o as PBX.Reference:
             return o.name ?? o.path ?? ""
@@ -120,9 +117,9 @@ extension SerializeFormatter {
             }
             return "Build configuration list for PBXProject \"\(context.extractProjectName())\""
         case let o as XC.RemoteSwiftPackageReference:
-            return "\(o.productDependencyName) \"\(o.productDependencyName.lowercased())\""
+            return "\(ObjectType.XCRemoteSwiftPackageReference.rawValue) \"\(o.productDependencyName.lowercased())\""
         case let o as XC.SwiftPackageProductDependency:
-            return commentValue(context: context, for: o.package.id)
+            return "\(o.productName)"
         default:
             return ""
         }
