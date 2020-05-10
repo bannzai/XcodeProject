@@ -111,6 +111,10 @@ extension SerializeFormatter {
                 return "Build configuration list for \(target.isa) \"\(target.name)\""
             }
             return "Build configuration list for PBXProject \"\(context.extractProjectName())\""
+        case let o as XC.RemoteSwiftPackageReference:
+            return wrapComment(context: context, for: "\(ObjectType.XCRemoteSwiftPackageReference.rawValue) \"\(o.productDependencyName)\"")
+        case let o as XC.SwiftPackageProductDependency:
+            return commentValue(context: context, for: o.package.id)
         default:
             return ""
         }
