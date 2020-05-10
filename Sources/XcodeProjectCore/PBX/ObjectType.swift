@@ -31,6 +31,8 @@ public enum ObjectType: String {
     case PBXGroup
     case PBXVariantGroup
     case XCVersionGroup
+    case XCRemoteSwiftPackageReference
+    case XCSwiftPackageProductDependency
     
     public init(for isa: String) {
         guard let type = ObjectType(rawValue: isa) else {
@@ -91,6 +93,10 @@ public enum ObjectType: String {
             return PBX.VariantGroup.self
         case XCVersionGroup:
             return XC.VersionGroup.self
+        case .XCRemoteSwiftPackageReference:
+            return XC.RemoteSwiftPackageReference.self
+        case .XCSwiftPackageProductDependency:
+            return XC.SwiftPackageProductDependency.self
         }
     }
 }

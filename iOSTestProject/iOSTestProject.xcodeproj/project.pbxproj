@@ -3,10 +3,11 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 48;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3326723C2468346100AB3E66 /* Gedatsu in Frameworks */ = {isa = PBXBuildFile; productRef = 3326723B2468346100AB3E66 /* Gedatsu */; };
 		33467EBA22E6C5B700897582 /* FileReference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33467EB922E6C5B700897582 /* FileReference.swift */; };
 		33467EDB22E9513E00897582 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33467EDA22E9513E00897582 /* Config.swift */; };
 		3393D46922EB050800550D19 /* TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3393D46722EB050800550D19 /* TableViewCell.swift */; };
@@ -72,6 +73,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3326723C2468346100AB3E66 /* Gedatsu in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -184,6 +186,9 @@
 			dependencies = (
 			);
 			name = iOSTestProject;
+			packageProductDependencies = (
+				3326723B2468346100AB3E66 /* Gedatsu */,
+			);
 			productName = iOSTestProject;
 			productReference = BA4268001F89EB7F001FA700 /* iOSTestProject.app */;
 			productType = "com.apple.product-type.application";
@@ -259,6 +264,9 @@
 				Base,
 			);
 			mainGroup = BA4267F71F89EB7F001FA700;
+			packageReferences = (
+				3326723A2468346100AB3E66 /* XCRemoteSwiftPackageReference "gedatsu" */,
+			);
 			productRefGroup = BA4268011F89EB7F001FA700 /* Products */;
 			projectDirPath = "";
 			projectReferences = (
@@ -519,7 +527,8 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -530,7 +539,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = iOSTestProject/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.yudai.hirose.iOSTestProject;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
@@ -544,7 +556,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = iOSTestProject/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.yudai.hirose.iOSTestProject;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
@@ -559,7 +574,11 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = iOSTestProjectTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.yudai.hirose.iOSTestProjectTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
@@ -575,7 +594,11 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = iOSTestProjectTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.yudai.hirose.iOSTestProjectTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
@@ -590,7 +613,11 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = iOSTestProjectUITests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.yudai.hirose.iOSTestProjectUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
@@ -605,7 +632,11 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = iOSTestProjectUITests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.yudai.hirose.iOSTestProjectUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
@@ -654,6 +685,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		3326723A2468346100AB3E66 /* XCRemoteSwiftPackageReference "gedatsu" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/bannzai/gedatsu";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		3326723B2468346100AB3E66 /* Gedatsu */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3326723A2468346100AB3E66 /* XCRemoteSwiftPackageReference "gedatsu" */;
+			productName = Gedatsu;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = BA4267F81F89EB7F001FA700 /* Project object */;
 }

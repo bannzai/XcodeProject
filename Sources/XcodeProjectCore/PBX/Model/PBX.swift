@@ -27,7 +27,9 @@ extension /* prefix */ PBX {
     }
     
     open class BuildFile: ProjectItem {
-        open var fileRef: PBX.Reference { return self.extractObject(for: "fileRef") }
+        // NOTE: if self is swift package manager dependency source file, fileRef is not exists
+        open var fileRef: PBX.Reference? { self.extractObjectIfExists(for: "fileRef") }
+        open var productRef: XC.SwiftPackageProductDependency? { self.extractObjectIfExists(for: "productRef") }
     }
     
     open class CopyFilesBuildPhase: PBX.BuildPhase {
@@ -78,7 +80,7 @@ extension /* prefix */ PBX {
     }
     
     open class NativeTarget: Target {
-        
+        open var packageProductDependencies: [XC.SwiftPackageProductDependency]? { extractObjects(for: "packageProductDependencies") }
     }
     
     open class TargetDependency: ProjectItem {

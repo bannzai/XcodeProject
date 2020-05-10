@@ -39,7 +39,7 @@ extension Sequence where Element: PBX.BuildPhase {
 
 extension Sequence where Element: PBX.BuildFile {
     public subscript(fileName fileName: String) -> Element? {
-        return filter { $0.fileRef.path == fileName }.first
+        filter { $0.fileRef?.path == fileName }.first
     }
 }
 

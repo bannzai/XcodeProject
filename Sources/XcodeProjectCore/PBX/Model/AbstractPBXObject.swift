@@ -70,6 +70,13 @@ extension PBX {
             return context.object(for: objectKey)
         }
         
+        final func extractObjectIfExists<T: PBX.Object>(for key: String) -> T? {
+            guard let objectKey = extractStringIfExists(for: key) else {
+                return nil
+            }
+            return context.object(for: objectKey)
+        }
+        
         final func extractObjects<T: PBX.Object>(for key: String) -> [T] {
             let objectKeys = extractStrings(for: key)
             return objectKeys.map(context.object)

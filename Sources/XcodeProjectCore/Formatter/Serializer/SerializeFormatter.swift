@@ -100,10 +100,15 @@ extension SerializeFormatter {
         case is PBX.TargetDependency:
             return "PBXTargetDependency"
         case let o as PBX.BuildFile:
-            if let buildPhase = buildPhaseByFileId(context: context)[hashId] {
+            if let buildPhase = buildPhaseByFileId(context: context)[hashId], let fileReference = o.fileRef {
                 let group = commentValue(context: context, for: buildPhase.id)
-                let fileRef = commentValue(context: context, for: o.fileRef.id)
+                let fileRef = commentValue(context: context, for: fileReference.id)
                 return  "\(fileRef) in \(group)"
+            }
+            if let buildPhase = buildPhaseByFileId(context: context)[hashId], let productReference = o.productRef {
+                let group = commentValue(context: context, for: buildPhase.id)
+                let productName = productReference.productName
+                return  "\(productName) in \(group)"
             }
             return ""
         case is XC.ConfigurationList:
@@ -111,6 +116,10 @@ extension SerializeFormatter {
                 return "Build configuration list for \(target.isa) \"\(target.name)\""
             }
             return "Build configuration list for PBXProject \"\(context.extractProjectName())\""
+        case let o as XC.RemoteSwiftPackageReference:
+            return "\(ObjectType.XCRemoteSwiftPackageReference.rawValue) \"\(o.productDependencyName.lowercased())\""
+        case let o as XC.SwiftPackageProductDependency:
+            return "\(o.productName)"
         default:
             return ""
         }
