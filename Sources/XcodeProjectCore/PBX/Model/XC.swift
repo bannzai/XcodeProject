@@ -21,6 +21,20 @@ open class /* prefix */ XC {
     }
     
     open class RemoteSwiftPackageReference: PBX.Object {
+        internal var _productDependency: SwiftPackageProductDependency?
+        open var productDependency: SwiftPackageProductDependency {
+            if let productDependency = _productDependency {
+                return productDependency
+            }
+            let productDependency = context
+                .objects
+                .values
+                .compactMap { $0 as? XC.SwiftPackageProductDependency }
+                .first { $0.package === self }!
+            _productDependency = productDependency
+            return productDependency
+        }
+        open var productDependencyName: String { productDependency.productName }
         open var repositoryURL: String { self.extractString(for: "repositoryURL") }
     }
     
