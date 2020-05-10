@@ -78,7 +78,7 @@ extension /* prefix */ PBX {
     }
     
     open class NativeTarget: Target {
-        
+        open var packageProductDependencies: [XC.SwiftPackageProductDependency]? { extractObjects(for: "packageProductDependencies") }
     }
     
     open class TargetDependency: ProjectItem {
