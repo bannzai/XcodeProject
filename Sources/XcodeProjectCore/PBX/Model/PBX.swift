@@ -27,7 +27,8 @@ extension /* prefix */ PBX {
     }
     
     open class BuildFile: ProjectItem {
-        open var fileRef: PBX.Reference { return self.extractObject(for: "fileRef") }
+        // NOTE: if self is swift package manager dependency source file, fileRef is not exists
+        open var fileRef: PBX.Reference? { self.extractObjectIfExists(for: "fileRef") }
     }
     
     open class CopyFilesBuildPhase: PBX.BuildPhase {

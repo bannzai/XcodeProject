@@ -18,6 +18,6 @@ public struct BuildFileExtractorImpl: BuildFileExtractor {
             .objects
             .values
             .compactMap { $0 as? PBX.BuildFile }
-            .first { $0.fileRef.path == fileName }
+            .first { $0.fileRef?.path == fileName }
     }
 }

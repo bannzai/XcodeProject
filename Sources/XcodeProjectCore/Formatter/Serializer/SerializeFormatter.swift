@@ -100,9 +100,9 @@ extension SerializeFormatter {
         case is PBX.TargetDependency:
             return "PBXTargetDependency"
         case let o as PBX.BuildFile:
-            if let buildPhase = buildPhaseByFileId(context: context)[hashId] {
+            if let buildPhase = buildPhaseByFileId(context: context)[hashId], let fileReference = o.fileRef {
                 let group = commentValue(context: context, for: buildPhase.id)
-                let fileRef = commentValue(context: context, for: o.fileRef.id)
+                let fileRef = commentValue(context: context, for: fileReference.id)
                 return  "\(fileRef) in \(group)"
             }
             return ""
