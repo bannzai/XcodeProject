@@ -132,6 +132,15 @@ class XcodeProjectTests: XCTestCase {
                         XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.Group }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.Group }.count)
                         XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.FileReference }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.FileReference }.count)
                         XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.BuildFile }.count, xcodeproject.context.objects.values.compactMap { $0 as? PBX.BuildFile }.count)
+                        
+                        groups: do {
+                            let originalCount = originalObjects.values.compactMap { $0 as? PBX.Group }.first(where: { $0.path == "Hoge" })?.subGroups.count
+                            XCTAssertNil(originalCount)
+                            let hoge = xcodeproject.context.objects.values.compactMap { $0 as? PBX.Group }.first(where :{ $0.path == "Hoge" })
+                            XCTAssertNil(hoge)
+                            let fuga = xcodeproject.context.objects.values.compactMap { $0 as? PBX.Group }.first(where :{ $0.path == "Fuga" })
+                            XCTAssertNil(fuga)
+                        }
                     }
                     
                     xcodeproject.appendFile(path: "Hoge/Fuga/aaaa.swift", targetName: "iOSTestProject")
@@ -141,6 +150,18 @@ class XcodeProjectTests: XCTestCase {
                         XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.Group }.count + 2, xcodeproject.context.objects.values.compactMap { $0 as? PBX.Group }.count)
                         XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.FileReference }.count + 1, xcodeproject.context.objects.values.compactMap { $0 as? PBX.FileReference }.count)
                         XCTAssertEqual(originalObjects.values.compactMap { $0 as? PBX.BuildFile }.count + 1, xcodeproject.context.objects.values.compactMap { $0 as? PBX.BuildFile }.count)
+                        
+                        groups: do {
+                            let originalCount = originalObjects.values.compactMap { $0 as? PBX.Group }.first(where: { $0.path == "Hoge" })?.subGroups.count
+                            XCTAssertNil(originalCount)
+                            let hoge = xcodeproject.context.objects.values.compactMap { $0 as? PBX.Group }.first(where :{ $0.path == "Hoge" })
+                            XCTAssertNotNil(hoge)
+                            XCTAssertEqual(hoge?.subGroups.count, 1)
+                            XCTAssertEqual(hoge?.subGroups[0].path, "Fuga")
+                            let fuga = xcodeproject.context.objects.values.compactMap { $0 as? PBX.Group }.first(where :{ $0.path == "Fuga" })
+                            XCTAssertNotNil(fuga)
+                            XCTAssertEqual(fuga?.subGroups.count, 0)
+                        }
                     }
                 })
             })
