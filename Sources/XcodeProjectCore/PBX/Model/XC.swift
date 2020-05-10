@@ -40,7 +40,7 @@ open class /* prefix */ XC {
     
     open class SwiftPackageProductDependency: PBX.Object {
         open var package: RemoteSwiftPackageReference { self.extractObject(for: "package") }
-        open var productName: String { self.extractString(for: "package") }
+        open var productName: String { self.extractString(for: "productName") }
     }
 }
 

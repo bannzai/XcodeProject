@@ -20,7 +20,9 @@ public protocol Context: class {
     func extractProjectName() -> String
     func resetGroupFullPaths()
     // FIXME: Integrate reset Group full paths
-    func createGroupPath(with group: PBX.Group, parentPath: String) 
+    func createGroupPath(with group: PBX.Group, parentPath: String)
+    
+    var serializeObjectHistory: [PBX.Object] { get set }
 
     func object<T: PBX.Object>(for key: String) -> T
 }
@@ -58,6 +60,8 @@ class InternalContext: Context {
     var fullFilePaths: PathType = [:]
     var allPBX: PBXRawMapType
     let xcodeprojectUrl: URL
+    
+    var serializeObjectHistory: [PBX.Object] = [] 
 
     init(
         allPBX: PBXRawMapType,

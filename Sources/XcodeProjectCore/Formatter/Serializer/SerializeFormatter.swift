@@ -76,6 +76,9 @@ extension SerializeFormatter {
             return ""
         }
         
+        context.serializeObjectHistory.append(object)
+        defer { context.serializeObjectHistory.removeLast() }
+
         switch object {
         case let o as PBX.Reference:
             return o.name ?? o.path ?? ""
@@ -105,6 +108,11 @@ extension SerializeFormatter {
                 let fileRef = commentValue(context: context, for: fileReference.id)
                 return  "\(fileRef) in \(group)"
             }
+            if let buildPhase = buildPhaseByFileId(context: context)[hashId], let productReference = o.productRef {
+                let group = commentValue(context: context, for: buildPhase.id)
+                let productName = productReference.productName
+                return  "\(productName) in \(group)"
+            }
             return ""
         case is XC.ConfigurationList:
             if let target = targetsByConfigId(context: context)[hashId] {
@@ -112,7 +120,7 @@ extension SerializeFormatter {
             }
             return "Build configuration list for PBXProject \"\(context.extractProjectName())\""
         case let o as XC.RemoteSwiftPackageReference:
-            return wrapComment(context: context, for: "\(ObjectType.XCRemoteSwiftPackageReference.rawValue) \"\(o.productDependencyName)\"")
+            return "\(o.productDependencyName) \"\(o.productDependencyName.lowercased())\""
         case let o as XC.SwiftPackageProductDependency:
             return commentValue(context: context, for: o.package.id)
         default:
